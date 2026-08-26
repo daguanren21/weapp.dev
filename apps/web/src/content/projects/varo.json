@@ -1,0 +1,25 @@
+{
+  "order": 3,
+  "status": "planned",
+  "packageName": "@varo/cli",
+  "github": "daguanren21/Varo",
+  "docsUrl": "https://github.com/daguanren21/Varo#readme",
+  "futureDocsPath": "/docs/varo/",
+  "logo": "/brands/varo.svg",
+  "accent": "#7c3aed",
+  "platforms": ["WeChat", "Web", "Vue 3", "weapp-vite", "weapp-tailwindcss", "wevu"],
+  "locales": {
+    "zh-CN": {
+      "name": "Varo",
+      "tagline": "小程序版 shadcn/ui 与 Agent UI 组件库",
+      "description": "通过 CLI 把可修改的 Vue SFC、业务 Blocks 和 Agent UI 源码安装到 weapp-vite 项目，覆盖通用组件、流式对话、推理、工具调用与审批，同时提供 H5 target。",
+      "capabilities": ["小程序版 shadcn/ui", "36 个双端 Agent UI", "流式 Agent 事件协议", "源码安装与业务 Blocks"]
+    },
+    "en": {
+      "name": "Varo",
+      "tagline": "shadcn/ui components and Agent UI for mini-apps",
+      "description": "Install editable Vue SFCs, application blocks, and Agent UI source into weapp-vite projects through the CLI, with common components, streaming conversations, reasoning, tool calls, approvals, and an H5 target.",
+      "capabilities": ["shadcn/ui for mini-apps", "36 dual-target Agent UI components", "Streaming Agent event protocol", "Source installation and application blocks"]
+    }
+  }
+}

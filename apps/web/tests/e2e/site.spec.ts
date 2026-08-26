@@ -6,6 +6,7 @@ test('renders the bilingual ecosystem home with valid metadata', async ({ page }
   await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'weapp-tailwindcss' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'weapp-vite' })).toBeVisible()
+  await expect(page.locator('#projects').getByRole('heading', { name: 'Varo' })).toBeVisible()
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://weapp.dev/')
   await expect(page.locator('link[hreflang="en-US"]')).toHaveAttribute('href', 'https://weapp.dev/en/')
 
@@ -29,6 +30,17 @@ test('project detail exposes docs, source, metrics, and future path', async ({ p
   await expect(page.getByRole('heading', { level: 1, name: 'weapp-vite' })).toBeVisible()
   await expect(page.getByRole('link', { name: '阅读文档' }).first()).toHaveAttribute('href', 'https://vite.icebreaker.top/')
   await expect(page.getByText('/docs/weapp-vite/')).toBeVisible()
+  await expect(page.getByText('GitHub Stars')).toBeVisible()
+})
+
+test('planned project exposes complete placeholder release data', async ({ page }) => {
+  await page.goto('/projects/varo/')
+  await expect(page.getByRole('heading', { level: 1, name: 'Varo' })).toBeVisible()
+  await expect(page.getByRole('link', { name: '查看源码' })).toHaveAttribute('href', 'https://github.com/daguanren21/Varo')
+  await expect(page.getByRole('link', { name: '阅读文档' }).first()).toHaveAttribute('href', 'https://github.com/daguanren21/Varo#readme')
+  await expect(page.getByText('@varo/cli')).toBeVisible()
+  await expect(page.getByText('v0.0.1')).toBeVisible()
+  await expect(page.getByText('/docs/varo/')).toBeVisible()
   await expect(page.getByText('GitHub Stars')).toBeVisible()
 })
 
