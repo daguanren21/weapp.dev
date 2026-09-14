@@ -57,15 +57,17 @@ pnpm exec wrangler versions upload --dry-run
 | ----------------------------- | ----------------------------------------------- |
 | Production branch             | `main`                                          |
 | Root directory                | `/apps/web`                                     |
-| Build command                 | `pnpm --workspace-root check && pnpm run build` |
+| Build command                 | `pnpm build:cloudflare`                         |
 | Production deploy command     | `pnpm exec wrangler deploy`                     |
 | Non-production deploy command | `pnpm exec wrangler versions upload`            |
-| Build variables               | `NODE_VERSION=22.23.2`、`PNPM_VERSION=10.33.4`  |
+| Build variables               | `NODE_VERSION=22.23.2`、`PNPM_VERSION=12.3.4`  |
 | Build cache                   | 启用                                            |
 | Path filters                  | 不配置                                          |
 | Runtime variables / secrets   | 不配置                                          |
 
 `main` 推送会创建并激活生产部署；其他分支只上传 Worker Version，不切换生产流量。版本预览 URL 已启用，公开地址格式为：
+
+Cloudflare 的 Git 构建只负责生成静态站点产物，不执行 workspace 级别的 `check`。完整 lint、类型检查、单元测试和 E2E 由 GitHub CI 执行。当前 Root directory 为 `/apps/web`，因此 Dashboard 中的输出目录应为 `dist`；若将 Root directory 改为仓库根目录，则使用 `pnpm build:cloudflare` 并将输出目录改为 `apps/web/dist`。
 
 ```text
 https://<version-prefix>-weapp-dev.sonofmagic.workers.dev

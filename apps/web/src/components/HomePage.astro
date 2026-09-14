@@ -67,7 +67,8 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
       {featuredProjects.map((project, index) => {
         const content = project.data.locales[locale]
         const projectMetrics = metrics[project.id]
-        const visual = project.data.visuals.primary
+        const visual = project.data.visuals?.primary
+        if (!visual) return null
         const visualCopy = visual.locales[locale]
         return (
           <article data-project-row class:list={['group/project relative grid items-center gap-14 border-t border-line pt-14 first:border-t-0 first:pt-0 max-[960px]:gap-9', index === 0 ? 'grid-cols-[1.12fr_.88fr] max-[800px]:grid-cols-1' : 'grid-cols-[.82fr_1.18fr] max-[800px]:grid-cols-1']} style={`--project-accent: ${project.data.accent}`}>

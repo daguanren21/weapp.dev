@@ -74,6 +74,8 @@ export const siteCopy = {
       details: '项目详情',
       weeklyDownloads: '周下载',
       stars: 'Stars',
+      readinessTitle: '适配状态',
+      readinessBody: '每个项目都可以独立采用，并通过明确的边界逐步组合成完整工具链。',
       status: {
         stable: '稳定版',
         beta: '测试版',
@@ -96,10 +98,12 @@ export const siteCopy = {
       title: '让小程序工程拥有开放的现代底座',
       description: '我们希望把样式、构建与组件能力连接成一套开放、可组合、可验证的工程生态。',
       items: [
-        { title: '开放的工具链', body: '每个工具都能独立使用，也能通过清晰边界组合起来。' },
-        { title: '熟悉的开发体验', body: '保留原生小程序、Vue SFC 与跨端框架的写法，降低迁移成本。' },
-        { title: '可验证的交付结果', body: '让构建输出、运行时表现和发布记录都可以被检查与复现。' },
+        { title: '开放的工具链', body: '每个工具都能独立使用，也能通过清晰边界组合起来。', owns: '独立可用的开源工具', notOwns: '封闭的平台锁定' },
+        { title: '熟悉的开发体验', body: '保留原生小程序、Vue SFC 与跨端框架的写法，降低迁移成本。', owns: '渐进迁移的熟悉写法', notOwns: '强制重写现有应用' },
+        { title: '可验证的交付结果', body: '让构建输出、运行时表现和发布记录都可以被检查与复现。', owns: '可检查的构建与运行结果', notOwns: '无法复现的黑盒交付' },
       ],
+      ownsLabel: '我们提供',
+      notOwnsLabel: '我们不提供',
     },
     releases: {
       eyebrow: '最新版本',
@@ -218,6 +222,12 @@ export const siteCopy = {
       visualProofDescription: '以下截图来自项目官方仓库中的 demo 或回归基线，并在本站本地化保存。',
       faq: '常见问题',
       npm: '查看 npm',
+      adjacentNote: '相邻工具和运行时能力可以按需组合，不要求一次性迁移整个项目。',
+      readiness: '成熟度',
+      readinessNote: '稳定性和发布状态以项目仓库与版本数据为准。',
+      setupStatus: '当前不可直接安装',
+      commandUnavailable: '该规划项目尚未发布安装命令。',
+      plannedSetupNote: '该项目仍在规划中，安装命令将在正式发布后提供。',
     },
     footer: {
       description: '面向小程序开发的开源工具栈。',
@@ -228,6 +238,7 @@ export const siteCopy = {
       releases: '版本订阅',
       privacy: '隐私说明',
       analyticsPreferences: '统计偏好',
+      contributors: '贡献者',
       copyright: 'weapp.dev，以 MIT License 开放。',
     },
     analytics: {
@@ -314,6 +325,8 @@ export const siteCopy = {
       details: 'Project details',
       weeklyDownloads: 'Weekly downloads',
       stars: 'Stars',
+      readinessTitle: 'Adoption status',
+      readinessBody: 'Each project can be adopted independently and composed into the full toolchain through clear boundaries.',
       status: {
         stable: 'Stable',
         beta: 'Beta',
@@ -336,10 +349,12 @@ export const siteCopy = {
       title: 'An open, modern foundation for mini-app engineering',
       description: 'We want to connect styling, builds, and components into an open, composable, and verifiable engineering ecosystem.',
       items: [
-        { title: 'Open tooling', body: 'Each tool works independently, then composes through clear boundaries when you need the full stack.' },
-        { title: 'Familiar development', body: 'Keep native mini-app syntax, Vue SFC, and cross-platform workflows while lowering migration cost.' },
-        { title: 'Verifiable delivery', body: 'Make build output, runtime behavior, and release records inspectable and reproducible.' },
+        { title: 'Open tooling', body: 'Each tool works independently, then composes through clear boundaries when you need the full stack.', owns: 'Open tools that work independently', notOwns: 'A locked platform workflow' },
+        { title: 'Familiar development', body: 'Keep native mini-app syntax, Vue SFC, and cross-platform workflows while lowering migration cost.', owns: 'A gradual migration path', notOwns: 'A forced rewrite of existing apps' },
+        { title: 'Verifiable delivery', body: 'Make build output, runtime behavior, and release records inspectable and reproducible.', owns: 'Inspectable build and runtime results', notOwns: 'An irreproducible black-box delivery' },
       ],
+      ownsLabel: 'What we provide',
+      notOwnsLabel: 'What we do not provide',
     },
     releases: {
       eyebrow: 'Latest releases',
@@ -462,6 +477,12 @@ export const siteCopy = {
       visualProofDescription: 'These images come from official project demos or regression baselines and are stored locally on this site.',
       faq: 'Frequently asked questions',
       npm: 'View on npm',
+      adjacentNote: 'Adjacent tools and runtime capabilities can be composed as needed without migrating an entire project at once.',
+      readiness: 'Maturity',
+      readinessNote: 'Stability and release status follow the project repository and version data.',
+      setupStatus: 'Not directly installable yet',
+      commandUnavailable: 'This planned project does not have a published install command yet.',
+      plannedSetupNote: 'This project is still planned; an install command will be provided after release.',
     },
     footer: {
       description: 'The open-source tool stack for mini-app development.',
@@ -472,6 +493,7 @@ export const siteCopy = {
       releases: 'Release feed',
       privacy: 'Privacy notice',
       analyticsPreferences: 'Analytics preferences',
+      contributors: 'Contributors',
       copyright: 'weapp.dev, open under the MIT License.',
     },
     analytics: {
