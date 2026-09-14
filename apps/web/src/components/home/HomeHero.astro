@@ -40,6 +40,11 @@ const copy = siteCopy[locale]
           <img class="home-hero-stage-asset" src="/media/brand/build-lens.webp" width="1600" height="1100" alt={copy.hero.visualLabel} fetchpriority="high" />
         </picture>
       </div>
+      <div class="home-hero-proof-strip" aria-label={locale === 'zh-CN' ? '工具链证据' : 'Toolchain evidence'}>
+        <span>{locale === 'zh-CN' ? '真实项目证据' : 'Evidence from real repos'}</span>
+        <span>{projects.length} {locale === 'zh-CN' ? '层能力' : 'layers'}</span>
+        <span>{locale === 'zh-CN' ? '逐层接入' : 'Add one layer at a time'}</span>
+      </div>
       <HeroDemos locale={locale} projects={projects} />
     </div>
   </div>
