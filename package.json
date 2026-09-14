@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "build:cloudflare": "pnpm --filter @weapp.dev/web build:cloudflare",
     "check": "turbo run lint lint:styles check test",
     "dev": "turbo run dev --filter=@weapp.dev/web",
     "lint": "turbo run lint lint:styles",
