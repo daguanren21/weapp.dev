@@ -35,10 +35,14 @@ const copy = siteCopy[locale]
 
     <div class="home-hero-visual" role="region" aria-label={copy.hero.visualLabel}>
       <div class="home-hero-stage">
+        <span class="home-hero-stage-grid" aria-hidden="true"></span>
+        <span class="home-hero-stage-scan" aria-hidden="true"></span>
+        <span class="home-hero-stage-marker" aria-hidden="true">LIVE / BUILD LENS</span>
         <picture>
           <source srcset="/media/brand/build-lens.avif" type="image/avif" />
           <img class="home-hero-stage-asset" src="/media/brand/build-lens.webp" width="1600" height="1100" alt={copy.hero.visualLabel} fetchpriority="high" />
         </picture>
+        <div class="home-hero-stage-readout" aria-hidden="true"><span>01</span><span>TOOLCHAIN / 05</span></div>
       </div>
       <div class="home-hero-proof-strip" aria-label={locale === 'zh-CN' ? '工具链证据' : 'Toolchain evidence'}>
         <span>{locale === 'zh-CN' ? '真实项目证据' : 'Evidence from real repos'}</span>
