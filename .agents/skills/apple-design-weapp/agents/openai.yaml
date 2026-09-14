@@ -1,0 +1,4 @@
+interface:
+  display_name: Apple Design for weapp.dev
+  short_description: Apply Apple-inspired clarity, hierarchy, and accessible interaction to weapp.dev.
+  default_prompt: Use $apple-design-weapp to redesign or review a weapp.dev interface while preserving brand and product truth.
