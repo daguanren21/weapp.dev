@@ -1,0 +1,28 @@
+---
+import { Copy, Terminal } from '@lucide/astro'
+import type { Locale } from '../types/project'
+interface Props { locale: Locale }
+const { locale } = Astro.props
+const copy = locale === 'zh-CN' ? { file: 'build.config.ts', status: 'BUILD READY' } : { file: 'build.config.ts', status: 'BUILD READY' }
+---
+
+<div class="code-window" data-code-window>
+  <div class="code-window-bar"><span class="code-window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>{copy.file}</span><span class="code-window-status"><Terminal size={13} /> {copy.status}</span></div>
+  <pre aria-label={copy.file}><code><span class="code-line"><b>01</b> <em>import</em> &#123; defineConfig &#125; <em>from</em> <mark>'weapp-vite'</mark></span>
+<span class="code-line"><b>02</b> </span>
+<span class="code-line"><b>03</b> <em>export default</em> defineConfig(&#123;</span>
+<span class="code-line"><b>04</b>   <strong>platforms</strong>: [<mark>'wechat'</mark>, <mark>'web'</mark>],</span>
+<span class="code-line"><b>05</b>   <strong>style</strong>: <mark>'tailwindcss'</mark>,</span>
+<span class="code-line"><b>06</b>   <strong>components</strong>: <mark>'varo'</mark>,</span>
+<span class="code-line"><b>07</b> &#125;)</span></code></pre>
+  <button type="button" class="code-window-copy" data-copy-code aria-label={locale === 'zh-CN' ? '复制构建配置' : 'Copy build config'}><Copy size={14} /></button>
+</div>
+
+<script is:inline>
+  document.querySelectorAll('[data-copy-code]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const code = button.closest('[data-code-window]')?.querySelector('code')?.textContent || ''
+      try { await navigator.clipboard.writeText(code); button.dataset.copied = 'true'; setTimeout(() => delete button.dataset.copied, 1400) } catch {}
+    })
+  })
+</script>

@@ -1,5 +1,38 @@
 import type { Locale } from '../types/project'
 
+const contributorCopy = {
+  eyebrow: '开放协作',
+  title: '贡献者基金与积分规则',
+  updated: 'Updated August 26, 2026',
+  description: '公开记录贡献如何被识别、汇总并回流到小程序生态。',
+  pricingAction: '查看赞助方式',
+  allocationTitle: '赞助收入分配',
+  buckets: [
+    { share: '60%', name: '核心维护', body: '维护者时间、测试、CI、域名和文档站。' },
+    { share: '25%', name: '贡献者基金', body: '按季分配给有效贡献，支持公开任务和定向赏金。' },
+    { share: '15%', name: '周边开源', body: '支持小程序生态相关的上游和周边开源项目。' },
+  ],
+  contents: '本页目录',
+  sections: [
+    { title: '贡献如何计入', body: '代码、文档、测试、问题复现和社区支持都会进入公开贡献记录。' },
+    { title: '审核与记录', body: '维护者会在合并或确认贡献后更新记录，并保留可追溯的仓库链接。' },
+  ],
+  weightsTitle: '积分权重',
+  weights: [
+    { points: 5, name: '代码贡献', rule: '合并一个可验证的修复或功能。' },
+    { points: 3, name: '文档与测试', rule: '补充文档、测试或可复现示例。' },
+    { points: 1, name: '社区支持', rule: '帮助复现问题、回答使用问题或整理反馈。' },
+  ],
+  reposTitle: '关联仓库',
+  repos: [
+    { name: 'weapp-vite', url: 'https://github.com/sonofmagic/weapp-vite' },
+    { name: 'weapp-tailwindcss', url: 'https://github.com/sonofmagic/weapp-tailwindcss' },
+  ],
+  reposNote: '贡献应当能够在公开仓库或公开讨论中被验证。',
+  payoutTitle: '发放流程',
+  payout: ['按季度汇总贡献积分。', '公开核对贡献记录和基金余额。', '在确认信息后向贡献者发放或滚存基金。'],
+} as const
+
 export const siteCopy = {
   'zh-CN': {
     languageName: '中文',
@@ -12,6 +45,7 @@ export const siteCopy = {
       pricing: '交付与赞助',
       github: 'GitHub',
       openMenu: '打开导航',
+      closeMenu: '关闭导航',
       theme: '切换主题',
     },
     hero: {
@@ -44,6 +78,10 @@ export const siteCopy = {
         stable: '稳定版',
         beta: '测试版',
         planned: '规划中',
+      },
+      proof: {
+        styleLabel: '样式构建', styleFile: 'app.wxss', buildLabel: '构建输出', buildFile: 'vite.config.ts',
+        registryLabel: '组件注册', registryFile: 'registry.json', sqliteLabel: '数据能力', sqliteFile: 'database.ts', migrationLabel: '迁移边界',
       },
     },
     vision: {
@@ -226,6 +264,7 @@ export const siteCopy = {
       action: '返回首页',
       code: 'ROUTE_NOT_EMITTED',
     },
+    contributors: contributorCopy,
   },
   'en': {
     languageName: 'English',
@@ -238,6 +277,7 @@ export const siteCopy = {
       pricing: 'Delivery & support',
       github: 'GitHub',
       openMenu: 'Open navigation',
+      closeMenu: 'Close navigation',
       theme: 'Change theme',
     },
     hero: {
@@ -270,6 +310,10 @@ export const siteCopy = {
         stable: 'Stable',
         beta: 'Beta',
         planned: 'Planned',
+      },
+      proof: {
+        styleLabel: 'STYLE BUILD', styleFile: 'app.wxss', buildLabel: 'BUILD OUTPUT', buildFile: 'vite.config.ts',
+        registryLabel: 'REGISTRY', registryFile: 'registry.json', sqliteLabel: 'DATA LAYER', sqliteFile: 'database.ts', migrationLabel: 'MIGRATION',
       },
     },
     vision: {
@@ -452,6 +496,7 @@ export const siteCopy = {
       action: 'Return home',
       code: 'ROUTE_NOT_EMITTED',
     },
+    contributors: contributorCopy,
   },
 } as const
 

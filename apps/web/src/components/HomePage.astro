@@ -5,16 +5,24 @@ import type { ProjectEntry } from '../lib/projects'
 import { formatCompactNumber, formatReleaseDate } from '../lib/metrics'
 import { localizePath, projectPath, siteCopy } from '../i18n/ui'
 import { buttonPrimary, buttonSecondary, iconControl, projectTone, section, shell } from '../styles/classes'
+import BuildRail from './BuildRail.astro'
+import HomeHero from './home/HomeHero.astro'
+import type { HomeProject } from '../lib/home-projects'
+import HomeProjectProof from './home/HomeProjectProof.astro'
+import ToolchainMap from './ToolchainMap.astro'
 
 interface Props {
   locale: Locale
   projects: ProjectEntry[]
   metrics: ProjectMetricsMap
+  homeProjects?: HomeProject[]
 }
 
-const { locale, projects, metrics } = Astro.props
+const { locale, projects, metrics, homeProjects = [] } = Astro.props
 const copy = siteCopy[locale]
 const numberLocale = locale === 'zh-CN' ? 'zh-CN' : 'en-US'
+const featuredProjects = projects.filter(project => project.data.visuals?.primary).slice(0, 3)
+const releaseProjects = projects.filter(project => metrics[project.id])
 const stepIcons = [Layers2, ScanLine, Package]
 const principleIcons = [Layers2, ShieldCheck, BadgeCheck]
 const projectStages: Record<string, string> = locale === 'zh-CN'
@@ -23,47 +31,7 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
 ---
 
 <main id="main-content">
-  <section class="home-hero">
-    <div class:list={[shell, 'home-hero-grid']}>
-      <div class="home-hero-copy">
-        <p data-hero-enter style="--enter-delay: 0ms" class="home-kicker">{copy.hero.eyebrow}</p>
-        <h1 data-hero-enter style="--enter-delay: 45ms" class="home-hero-title">{copy.hero.title}<span class="home-hero-dot" aria-hidden="true">.</span></h1>
-        <p data-hero-enter style="--enter-delay: 90ms" class="home-hero-description">{copy.hero.description}</p>
-        <div data-hero-enter style="--enter-delay: 135ms" class="flex flex-wrap items-center gap-3">
-          <a class={buttonPrimary} href={`${localizePath(locale)}#projects`} data-analytics-event="navigate_section" data-analytics-section="projects">
-            {copy.hero.primary}
-            <ArrowRight size={18} stroke-width={1.9} aria-hidden="true" />
-          </a>
-          <a class={buttonSecondary} href="https://github.com/sonofmagic/weapp.dev" target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="site_source">
-            <GitFork size={18} stroke-width={1.9} aria-hidden="true" />
-            {copy.hero.secondary}
-          </a>
-        </div>
-      </div>
-
-      <figure class="home-hero-stage">
-        <picture>
-          <source srcset="/media/brand/build-lens.avif" type="image/avif" />
-          <img src="/media/brand/build-lens.webp" width="1600" height="1100" alt={copy.hero.visualLabel} fetchpriority="high" />
-        </picture>
-        <figcaption class="sr-only">{copy.hero.visualLabel}</figcaption>
-      </figure>
-    </div>
-
-    <div class:list={[shell, 'home-project-rail']} aria-label={copy.nav.projects}>
-      {projects.map((project, index) => {
-        const content = project.data.locales[locale]
-        return (
-          <a data-hero-enter style={`--enter-delay: ${220 + index * 45}ms`} class="home-project-link" href={project.data.docsUrl} target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="project_home" data-analytics-project={project.id}>
-            <span class="home-project-index">{String(index + 1).padStart(2, '0')}</span>
-            <img src={project.data.logo} width="34" height="34" alt="" />
-            <span class="min-w-0"><strong>{content.name}</strong><small>{projectStages[project.id] ?? 'TOOL'} / {content.tagline}</small></span>
-            <ArrowUpRight class="home-project-arrow" size={17} stroke-width={1.8} aria-hidden="true" />
-          </a>
-        )
-      })}
-    </div>
-  </section>
+  <HomeHero locale={locale} projects={homeProjects} />
 
   <section class="border-y border-line bg-panel" id="about">
     <div class:list={[section, shell]}>
@@ -96,7 +64,7 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
     </header>
 
     <div class="grid gap-20 max-[720px]:gap-14">
-      {projects.map((project, index) => {
+      {featuredProjects.map((project, index) => {
         const content = project.data.locales[locale]
         const projectMetrics = metrics[project.id]
         const visual = project.data.visuals.primary
@@ -146,7 +114,16 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
         )
       })}
     </div>
+    <div class="toolchain-proof-grid" aria-label={locale === 'zh-CN' ? '项目运行证明' : 'Project runtime proofs'}>
+      {homeProjects.map(project => <HomeProjectProof kind={project.demo} locale={locale} projectName={project.data.locales[locale].name} status={project.data.status} proof={project.data.proof} proofId={`home-proof-${project.id}`} />)}
+    </div>
   </section>
+
+  <section class:list={[section, shell]} aria-label={locale === 'zh-CN' ? '工具链地图' : 'Toolchain map'}>
+    <ToolchainMap locale={locale} projects={projects} />
+  </section>
+
+  <BuildRail locale={locale} />
 
   <section class="border-y border-line bg-panel-soft" id="commercial">
     <div class:list={[section, shell]}>
@@ -199,7 +176,7 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
         <p class="mb-0 text-copy-muted">{copy.releases.description}</p>
       </header>
       <div data-reveal class="border-t border-line">
-        {projects.map(project => {
+        {releaseProjects.map(project => {
           const projectMetrics = metrics[project.id]
           return (
             <article class="grid min-h-[112px] grid-cols-[48px_1fr_auto_42px] items-center gap-4 border-b border-line max-[520px]:grid-cols-[42px_1fr_auto]">

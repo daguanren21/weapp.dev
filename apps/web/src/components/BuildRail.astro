@@ -1,0 +1,49 @@
+---
+import { Check, CircleDot, Cpu, Package, Sparkles } from '@lucide/astro'
+import type { Locale } from '../types/project'
+import CodeWindow from './CodeWindow.astro'
+
+interface Props { locale: Locale }
+const { locale } = Astro.props
+const labels = locale === 'zh-CN'
+  ? { eyebrow: 'AI BUILD LAB', title: '从代码到可运行的小程序', source: '源码', compile: '构建', runtime: '运行时', ship: '交付' }
+  : { eyebrow: 'AI BUILD LAB', title: 'From source to a running mini-app', source: 'SOURCE', compile: 'BUILD', runtime: 'RUNTIME', ship: 'SHIP' }
+---
+
+<section class="build-rail" aria-labelledby="build-rail-title" data-build-rail>
+  <div class="build-rail-heading">
+    <div>
+      <p class="build-rail-eyebrow">{labels.eyebrow}</p>
+      <h2 id="build-rail-title">{labels.title}</h2>
+    </div>
+    <Sparkles size={19} aria-hidden="true" />
+  </div>
+  <div class="build-rail-grid">
+    <CodeWindow locale={locale} />
+    <ol class="build-rail-steps">
+      <li data-build-step="source"><span class="build-step-icon"><CircleDot size={17} /></span><span><strong>{labels.source}</strong><small>tokens + components</small></span></li>
+      <li data-build-step="compile"><span class="build-step-icon"><Cpu size={17} /></span><span><strong>{labels.compile}</strong><small>weapp-vite pipeline</small></span></li>
+      <li data-build-step="runtime"><span class="build-step-icon"><Package size={17} /></span><span><strong>{labels.runtime}</strong><small>wevu + mini-app</small></span></li>
+      <li data-build-step="ship"><span class="build-step-icon"><Check size={17} /></span><span><strong>{labels.ship}</strong><small>ready to release</small></span></li>
+    </ol>
+  </div>
+</section>
+
+<script is:inline>
+  const rail = document.querySelector('[data-build-rail]')
+  if (rail && !rail.hasAttribute('data-ready')) {
+    rail.setAttribute('data-ready', '')
+    const steps = [...rail.querySelectorAll('[data-build-step]')]
+    const start = () => {
+      steps.forEach((step, index) => step.animate([
+        { opacity: 0.42, transform: 'translateX(0)' },
+        { opacity: 1, transform: 'translateX(4px)' },
+        { opacity: 0.42, transform: 'translateX(0)' },
+      ], { duration: 2200, delay: index * 420, iterations: Infinity }))
+    }
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { start(); observer.disconnect() } }, { threshold: 0.2 })
+      observer.observe(rail)
+    }
+  }
+</script>
