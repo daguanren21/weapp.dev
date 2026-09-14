@@ -14,7 +14,7 @@ export const buttonSecondary = `${buttonBase} border-line bg-panel text-ink hove
 
 export const iconControl = 'inline-grid size-10 shrink-0 cursor-pointer place-items-center rounded-[6px] border border-transparent bg-transparent text-copy-muted transition-[background-color,color,transform] duration-200 hover:bg-panel-soft hover:text-ink active:translate-y-px'
 
-export const section = 'py-28 max-[720px]:py-20'
+export const section = 'py-20 max-[720px]:py-14'
 
 /** Tighter vertical rhythm for the homepage proof arc only. */
 export const homeSection = 'py-20 max-[720px]:py-14'
