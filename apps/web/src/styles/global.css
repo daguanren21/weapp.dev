@@ -224,13 +224,60 @@
   box-shadow: var(--shadow-panel);
   isolation: isolate;
 }
-.home-hero-stage::after { position: absolute; inset: 0; z-index: 1; pointer-events: none; content: ''; background: linear-gradient(120deg, rgb(255 255 255 / 18%), transparent 42%, rgb(14 121 88 / 12%)); mix-blend-mode: screen; }
-.home-hero-stage-grid, .home-hero-stage-scan { position: absolute; z-index: 2; pointer-events: none; }
-.home-hero-stage-grid { inset: 0; opacity: 0.28; background-image: linear-gradient(rgb(14 121 88 / 16%) 1px, transparent 1px), linear-gradient(90deg, rgb(14 121 88 / 16%) 1px, transparent 1px); background-size: 42px 42px; }
-.home-hero-stage-scan { top: -25%; right: 0; left: 0; height: 30%; opacity: 0.5; background: linear-gradient(180deg, transparent, rgb(105 199 165 / 22%), transparent); }
-.home-hero-stage-marker, .home-hero-stage-readout { position: absolute; z-index: 3; color: var(--accent-contrast); font: 650 0.65rem/1.2 var(--font-mono); letter-spacing: 0.08em; background: rgb(7 19 14 / 72%); border: 1px solid rgb(105 199 165 / 44%); backdrop-filter: blur(8px); }
-.home-hero-stage-marker { top: 1rem; left: 1rem; padding: 0.45rem 0.6rem; }
-.home-hero-stage-readout { right: 1rem; bottom: 1rem; display: flex; gap: 0.6rem; padding: 0.45rem 0.6rem; }
+.home-hero-stage::after {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  content: '';
+  background: linear-gradient(120deg, rgb(255 255 255 / 18%), transparent 42%, rgb(14 121 88 / 12%));
+  mix-blend-mode: screen;
+}
+.home-hero-stage-grid,
+.home-hero-stage-scan {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+.home-hero-stage-grid {
+  inset: 0;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgb(14 121 88 / 16%) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(14 121 88 / 16%) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
+.home-hero-stage-scan {
+  top: -25%;
+  right: 0;
+  left: 0;
+  height: 30%;
+  opacity: 0.5;
+  background: linear-gradient(180deg, transparent, rgb(105 199 165 / 22%), transparent);
+}
+.home-hero-stage-marker,
+.home-hero-stage-readout {
+  position: absolute;
+  z-index: 3;
+  color: var(--accent-contrast);
+  font: 650 0.65rem/1.2 var(--font-mono);
+  letter-spacing: 0.08em;
+  background: rgb(7 19 14 / 72%);
+  border: 1px solid rgb(105 199 165 / 44%);
+  backdrop-filter: blur(8px);
+}
+.home-hero-stage-marker {
+  top: 1rem;
+  left: 1rem;
+  padding: 0.45rem 0.6rem;
+}
+.home-hero-stage-readout {
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.45rem 0.6rem;
+}
 .home-hero-stage picture,
 .home-hero-stage img {
   width: 100%;
@@ -650,28 +697,56 @@
   [data-hero-enter] {
     animation: hero-enter 600ms var(--enter-delay, 0ms) cubic-bezier(0.16, 1, 0.3, 1) both;
   }
-[data-project-visual] img {
-  filter: saturate(0.92) contrast(1.03);
-  transition: filter 260ms ease, transform 260ms ease;
-}
-[data-project-visual]:hover img,
-[data-project-visual]:focus-within img {
-  filter: saturate(1) contrast(1.06);
-}
-  [data-project-visual] img { transition: transform 260ms ease, filter 260ms ease; }
+  [data-project-visual] img {
+    filter: saturate(0.92) contrast(1.03);
+    transition:
+      filter 260ms ease,
+      transform 260ms ease;
+  }
+  [data-project-visual]:hover img,
+  [data-project-visual]:focus-within img {
+    filter: saturate(1) contrast(1.06);
+  }
+  [data-project-visual] img {
+    transition:
+      transform 260ms ease,
+      filter 260ms ease;
+  }
   [data-project-row]:focus-within [data-project-visual] img {
     transform: scale(1.012);
   }
-  .home-hero-stage-scan { animation: hero-scan 5.5s ease-in-out infinite; }
-  .home-hero-stage-asset { transition: transform 500ms ease, filter 500ms ease; }
-  .home-hero-stage:hover .home-hero-stage-asset { transform: scale(1.025); filter: saturate(1) contrast(1.04); }
+  .home-hero-stage-scan {
+    animation: hero-scan 5.5s ease-in-out infinite;
+  }
+  .home-hero-stage-asset {
+    transition:
+      transform 500ms ease,
+      filter 500ms ease;
+  }
+  .home-hero-stage:hover .home-hero-stage-asset {
+    transform: scale(1.025);
+    filter: saturate(1) contrast(1.04);
+  }
   @media (hover: hover) {
     [data-project-row]:hover [data-project-visual] img {
       transform: scale(1.012);
     }
   }
 }
-@keyframes hero-scan { 0%, 100% { transform: translateY(-15%); opacity: 0; } 20%, 80% { opacity: 0.5; } 50% { transform: translateY(285%); } }
+@keyframes hero-scan {
+  0%,
+  100% {
+    transform: translateY(-15%);
+    opacity: 0;
+  }
+  20%,
+  80% {
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(285%);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
