@@ -13,6 +13,18 @@ async function expectHomeVisuals(page: import('@playwright/test').Page, locale: 
   await expect(page.locator('#home-hero-title')).toHaveText('weapp.dev')
   await expect(page.locator('.home-hero-screen')).toBeVisible()
   await expect(page.locator('.home-hero-constellation .home-hero-tile')).toHaveCount(6)
+  await expect(page.locator('.home-hero-constellation a.home-hero-tile').evaluateAll(links => links.map(link => ({
+    href: link.getAttribute('href'),
+    target: link.getAttribute('target'),
+    rel: link.getAttribute('rel'),
+  })))).resolves.toEqual([
+    { href: 'https://vite.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://tw.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://daguanren21.github.io/Varo/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://vpt.js.org/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://uni-helper.cn/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://wot-ui.cn/', target: '_blank', rel: 'noopener noreferrer' },
+  ])
   await expect(page.locator('.home-hero-copy')).toHaveCount(0)
   await expect(page.locator(retiredVisuals)).toHaveCount(0)
   const visuals = page.locator('#projects [data-project-visual]')
@@ -85,6 +97,8 @@ test('renders the bilingual ecosystem home with valid metadata', async ({ page }
     { href: 'https://daguanren21.github.io/Varo/', target: '_blank', rel: 'noopener noreferrer' },
     { href: 'https://github.com/weapp-sqlite/weapp-sqlite#readme', target: '_blank', rel: 'noopener noreferrer' },
     { href: 'https://vpt.js.org/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://uni-helper.cn/', target: '_blank', rel: 'noopener noreferrer' },
+    { href: 'https://wot-ui.cn/', target: '_blank', rel: 'noopener noreferrer' },
   ])
   await expect(page.locator('.home-project-visual-link').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
     'https://vite.weapp.dev/',
@@ -119,6 +133,8 @@ test('renders the bilingual ecosystem home with valid metadata', async ({ page }
     'https://daguanren21.github.io/Varo/',
     'https://github.com/weapp-sqlite/weapp-sqlite#readme',
     'https://vpt.js.org/',
+    'https://uni-helper.cn/',
+    'https://wot-ui.cn/',
   ])
 })
 

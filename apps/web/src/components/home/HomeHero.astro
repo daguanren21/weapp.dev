@@ -5,34 +5,55 @@ import type { HomeProject } from '../../lib/home-projects'
 import { shell } from '../../styles/classes'
 import HeroDemos from './demos/HeroDemos.astro'
 
+interface RailProject {
+  id: string
+  data: HomeProject['data']
+  stage: HomeProject['stage']
+}
+
 interface Props {
   locale: Locale
   projects: HomeProject[]
-  constellation: Array<{ id: string, logo: string, name: string }>
+  railProjects: RailProject[]
+  constellation: Array<{ id: string, href: string, logo: string, name: string }>
 }
 
-const { locale, projects, constellation } = Astro.props
+const { locale, projects, railProjects, constellation } = Astro.props
 const railLabel = locale === 'zh-CN' ? '首页项目入口' : 'Homepage project links'
+const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
+  .map((char, index) => `<span class="${char === '.' ? 'home-hero-letter home-hero-dot' : 'home-hero-letter'}" style="--i:${index}">${char}</span>`)
+  .join('')
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
   <div class="home-hero-screen">
-    <div class="home-hero-constellation" aria-hidden="true">
-      <span class="home-hero-gridlines"></span>
-      <span class="home-hero-glow"></span>
-      <span class="home-hero-orbit"></span>
-      <span class="home-hero-orbit home-hero-orbit-2"></span>
+    <div class="home-hero-constellation">
+      <span class="home-hero-gridlines" aria-hidden="true"></span>
+      <span class="home-hero-glow" aria-hidden="true"></span>
+      <span class="home-hero-orbit" aria-hidden="true"></span>
+      <span class="home-hero-orbit home-hero-orbit-2" aria-hidden="true"></span>
       {constellation.map((mark, index) => (
-        <span class={`home-hero-tile home-hero-tile-${index + 1}`}>
+        <a
+          class={`home-hero-tile home-hero-tile-${index + 1}`}
+          href={mark.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={locale === 'zh-CN' ? `打开 ${mark.name} 官方站点` : `Open ${mark.name} official site`}
+          data-analytics-event="click_outbound"
+          data-analytics-target="project_home"
+          data-analytics-project={mark.id}
+        >
           <img src={mark.logo} width="48" height="48" alt="" decoding="async" />
-        </span>
+        </a>
       ))}
     </div>
-    <h1 id="home-hero-title" class="home-hero-title">weapp<span class="home-hero-dot">.</span>dev</h1>
+    <h1 id="home-hero-title" class="home-hero-title" aria-label="weapp.dev">
+      <span aria-hidden="true" set:html={wordmarkMarkup} />
+    </h1>
   </div>
 
   <nav class:list={[shell, 'home-project-rail']} aria-label={railLabel}>
-    {projects.map((project, index) => {
+    {railProjects.map((project, index) => {
       const content = project.data.locales[locale]
       return (
         <a class="home-project-link" href={project.data.docsUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="click_outbound" data-analytics-target="project_home" data-analytics-project={project.id}>

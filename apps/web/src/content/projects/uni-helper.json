@@ -17,7 +17,7 @@
   "installCommand": "pnpm dlx create-uni",
   "futureDocsPath": "/docs/uni-helper/",
   "logo": "/brands/uni-helper.svg",
-  "accent": "#111827",
+  "accent": "#00c16a",
   "role": "Ecosystem",
   "maturity": "stable",
   "runtime": [

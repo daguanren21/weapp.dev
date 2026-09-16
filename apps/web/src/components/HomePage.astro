@@ -33,10 +33,19 @@ const constellation = constellationIds.map((id) => {
   }
   return {
     id: project.id,
+    href: project.data.docsUrl,
     logo: project.data.logo,
     name: project.data.locales[locale].name,
   }
 })
+const railProjects = [
+  ...homeProjects,
+  ...ecosystemProjects.map(project => ({
+    id: project.id,
+    data: project.data,
+    stage: { 'zh-CN': '生态', en: 'ECO' },
+  })),
+]
 const releaseProjects = projects.filter(project => metrics[project.id])
 const stepIcons = [Layers2, ScanLine, Package]
 const principleIcons = [Layers2, ShieldCheck, BadgeCheck]
@@ -46,7 +55,7 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
 ---
 
 <main id="main-content">
-  <HomeHero locale={locale} projects={homeProjects} constellation={constellation} />
+  <HomeHero locale={locale} projects={homeProjects} railProjects={railProjects} constellation={constellation} />
 
   <section class="border-y border-line bg-panel" id="about">
     <div class:list={[section, shell]}>
