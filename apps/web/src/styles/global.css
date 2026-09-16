@@ -231,19 +231,32 @@
   translate: -50% -50%;
 }
 .home-hero-orbit-inner {
-  width: 84vw;
-  height: 44vh;
+  width: 76vw;
+  height: 42vh;
 }
 .home-hero-orbit-mid {
-  width: 90vw;
+  width: 82vw;
   height: 54vh;
   border-style: dashed;
   opacity: 0.7;
 }
 .home-hero-orbit-outer {
-  width: 96vw;
-  height: 64vh;
+  width: 88vw;
+  height: 66vh;
   opacity: 0.4;
+}
+
+.home-hero-planet-ring--inner {
+  --orbit-rx: 38vw;
+  --orbit-ry: 21vh;
+}
+.home-hero-planet-ring--mid {
+  --orbit-rx: 41vw;
+  --orbit-ry: 27vh;
+}
+.home-hero-planet-ring--outer {
+  --orbit-rx: 44vw;
+  --orbit-ry: 33vh;
 }
 
 .home-hero-tile,
@@ -273,6 +286,10 @@
   inset: 0;
   overflow: hidden;
   border-radius: 50%;
+  transition:
+    scale 280ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 280ms ease,
+    filter 280ms ease;
   box-shadow:
     inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 55%),
     inset 0.35rem 0.25rem 0.55rem rgb(255 255 255 / 16%),
@@ -349,6 +366,7 @@
   content: '';
   transform: rotateX(72deg);
   box-shadow: 0 0 0 1px rgb(255 255 255 / 12%);
+  transition: inset 280ms cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 .home-hero-planet--warm .home-hero-planet-body {
@@ -369,6 +387,7 @@
   height: 42%;
   object-fit: contain;
   filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
+  transition: scale 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .home-hero-title {
@@ -783,17 +802,33 @@ html[data-hero-cosmos] [data-site-header] summary {
   .home-hero-screen {
     min-height: calc(100svh - 58px);
   }
+  .home-hero-planet {
+    width: clamp(2.6rem, 7vw, 3.2rem);
+    height: clamp(2.6rem, 7vw, 3.2rem);
+  }
+  .home-hero-planet-ring--inner {
+    --orbit-rx: 40vw;
+    --orbit-ry: 23vh;
+  }
+  .home-hero-planet-ring--mid {
+    --orbit-rx: 43vw;
+    --orbit-ry: 29vh;
+  }
+  .home-hero-planet-ring--outer {
+    --orbit-rx: 46vw;
+    --orbit-ry: 35vh;
+  }
   .home-hero-orbit-inner {
-    width: 88vw;
-    height: 40vh;
+    width: 80vw;
+    height: 46vh;
   }
   .home-hero-orbit-mid {
-    width: 94vw;
-    height: 50vh;
+    width: 86vw;
+    height: 58vh;
   }
   .home-hero-orbit-outer {
-    width: 100vw;
-    height: 60vh;
+    width: 92vw;
+    height: 70vh;
   }
   .home-project-row {
     gap: 2rem;
@@ -873,15 +908,32 @@ html[data-hero-cosmos] [data-site-header] summary {
     animation: home-hero-revolve var(--orbit-t) linear infinite;
     animation-delay: calc(var(--orbit-t) * var(--orbit-p) * -1);
   }
+  .home-hero-planet:hover,
+  .home-hero-planet:focus-visible {
+    z-index: 6;
+    animation-play-state: paused;
+  }
+  .home-hero-planet:hover .home-hero-planet-body,
+  .home-hero-planet:focus-visible .home-hero-planet-body {
+    scale: 1.18;
+    filter: brightness(1.12) saturate(1.08);
+    box-shadow:
+      inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 4%),
+      0 0 0 1px rgb(255 255 255 / 22%),
+      0 0 1.8rem 0.45rem rgb(180 220 255 / 28%);
+  }
+  .home-hero-planet:hover img,
+  .home-hero-planet:focus-visible img {
+    scale: 1.12;
+  }
+  .home-hero-planet--ring:hover .home-hero-planet-body::after,
+  .home-hero-planet--ring:focus-visible .home-hero-planet-body::after {
+    inset: 40% -48%;
+    border-bottom-color: rgb(210 230 255 / 7%);
+  }
   @media (hover: hover) {
     [data-project-row]:hover [data-project-visual] img {
       transform: scale(1.012);
-    }
-    .home-hero-planet:hover .home-hero-planet-body,
-    .home-hero-planet:focus-visible .home-hero-planet-body,
-    .home-hero-planet:hover img,
-    .home-hero-planet:focus-visible img {
-      scale: 1.08;
     }
   }
 }

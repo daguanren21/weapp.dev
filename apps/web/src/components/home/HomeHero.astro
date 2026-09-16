@@ -25,12 +25,12 @@ const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
   .map((char, index) => `<span class="${char === '.' ? 'home-hero-letter home-hero-dot' : 'home-hero-letter'}" style="--i:${index}">${char}</span>`)
   .join('')
 const planetOrbits = [
-  { kind: 'rock', rx: '42vw', ry: '22vh', t: '28s', p: '0.08' },
-  { kind: 'ice', rx: '45vw', ry: '27vh', t: '40s', p: '0.22' },
-  { kind: 'gas', rx: '42vw', ry: '22vh', t: '28s', p: '0.58' },
-  { kind: 'moon', rx: '45vw', ry: '27vh', t: '40s', p: '0.72' },
-  { kind: 'ring', rx: '48vw', ry: '32vh', t: '56s', p: '0.38' },
-  { kind: 'warm', rx: '48vw', ry: '32vh', t: '56s', p: '0.88' },
+  { kind: 'rock', ring: 'inner', t: '56s', p: '0.08' },
+  { kind: 'ice', ring: 'mid', t: '80s', p: '0.22' },
+  { kind: 'gas', ring: 'inner', t: '56s', p: '0.58' },
+  { kind: 'moon', ring: 'mid', t: '80s', p: '0.72' },
+  { kind: 'ring', ring: 'outer', t: '110s', p: '0.38' },
+  { kind: 'warm', ring: 'outer', t: '110s', p: '0.88' },
 ] as const
 ---
 
@@ -52,7 +52,7 @@ const planetOrbits = [
         const orbit = planetOrbits[index]!
         return (
           <a
-            class={`home-hero-tile home-hero-planet home-hero-planet--${orbit.kind}`}
+            class={`home-hero-tile home-hero-planet home-hero-planet--${orbit.kind} home-hero-planet-ring--${orbit.ring}`}
             href={mark.href}
             target="_blank"
             rel="noopener noreferrer"
@@ -60,7 +60,7 @@ const planetOrbits = [
             data-analytics-event="click_outbound"
             data-analytics-target="project_home"
             data-analytics-project={mark.id}
-            style={`--orbit-rx: ${orbit.rx}; --orbit-ry: ${orbit.ry}; --orbit-t: ${orbit.t}; --orbit-p: ${orbit.p};`}
+            style={`--orbit-t: ${orbit.t}; --orbit-p: ${orbit.p};`}
           >
             <span class="home-hero-planet-body" aria-hidden="true"></span>
             <img src={mark.logo} width="48" height="48" alt="" decoding="async" />

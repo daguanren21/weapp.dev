@@ -201,6 +201,36 @@ test('home hero keeps a cosmic first screen while the rest of the page follows t
   }
 })
 
+test('hero planets stay between the wordmark and the first-screen edges', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  const planets = page.locator('.home-hero-planet')
+  await expect(planets).toHaveCount(6)
+  for (const distance of ['0%', '25%', '50%', '75%']) {
+    await planets.evaluateAll((elements, value) => {
+      for (const element of elements) {
+        const node = element as HTMLElement
+        node.style.animation = 'none'
+        node.style.offsetDistance = value
+      }
+    }, distance)
+    const stray = await page.evaluate(() => {
+      const word = document.querySelector('#home-hero-title')!.getBoundingClientRect()
+      const screen = document.querySelector('.home-hero-screen')!.getBoundingClientRect()
+      return [...document.querySelectorAll('.home-hero-planet')].flatMap((element) => {
+        const box = element.getBoundingClientRect()
+        const hitsWord = !(box.right < word.left || box.left > word.right || box.bottom < word.top || box.top > word.bottom)
+        const outside = box.left < screen.left - 4 || box.right > screen.right + 4 || box.top < screen.top - 4 || box.bottom > screen.bottom + 4
+        if (!hitsWord && !outside) {
+          return []
+        }
+        return [{ id: (element as HTMLElement).dataset.analyticsProject, hitsWord, outside }]
+      })
+    })
+    expect(stray, distance).toEqual([])
+  }
+})
+
 test('reduced motion keeps content visible and product interactions stationary', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
