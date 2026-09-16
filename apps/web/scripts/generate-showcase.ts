@@ -42,8 +42,8 @@ const scenes = [
     project: 'varo',
     crop: undefined,
     locales: {
-      'zh-CN': { alt: 'Varo AgentChat 组件演示，包含对话历史、registry.inspect 工具事件、确认区域和输入框', caption: 'Varo AgentChat 组件演示：对话、工具事件与输入区。项目仍在规划中。' },
-      'en': { alt: 'Varo AgentChat demo with message history, a registry.inspect tool event, approval controls and composer', caption: 'Varo AgentChat component demo: conversation, tool events and composer. The project remains planned.' },
+      'zh-CN': { alt: 'Varo AgentChat 组件演示，包含对话历史、registry.inspect 工具事件、确认区域和输入框', caption: 'Varo AgentChat 组件演示：对话、工具事件、审批与输入区。' },
+      'en': { alt: 'Varo AgentChat demo with message history, a registry.inspect tool event, approval controls and composer', caption: 'Varo AgentChat component demo: conversation, tool events, approvals, and composer.' },
     },
   },
 ]

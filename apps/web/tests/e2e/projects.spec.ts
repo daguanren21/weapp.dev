@@ -22,12 +22,12 @@ for (const prefix of ['', '/en']) {
     const links = page.locator('.toolchain-map-list li a')
     await expect(links).toHaveCount(5)
     const statusLabels = prefix ? { stable: 'Stable', planned: 'Planned' } : { stable: '稳定', planned: '规划中' }
-    for (const id of ['weapp-vite', 'weapp-tailwindcss', 'vite-plugin-taro']) {
+    for (const id of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'vite-plugin-taro']) {
       const node = page.locator('.toolchain-map-list li').filter({ has: page.locator(`a[href="${prefix}/projects/${id}/"]`) })
       await expect(node.locator('.toolchain-status')).toHaveText(statusLabels.stable)
       await expect(node.locator('.toolchain-status')).toHaveAttribute('aria-label', prefix ? 'Project status: Stable' : '项目状态: 稳定')
     }
-    for (const id of ['varo', 'weapp-sqlite']) {
+    for (const id of ['weapp-sqlite']) {
       const node = page.locator('.toolchain-map-list li').filter({ has: page.locator(`a[href="${prefix}/projects/${id}/"]`) })
       await expect(node.locator('.toolchain-status')).toHaveText(statusLabels.planned)
       await expect(node.locator('.toolchain-status')).toHaveAttribute('aria-label', prefix ? 'Project status: Planned' : '项目状态: 规划中')
@@ -189,27 +189,6 @@ for (const prefix of ['', '/en']) {
     await expect(heroVisual).toHaveAttribute('decoding', 'async')
   })
 
-  test(`offers five adoption paths and their documentation on ${prefix}/`, async ({ page }) => {
-    await page.goto(`${prefix}/`)
-    const paths = page.locator('.project-selector-list article')
-    await expect(paths).toHaveCount(5)
-    for (const [index, slug] of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro'].entries()) {
-      const path = paths.nth(index)
-      await expect(path).toHaveAttribute('aria-labelledby', `path-title-${index}`)
-      await expect(path).toHaveAttribute('aria-describedby', ['varo', 'weapp-sqlite'].includes(slug) ? `path-description-${index} selector-status-${index}` : `path-description-${index} selector-command-${index}`)
-      await expect(path.locator('.project-selector-actions a').first()).toHaveAttribute('href', `${prefix}/projects/${slug}/`)
-      await expect(path.locator('.project-selector-actions a').last()).toHaveAttribute('href', /^https:\/\//)
-      if (['varo', 'weapp-sqlite'].includes(slug)) {
-        await expect(path.locator('code')).toHaveCount(0)
-        await expect(path.locator('.project-selector-planned')).toContainText(zh ? '规划中' : 'planned')
-        await expect(path.locator('.project-selector-planned')).toHaveAttribute('aria-label', zh ? '项目状态：规划中' : 'Project status: Planned')
-      }
-      else {
-        await expect(path.locator('code')).not.toBeEmpty()
-      }
-    }
-  })
-
   test(`publishes all five projects in the localized ItemList schema on ${prefix}/projects/`, async ({ page }) => {
     await page.goto(`${prefix}/projects/`)
     const schema = await page.locator('script[type="application/ld+json"]').evaluateAll(scripts => scripts.map(script => JSON.parse(script.textContent ?? '{}')).find(value => value['@type'] === 'ItemList'))
@@ -236,7 +215,7 @@ for (const prefix of ['', '/en']) {
       await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
       for (const slug of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro']) {
         await page.goto(`${prefix}/projects/${slug}/`)
-        await expect(page.getByRole('link', { name: prefix ? 'Back to projects' : '返回项目列表', exact: true })).toHaveAttribute('href', `${prefix}/projects/`)
+        await expect(page.getByRole('link', { name: prefix ? 'Back to the stack' : '返回工具栈', exact: true })).toHaveAttribute('href', `${prefix}/projects/`)
         await expect(page.locator('section[aria-labelledby="project-title"]')).toHaveCount(1)
         await expect(page.locator('section[aria-labelledby="project-faq-title"]')).toHaveCount(1)
         await expect(page.locator('section[aria-labelledby="project-future-docs-title"]')).toHaveCount(1)
@@ -270,11 +249,11 @@ test.describe('project catalog without JavaScript', () => {
       await page.locator('[data-project-card][data-role="data"] .projects-index-actions a').last().click()
       await expect(page).toHaveURL(`${prefix}/projects/weapp-sqlite/`)
       await expect(page.getByRole('heading', { level: 1 })).toHaveText('weapp-sqlite')
-      await expect(page.getByRole('region', { name: prefix ? 'Integration status' : '接入状态', exact: true })).toBeVisible()
+      await expect(page.getByRole('region', { name: prefix ? 'Project data' : '项目数据', exact: true })).toBeVisible()
       await expect(page.locator('main figure')).toHaveCount(0)
       await expect(page.locator('.project-proof-panel')).toBeVisible()
       await expect(page.locator('.roadmap-strip')).toBeVisible()
-      const back = page.getByRole('link', { name: prefix ? 'Back to projects' : '返回项目列表', exact: true })
+      const back = page.getByRole('link', { name: prefix ? 'Back to the stack' : '返回工具栈', exact: true })
       await back.focus()
       await page.keyboard.press('Enter')
       await expect(page).toHaveURL(`${prefix}/projects/`)
@@ -290,10 +269,10 @@ for (const width of [1440, 768, 390]) {
       await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
       await page.goto('/en/projects/weapp-sqlite/')
       await expect(page.getByRole('heading', { level: 1, name: 'weapp-sqlite' })).toBeVisible()
-      await expect(page.getByRole('region', { name: 'Integration status', exact: true })).toBeInViewport()
+      await expect(page.getByRole('region', { name: 'Project data', exact: true })).toBeVisible()
       await expect(page.locator('main figure')).toHaveCount(0)
       expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
-      const readiness = page.getByText('Planned projects omit downloads and stars. Public numbers return after a stable release.', { exact: true })
+      const readiness = page.getByText('Stability and release status follow the project repository and version data.', { exact: true })
       await expect(readiness).toHaveCount(1)
       await page.screenshot({ path: testInfo.outputPath('planned-project-detail.png') })
     })
@@ -307,10 +286,6 @@ for (const width of [1440, 768, 390]) {
       const results = await new AxeBuilder({ page }).include('main').analyze()
       expect(results.violations).toEqual([])
       await page.screenshot({ path: testInfo.outputPath('project-catalog.png'), fullPage: true })
-      await page.goto('/en/')
-      await page.locator('.project-selector').scrollIntoViewIfNeeded()
-      expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
-      await page.locator('.project-selector').screenshot({ path: testInfo.outputPath('project-paths.png'), style: '[data-site-header], body > a[href="#main-content"] { visibility: hidden !important; }' })
     })
   }
 }

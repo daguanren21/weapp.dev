@@ -133,7 +133,7 @@ try {
     route: '/ai/agent-chat',
     viewport: { width: 860, height: 1300, deviceScaleFactor: 2 },
     state: 'Existing AgentComponentDemo messages and waiting event snapshot; documentation viewport expanded to show the entire component.',
-    attribution: 'Varo AgentChat component demo, Chinese and light theme. Product remains planned on weapp.dev.',
+    attribution: 'Varo AgentChat component demo, Chinese and light theme.',
   })
 }
 finally {

@@ -1,6 +1,6 @@
 # weapp.dev reference
 
-weapp.dev hosts tools for real mini-app repos. weapp-tailwindcss handles styles, weapp-vite handles builds, and Varo documents planned editable component delivery boundaries. Adopt the released tools separately or together. The Chinese homepage is https://weapp.dev/ and the English homepage is https://weapp.dev/en/. The site is maintained by sonofmagic and contributors. The source repository is https://github.com/sonofmagic/weapp.dev.
+weapp.dev hosts tools for real mini-app repos. weapp-tailwindcss handles styles, weapp-vite handles builds, and Varo provides Registry-first editable component delivery. Adopt the released tools separately or together. The Chinese homepage is https://weapp.dev/ and the English homepage is https://weapp.dev/en/. The site is maintained by sonofmagic and contributors. The source repository is https://github.com/sonofmagic/weapp.dev.
 
 ## weapp-tailwindcss
 
@@ -28,9 +28,12 @@ weapp.dev hosts tools for real mini-app repos. weapp-tailwindcss handles styles,
 
 - Canonical Chinese page: https://weapp.dev/projects/varo/
 - Canonical English page: https://weapp.dev/en/projects/varo/
-- Documentation and source: https://github.com/daguanren21/Varo#readme
-- Purpose: Planned Registry, editable UI source, theme token, business block, and Agent UI boundaries for H5 and weapp-vite mini-programs.
-- Release status: planned; package metadata, install instructions, runtime capabilities, and performance data are not published yet.
+- Documentation: https://daguanren21.github.io/Varo/
+- Source: https://github.com/daguanren21/Varo
+- npm: https://www.npmjs.com/package/@varo-ui/cli
+- Install: `pnpm dlx @varo-ui/cli add --target weapp button input card`
+- Purpose: Registry-first editable UI source, theme tokens, business Blocks, and Agent UI for H5 and Wevu mini-programs.
+- Targets: Vue 3 on H5 and Wevu with weapp-vite for mini-programs.
 
 ## VPT (vite-plugin-taro)
 
