@@ -38,7 +38,7 @@
   --accent-contrast: #fff;
   --highlight: #f2c94c;
   --shadow: rgb(25 60 45 / 12%);
-  --header: rgb(244 247 245 / 86%);
+  --header: rgb(244 247 245 / 92%);
 }
 
 :root[data-theme='dark'] {
@@ -420,25 +420,6 @@
 
 .home-hero-dot {
   color: #69c7a5;
-}
-
-html[data-hero-cosmos] [data-site-header] {
-  --text: #edf5f0;
-  --muted: #d5e4dc;
-  --border: rgb(237 245 240 / 16%);
-  --header: rgb(5 8 7 / 72%);
-  --accent: #69c7a5;
-  --color-ink: #edf5f0;
-  --color-copy-muted: #d5e4dc;
-
-  color: #edf5f0;
-  background: rgb(5 8 7 / 72%);
-  border-color: rgb(237 245 240 / 16%);
-}
-html[data-hero-cosmos] [data-site-header] a,
-html[data-hero-cosmos] [data-site-header] button,
-html[data-hero-cosmos] [data-site-header] summary {
-  color: #edf5f0;
 }
 
 .home-hero .home-project-rail {

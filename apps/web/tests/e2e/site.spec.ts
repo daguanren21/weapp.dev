@@ -176,6 +176,38 @@ test('home commercial entry points reach pricing and services', async ({ page })
   await expect(page).toHaveURL(/\/pricing\/#services$/)
 })
 
+test('light and dark headers keep readable flyouts', async ({ page }) => {
+  for (const theme of ['light', 'dark'] as const) {
+    await page.addInitScript(selectedTheme => localStorage.setItem('weapp-theme', selectedTheme), theme)
+    await page.setViewportSize({ width: 1440, height: 900 })
+    await page.goto('/')
+    await page.locator('[data-project-menu] summary').click()
+    const flyout = page.locator('[data-header-flyout]').first()
+    await expect(flyout).toBeVisible()
+    const colors = await flyout.evaluate((element) => {
+      const panel = getComputedStyle(element)
+      const link = getComputedStyle(element.querySelector('a')!)
+      const parse = (value: string) => value.match(/\d+/g)?.slice(0, 3).map(Number) ?? [0, 0, 0]
+      const [pr, pg, pb] = parse(panel.backgroundColor)
+      const [lr, lg, lb] = parse(link.color)
+      const luminance = (r: number, g: number, b: number) => (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255
+      return {
+        panel: luminance(pr, pg, pb),
+        link: luminance(lr, lg, lb),
+      }
+    })
+    if (theme === 'light') {
+      expect(colors.panel, theme).toBeGreaterThan(0.7)
+      expect(colors.link, theme).toBeLessThan(0.45)
+    }
+    else {
+      expect(colors.panel, theme).toBeLessThan(0.25)
+      expect(colors.link, theme).toBeGreaterThan(0.55)
+    }
+    await page.keyboard.press('Escape')
+  }
+})
+
 test('theme control changes and persists the selected theme', async ({ page }) => {
   await page.goto('/')
   const initial = await page.locator('html').getAttribute('data-theme')
