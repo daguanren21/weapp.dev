@@ -14,7 +14,7 @@ const runtimeId = `project-card-runtime-${project.id}`
 const statusId = `project-card-status-${project.id}`
 const quickStartId = `project-card-quick-start-${project.id}`
 const describedBy = [descriptionId, audienceId, statusId, project.data.runtime?.length ? runtimeId : null, quickStartId].filter(Boolean).join(' ')
-const roleLabels = locale === 'zh-CN' ? { engineering: '工程与构建', styling: '样式系统', components: '组件与交付', data: '本地数据', migration: 'Taro / React 迁移' } : { engineering: 'Engineering', styling: 'Styling', components: 'Components', data: 'Local data', migration: 'Taro / React migration' }
+const roleLabels = locale === 'zh-CN' ? { engineering: '工程与构建', styling: '样式系统', components: '组件与交付', data: '本地数据', migration: 'Taro / React 迁移', ecosystem: '生态伙伴' } : { engineering: 'Engineering', styling: 'Styling', components: 'Components', data: 'Local data', migration: 'Taro / React migration', ecosystem: 'Ecosystem' }
 const copy = locale === 'zh-CN' ? { docs: '阅读文档', details: '项目详情', roadmap: '项路线', quickStart: '第一步' } : { docs: 'Read docs', details: 'Project details', roadmap: 'roadmap items', quickStart: 'First step' }
 ---
 <article data-project-card data-project-id={project.id} aria-labelledby={`project-card-${project.id}`} aria-describedby={describedBy} data-role={role} data-maturity={project.data.status} data-platforms={project.data.platforms?.join('|') ?? ''} data-roadmap-count={project.data.roadmap?.length ?? 0} data-reveal style={`--reveal-delay:${index * 50}ms`}>

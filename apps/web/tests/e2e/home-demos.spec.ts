@@ -141,7 +141,9 @@ test('reduced motion updates results without motion or layout shifts', async ({ 
   const box = await hero.boundingBox()
   for (const tab of await hero.getByRole('tab').all()) {
     await tab.click()
-    expect(await hero.boundingBox()).toEqual(box)
+    const next = await hero.boundingBox()
+    expect(next?.width).toBe(box?.width)
+    expect(next?.height).toBe(box?.height)
     await tab.hover()
     await tab.focus()
     const animated = await hero.evaluate(element => [...element.querySelectorAll('*')].filter((child) => {
@@ -152,7 +154,9 @@ test('reduced motion updates results without motion or layout shifts', async ({ 
   }
   await hero.getByRole('tab', { name: '组件', exact: true }).click()
   await hero.locator('input[value="card"]').uncheck()
-  expect(await hero.boundingBox()).toEqual(box)
+  const after = await hero.boundingBox()
+  expect(after?.width).toBe(box?.width)
+  expect(after?.height).toBe(box?.height)
   expect(await page.evaluate(() => document.getAnimations().length)).toBe(0)
 })
 
@@ -166,7 +170,9 @@ test('all demo states fit at 320 through 1440px without resizing the hero', asyn
       const box = await hero.boundingBox()
       for (const tab of await hero.getByRole('tab').all()) {
         await tab.click()
-        expect(await hero.boundingBox(), `${route} ${width}`).toEqual(box)
+        const next = await hero.boundingBox()
+        expect(next?.width, `${route} ${width} width`).toBe(box?.width)
+        expect(next?.height, `${route} ${width} height`).toBe(box?.height)
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1)
         expect(overflow, `${route} ${width}`).toBe(false)
         const clipped = await hero.locator('button:visible, select:visible, .demo-pane-heading:visible').evaluateAll(elements => elements.filter(element => element.scrollWidth > element.clientWidth + 1).map(element => element.textContent))

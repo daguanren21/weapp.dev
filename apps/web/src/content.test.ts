@@ -1,19 +1,23 @@
 import { describe, expect, it } from 'vitest'
+import uniHelper from './content/projects/uni-helper.json'
 import varo from './content/projects/varo.json'
 import vpt from './content/projects/vite-plugin-taro.json'
 import sqlite from './content/projects/weapp-sqlite.json'
 import tailwind from './content/projects/weapp-tailwindcss.json'
 import vite from './content/projects/weapp-vite.json'
+import wotUi from './content/projects/wot-ui.json'
 import { projectDefinitionSchema } from './content/schemas'
 
 describe('project definitions', () => {
-  const projects = [vite, tailwind, varo, sqlite, vpt].map(project => projectDefinitionSchema.parse(project))
+  const projects = [vite, tailwind, varo, sqlite, vpt, uniHelper, wotUi].map(project => projectDefinitionSchema.parse(project))
   const officialDocsUrls: Record<string, string> = {
     'weapp-tailwindcss': 'https://tw.weapp.dev/',
     'weapp-vite': 'https://vite.weapp.dev/',
     'vite-plugin-taro': 'https://vpt.js.org/',
     'weapp-sqlite': 'https://github.com/weapp-sqlite/weapp-sqlite#readme',
     '@varo-ui/cli': 'https://daguanren21.github.io/Varo/',
+    'create-uni': 'https://uni-helper.cn/',
+    'wot-design-uni': 'https://wot-ui.cn/',
   }
 
   it('provides complete localized content for every project', () => {
@@ -91,6 +95,8 @@ describe('project definitions', () => {
       'weapp-tailwindcss': 'https://www.npmjs.com/package/weapp-tailwindcss',
       'vite-plugin-taro': 'https://www.npmjs.com/package/vite-plugin-taro',
       '@varo-ui/cli': 'https://www.npmjs.com/package/@varo-ui/cli',
+      'create-uni': 'https://www.npmjs.com/package/create-uni',
+      'wot-design-uni': 'https://www.npmjs.com/package/wot-design-uni',
     }
 
     for (const project of projects) {

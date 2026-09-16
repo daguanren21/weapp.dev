@@ -8,6 +8,7 @@ import { buttonPrimary, buttonSecondary, iconControl, projectTone, section, shel
 import BuildRail from './BuildRail.astro'
 import HomeHero from './home/HomeHero.astro'
 import type { HomeProject } from '../lib/home-projects'
+import { getEcosystemProjects } from '../lib/toolchain'
 import HomeProjectProof from './home/HomeProjectProof.astro'
 import ToolchainMap from './ToolchainMap.astro'
 
@@ -21,7 +22,21 @@ interface Props {
 const { locale, projects, metrics, homeProjects = [] } = Astro.props
 const copy = siteCopy[locale]
 const numberLocale = locale === 'zh-CN' ? 'zh-CN' : 'en-US'
-const featuredProjects = projects.filter(project => project.data.visuals?.primary).slice(0, 3)
+const featuredProjects = projects.filter(project => project.data.visuals?.primary && project.data.role !== 'Ecosystem').slice(0, 3)
+const ecosystemProjects = getEcosystemProjects(projects)
+const constellationIds = ['weapp-vite', 'weapp-tailwindcss', 'varo', 'vite-plugin-taro', 'uni-helper', 'wot-ui'] as const
+const projectById = new Map(projects.map(project => [project.id, project]))
+const constellation = constellationIds.map((id) => {
+  const project = projectById.get(id)
+  if (!project) {
+    throw new Error(`Missing constellation project: ${id}`)
+  }
+  return {
+    id: project.id,
+    logo: project.data.logo,
+    name: project.data.locales[locale].name,
+  }
+})
 const releaseProjects = projects.filter(project => metrics[project.id])
 const stepIcons = [Layers2, ScanLine, Package]
 const principleIcons = [Layers2, ShieldCheck, BadgeCheck]
@@ -31,7 +46,7 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
 ---
 
 <main id="main-content">
-  <HomeHero locale={locale} projects={homeProjects} />
+  <HomeHero locale={locale} projects={homeProjects} constellation={constellation} />
 
   <section class="border-y border-line bg-panel" id="about">
     <div class:list={[section, shell]}>
@@ -117,6 +132,39 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
     </div>
     <div class="toolchain-proof-grid" aria-label={locale === 'zh-CN' ? '项目运行证明' : 'Project runtime proofs'}>
       {homeProjects.map(project => <HomeProjectProof kind={project.demo} locale={locale} projectName={project.data.locales[locale].name} status={project.data.status} proof={project.data.proof} proofId={`home-proof-${project.id}`} />)}
+    </div>
+  </section>
+
+  <section class:list={[section, shell, 'scroll-mt-20']} id="ecosystem" aria-labelledby="home-ecosystem-title">
+    <header data-reveal class="mb-12 max-w-[720px]">
+      <p class="mb-3 font-mono text-xs font-[650] text-brand">{copy.ecosystem.eyebrow}</p>
+      <h2 id="home-ecosystem-title" class="mb-4 text-balance text-[44px] font-[680] max-[720px]:text-[1.875rem]">{copy.ecosystem.title}</h2>
+      <p class="mb-0 text-lg text-copy-muted max-[720px]:text-base">{copy.ecosystem.description}</p>
+    </header>
+    <div class="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-line bg-line max-[720px]:grid-cols-1">
+      {ecosystemProjects.map((project, index) => {
+        const content = project.data.locales[locale]
+        return (
+          <article data-reveal style={`--reveal-delay: ${index * 70}ms; --project-accent: ${project.data.accent}`} class="grid gap-5 bg-panel p-8">
+            <img class="size-12 object-contain" src={project.data.logo} width="48" height="48" alt="" />
+            <div>
+              <h3 class="mb-2 text-2xl font-[660]">{content.name}</h3>
+              <p class="mb-0 text-copy-muted">{content.tagline}</p>
+            </div>
+            <p class="mb-0 max-w-[36rem] text-sm leading-[1.7] text-copy-muted">{content.description}</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <a class={buttonPrimary} href={project.data.docsUrl} target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="docs" data-analytics-project={project.id}>
+                {copy.projects.documentation}
+                <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
+              </a>
+              <a class={buttonSecondary} href={projectPath(locale, project.id)} data-analytics-event="select_project" data-analytics-project={project.id}>
+                {copy.projects.details}
+                <ArrowRight size={16} stroke-width={1.8} aria-hidden="true" />
+              </a>
+            </div>
+          </article>
+        )
+      })}
     </div>
   </section>
 

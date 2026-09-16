@@ -66,9 +66,14 @@ export const siteCopy = {
         { title: '组装', body: '从 Varo Registry 安装可编辑的双端组件、业务 Blocks 与 Agent UI，并在真实运行时中验证交付。' },
       ],
     },
+    ecosystem: {
+      eyebrow: '生态伙伴',
+      title: 'uni-app 组织也在这里',
+      description: 'Uni Helper 和 Wot UI 加入 weapp.dev 目录。它们服务 uni-app，不是五层工具链的第六、第七层。',
+    },
     projects: {
       eyebrow: '工具栈',
-      title: '三个项目，三层清晰边界',
+      title: '五层职责分开',
       description: '按需独立采用，也可以组合成从样式、构建到 H5 与小程序组件源码的完整工程。',
       documentation: '阅读文档',
       details: '项目详情',
@@ -317,9 +322,14 @@ export const siteCopy = {
         { title: 'Compose', body: 'Install editable dual-target components, business blocks, and Agent UI from the Varo registry, then verify delivery in the real runtime.' },
       ],
     },
+    ecosystem: {
+      eyebrow: 'Ecosystem',
+      title: 'uni-app partners are here too',
+      description: 'Uni Helper and Wot UI now live in the weapp.dev catalog. They serve uni-app; they are not a sixth and seventh toolchain layer.',
+    },
     projects: {
       eyebrow: 'The stack',
-      title: 'Three projects. Three clear boundaries.',
+      title: 'Five layers, separate jobs',
       description: 'Adopt each independently or combine styling, builds, and editable H5 / mini-program component source.',
       documentation: 'Read the docs',
       details: 'Project details',

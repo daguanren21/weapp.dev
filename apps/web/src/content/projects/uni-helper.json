@@ -1,0 +1,93 @@
+{
+  "order": 6,
+  "status": "stable",
+  "packageName": "create-uni",
+  "github": "uni-helper/create-uni",
+  "docsUrl": "https://uni-helper.cn/",
+  "npmUrl": "https://www.npmjs.com/package/create-uni",
+  "license": "https://opensource.org/license/mit",
+  "maintainer": "uni-helper contributors",
+  "keywords": [
+    "uni-app",
+    "Vite",
+    "create-uni",
+    "TypeScript",
+    "UnoCSS"
+  ],
+  "installCommand": "pnpm dlx create-uni",
+  "futureDocsPath": "/docs/uni-helper/",
+  "logo": "/brands/uni-helper.svg",
+  "accent": "#111827",
+  "role": "Ecosystem",
+  "maturity": "stable",
+  "runtime": [
+    "Vue",
+    "Vite"
+  ],
+  "relatedProjects": [
+    "weapp-vite",
+    "weapp-tailwindcss"
+  ],
+  "dataCompleteness": "complete",
+  "platforms": [
+    "uni-app",
+    "WeChat",
+    "Alipay",
+    "H5",
+    "App"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "Uni Helper",
+      "tagline": "增强 uni-app 系列产品的开发体验",
+      "description": "Uni Helper 是面向 uni-app 的开源工具组织。门户站点汇总创建器、类型、ESLint、UnoCSS 预设等仓库；可安装入口是 create-uni。",
+      "audience": "用 uni-app / Vue 做跨端，想把创建、类型和工程配置交给社区工具的团队。",
+      "useCases": [
+        "用 create-uni 快速创建 uni-app 项目",
+        "为 uni-app 和 uni-ui 补齐 TypeScript 类型",
+        "接入专为 uni-app 准备的 UnoCSS 预设和 ESLint 配置"
+      ],
+      "capabilities": [
+        "组织门户 uni-helper.cn",
+        "旗舰创建器 create-uni",
+        "uni-typed、unocss-preset-uni、eslint-config 等配套仓库"
+      ],
+      "faqs": [
+        {
+          "question": "Uni Helper 是一个 npm 包还是一个组织？",
+          "answer": "它是 GitHub 组织。weapp.dev 用旗舰包 create-uni 作为可安装入口，文档指向组织门户 uni-helper.cn。"
+        },
+        {
+          "question": "它和 weapp-vite 是同一层吗？",
+          "answer": "不是。weapp-vite 管小程序 Vite 工程；Uni Helper 服务 uni-app 工具体系。两者可以并存，不互相替代。"
+        }
+      ]
+    },
+    "en": {
+      "name": "Uni Helper",
+      "tagline": "Better DX for the uni-app family",
+      "description": "Uni Helper is an open-source org for uni-app tooling. The portal gathers starters, types, ESLint, and UnoCSS presets; the installable entry is create-uni.",
+      "audience": "Teams building with uni-app / Vue who want community tools for scaffolding, types, and project config.",
+      "useCases": [
+        "Scaffold a uni-app project with create-uni",
+        "Add TypeScript types for uni-app and uni-ui",
+        "Use the uni-app UnoCSS preset and ESLint config"
+      ],
+      "capabilities": [
+        "Org portal at uni-helper.cn",
+        "Flagship scaffolder create-uni",
+        "Companion repos including uni-typed, unocss-preset-uni, and eslint-config"
+      ],
+      "faqs": [
+        {
+          "question": "Is Uni Helper one npm package or an organization?",
+          "answer": "It is a GitHub organization. weapp.dev uses the flagship create-uni package as the installable entry and points docs at uni-helper.cn."
+        },
+        {
+          "question": "Is it the same layer as weapp-vite?",
+          "answer": "No. weapp-vite owns Vite engineering for mini-programs. Uni Helper serves the uni-app toolchain. They can coexist; neither replaces the other."
+        }
+      ]
+    }
+  }
+}

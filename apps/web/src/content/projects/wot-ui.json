@@ -1,0 +1,92 @@
+{
+  "order": 7,
+  "status": "stable",
+  "packageName": "wot-design-uni",
+  "github": "wot-ui/wot-ui",
+  "docsUrl": "https://wot-ui.cn/",
+  "npmUrl": "https://www.npmjs.com/package/wot-design-uni",
+  "license": "https://opensource.org/license/mit",
+  "maintainer": "wot-ui contributors",
+  "keywords": [
+    "uni-app",
+    "Vue 3",
+    "components",
+    "wot-design-uni",
+    "AI"
+  ],
+  "installCommand": "pnpm add wot-design-uni",
+  "futureDocsPath": "/docs/wot-ui/",
+  "logo": "/brands/wot-ui.svg",
+  "accent": "#12b886",
+  "role": "Ecosystem",
+  "maturity": "stable",
+  "runtime": [
+    "Vue 3"
+  ],
+  "relatedProjects": [
+    "varo",
+    "weapp-vite"
+  ],
+  "dataCompleteness": "complete",
+  "platforms": [
+    "uni-app",
+    "WeChat",
+    "Alipay",
+    "H5",
+    "App"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "Wot UI",
+      "tagline": "轻量、美观、AI 友好的 uni-app 组件库",
+      "description": "Wot UI（npm 包 wot-design-uni）为 uni-app 与 Vue 3 提供组件。文档在 wot-ui.cn，源码在 wot-ui/wot-ui。",
+      "audience": "用 uni-app 和 Vue 3 做跨端界面，需要一套现成组件而不是从 Registry 安装源码的团队。",
+      "useCases": [
+        "在 uni-app 页面里安装并使用 wot-design-uni 组件",
+        "按官方文档接入主题和 AI 辅助用法",
+        "与 weapp 工具链并存，而不是替换 Varo Registry"
+      ],
+      "capabilities": [
+        "uni-app Vue 3 组件库",
+        "文档站点 wot-ui.cn",
+        "MIT 许可的开源仓库 wot-ui/wot-ui"
+      ],
+      "faqs": [
+        {
+          "question": "Wot UI 和 Varo 有什么不同？",
+          "answer": "Wot UI 是安装到 uni-app 项目里的组件库。Varo 通过 Registry 把可编辑源码装进 H5 / weapp-vite 项目。职责不同，可以按目标选用。"
+        },
+        {
+          "question": "包名为什么是 wot-design-uni？",
+          "answer": "npm 上的发布名是 wot-design-uni。GitHub 仓库和文档品牌使用 Wot UI / wot-ui.cn。"
+        }
+      ]
+    },
+    "en": {
+      "name": "Wot UI",
+      "tagline": "A light, polished, AI-friendly uni-app component library",
+      "description": "Wot UI (npm package wot-design-uni) ships components for uni-app and Vue 3. Docs live at wot-ui.cn; source is wot-ui/wot-ui.",
+      "audience": "Teams building uni-app + Vue 3 interfaces who want an installable component library rather than Registry-installed source.",
+      "useCases": [
+        "Install wot-design-uni and use it in uni-app pages",
+        "Follow the official docs for theming and AI-assisted usage",
+        "Keep it beside the weapp toolchain instead of replacing the Varo Registry"
+      ],
+      "capabilities": [
+        "uni-app Vue 3 component library",
+        "Documentation at wot-ui.cn",
+        "MIT-licensed source at wot-ui/wot-ui"
+      ],
+      "faqs": [
+        {
+          "question": "How is Wot UI different from Varo?",
+          "answer": "Wot UI is a component library you install into a uni-app project. Varo installs editable source through its Registry for H5 / weapp-vite. Different jobs; pick by target."
+        },
+        {
+          "question": "Why is the package named wot-design-uni?",
+          "answer": "That is the npm publish name. The GitHub repository and docs brand use Wot UI / wot-ui.cn."
+        }
+      ]
+    }
+  }
+}

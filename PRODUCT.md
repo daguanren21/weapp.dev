@@ -32,7 +32,7 @@ The portal markets a progressive, composable toolchain: keep familiar native min
 ## Capabilities and Constraints
 
 - This repository is the Astro monorepo for the weapp.dev website (`apps/web`), not the individual tool runtimes.
-- Published project catalog covers weapp-vite, weapp-tailwindcss, Varo, weapp-sqlite, and VPT (vite-plugin-taro), with all five represented in the homepage toolchain flow.
+- Published project catalog covers the five-layer toolchain (weapp-vite, weapp-tailwindcss, Varo, weapp-sqlite, and VPT) plus ecosystem partners Uni Helper and Wot UI. Only the five layers appear in the toolchain map.
 - Site must stay bilingual: Chinese at `/`, English under `/en/`, with parity for key pages.
 - Site must remain static-first: core content and default demos readable without client JavaScript; theme and navigation may enhance progressively.
 - Metrics, sponsorship claims, customer stories, and case evidence must come from real sources already in the repo or confirmed program rules; future work must not fabricate them.

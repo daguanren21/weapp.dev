@@ -28,6 +28,12 @@ export function getToolchainProjects(projects: ProjectEntry[]) {
     .map(project => ({ project, role: roleById[project.id] }))
 }
 
+export function getEcosystemProjects(projects: ProjectEntry[]) {
+  return projects
+    .filter(project => project.data.role === 'Ecosystem')
+    .sort((left, right) => left.data.order - right.data.order)
+}
+
 /** Validate the catalog contract before any page turns it into navigation. */
 export function validateToolchainCatalog(projects: ProjectEntry[]): void {
   const byId = new Map(projects.map(project => [project.id, project]))

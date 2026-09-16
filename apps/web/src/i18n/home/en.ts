@@ -21,7 +21,7 @@ export default {
   },
   projects: {
     eyebrow: 'Projects',
-    title: 'Five projects, separate jobs',
+    title: 'Five layers, separate jobs',
     description: 'Installing just one is often enough. Add engineering, styling, components, data, or migration later without tangling the boundaries.',
     documentation: 'Docs',
     details: 'Details',

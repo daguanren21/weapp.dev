@@ -5,7 +5,8 @@
 ## 职责与数据流
 
 - `HomePage.astro` 只组合章节和读取首页数据；`home.css` 负责章节布局和响应式断点。
-- 章节阅读顺序（证明弧先于商业化）：Hero → About → Projects → Vision（三层边界地图）→ Releases → Commercial → Collaboration。
+- 章节阅读顺序（证明弧先于商业化）：Hero → About → Projects → Ecosystem → Toolchain map → BuildRail → Commercial → Vision → Releases → Collaboration。
+- 第一屏只保留词标 `weapp.dev` 与真实项目徽标星座；项目入口和交互演示放在第一屏之后，不进入首屏文案。
 - `HomeVision` 用「负责 / 不负责」边界卡替代抽象原则文案，避免证明区之后情绪低谷。
 - `content/home-projects.ts` 显式指定项目顺序、演示类型、反向布局和双语阶段标签。新增目录项目不会自动进入首页。
 - `lib/home-projects.ts` 是纯组装器，只关联目录与首页选品，校验未知项目和重复选品。首页不再要求 showcase 图片。

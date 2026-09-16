@@ -50,6 +50,29 @@ weapp.dev hosts tools for real mini-app repos. weapp-tailwindcss handles styles,
 - Relationship to Taro: VPT uses Taro components, APIs, and runtime with Vite-powered development and builds instead of the older webpack pipeline.
 - Getting started: Use the project generator for a new app or follow https://vpt.js.org/guides/migrate-from-taro/ for an existing Taro app.
 
+## Uni Helper
+
+- Canonical Chinese page: https://weapp.dev/projects/uni-helper/
+- Canonical English page: https://weapp.dev/en/projects/uni-helper/
+- Documentation: https://uni-helper.cn/
+- Source: https://github.com/uni-helper/create-uni
+- Organization: https://github.com/uni-helper
+- npm: https://www.npmjs.com/package/create-uni
+- Install: `pnpm dlx create-uni`
+- Purpose: Uni Helper is a GitHub organization that improves DX for uni-app. create-uni is the installable scaffolder listed on weapp.dev.
+- Relationship to weapp-vite: Uni Helper serves uni-app tooling. weapp-vite serves mini-program Vite engineering. They can coexist.
+
+## Wot UI
+
+- Canonical Chinese page: https://weapp.dev/projects/wot-ui/
+- Canonical English page: https://weapp.dev/en/projects/wot-ui/
+- Documentation: https://wot-ui.cn/
+- Source: https://github.com/wot-ui/wot-ui
+- npm: https://www.npmjs.com/package/wot-design-uni
+- Install: `pnpm add wot-design-uni`
+- Purpose: Wot UI is a uni-app Vue 3 component library. The npm package name is wot-design-uni.
+- Relationship to Varo: Wot UI is an installable uni-app library. Varo installs editable source through a Registry for H5 / weapp-vite. Different jobs.
+
 Use the canonical project pages and linked official sources as the authority for current versions, APIs, compatibility, and release details.
 
 ## Delivery and sponsorship

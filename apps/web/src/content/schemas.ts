@@ -59,7 +59,7 @@ export const projectDefinitionSchema = z.object({
     primary: projectVisualSchema,
     secondary: projectVisualSchema,
   }).strict().optional(),
-  role: z.enum(['Engineering', 'Styling', 'Components', 'Local data', 'Migration']),
+  role: z.enum(['Engineering', 'Styling', 'Components', 'Local data', 'Migration', 'Ecosystem']),
   maturity: z.enum(['stable', 'beta', 'planned']),
   // Keep runtime data absent rather than presenting a provisional target as shipped scope.
   runtime: z.array(z.string().min(1)).min(1).optional(),

@@ -1,59 +1,37 @@
 ---
-import { ArrowRight, ArrowUpRight } from '@lucide/astro'
+import { ArrowUpRight } from '@lucide/astro'
 import type { Locale } from '../../types/project'
 import type { HomeProject } from '../../lib/home-projects'
-import { localizePath, siteCopy } from '../../i18n/ui'
-import { buttonPrimary, buttonSecondary, shell } from '../../styles/classes'
+import { shell } from '../../styles/classes'
 import HeroDemos from './demos/HeroDemos.astro'
 
 interface Props {
   locale: Locale
   projects: HomeProject[]
+  constellation: Array<{ id: string, logo: string, name: string }>
 }
 
-const { locale, projects } = Astro.props
-const copy = siteCopy[locale]
+const { locale, projects, constellation } = Astro.props
+const railLabel = locale === 'zh-CN' ? '首页项目入口' : 'Homepage project links'
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
-  <div class:list={[shell, 'home-hero-grid']}>
-    <div class="home-hero-copy">
-      <p class="home-kicker">{copy.hero.eyebrow}</p>
-      <h1 id="home-hero-title" class="home-hero-title">{copy.hero.title}<span class="home-hero-dot" aria-hidden="true">.</span></h1>
-      <p class="home-hero-description">{copy.hero.description}</p>
-      <div class="flex flex-wrap items-center gap-3">
-        <a class={buttonPrimary} href={localizePath(locale, '/projects/')} data-analytics-event="navigate_page" data-analytics-page="projects_index">
-          {copy.hero.primary}
-          <ArrowRight size={18} stroke-width={1.9} aria-hidden="true" />
-        </a>
-        <a class={buttonSecondary} href={`${localizePath(locale)}#projects`} data-analytics-event="navigate_section" data-analytics-section="projects">
-          <ArrowRight size={18} stroke-width={1.9} aria-hidden="true" />
-          {copy.hero.secondary}
-        </a>
-      </div>
+  <div class="home-hero-screen">
+    <div class="home-hero-constellation" aria-hidden="true">
+      <span class="home-hero-gridlines"></span>
+      <span class="home-hero-glow"></span>
+      <span class="home-hero-orbit"></span>
+      <span class="home-hero-orbit home-hero-orbit-2"></span>
+      {constellation.map((mark, index) => (
+        <span class={`home-hero-tile home-hero-tile-${index + 1}`}>
+          <img src={mark.logo} width="48" height="48" alt="" decoding="async" />
+        </span>
+      ))}
     </div>
-
-    <div class="home-hero-visual" role="region" aria-label={copy.hero.visualLabel}>
-      <div class="home-hero-stage">
-        <span class="home-hero-stage-grid" aria-hidden="true"></span>
-        <span class="home-hero-stage-scan" aria-hidden="true"></span>
-        <span class="home-hero-stage-marker" aria-hidden="true">LIVE / BUILD LENS</span>
-        <picture>
-          <source srcset="/media/brand/build-lens.avif" type="image/avif" />
-          <img class="home-hero-stage-asset" src="/media/brand/build-lens.webp" width="1600" height="1100" alt={copy.hero.visualLabel} fetchpriority="high" />
-        </picture>
-        <div class="home-hero-stage-readout" aria-hidden="true"><span>01</span><span>TOOLCHAIN / 05</span></div>
-      </div>
-      <div class="home-hero-proof-strip" aria-label={locale === 'zh-CN' ? '工具链证据' : 'Toolchain evidence'}>
-        <span>{locale === 'zh-CN' ? '真实项目证据' : 'Evidence from real repos'}</span>
-        <span>{projects.length} {locale === 'zh-CN' ? '层能力' : 'layers'}</span>
-        <span>{locale === 'zh-CN' ? '逐层接入' : 'Add one layer at a time'}</span>
-      </div>
-      <HeroDemos locale={locale} projects={projects} />
-    </div>
+    <h1 id="home-hero-title" class="home-hero-title">weapp<span class="home-hero-dot">.</span>dev</h1>
   </div>
 
-  <nav class:list={[shell, 'home-project-rail']} aria-label={locale === 'zh-CN' ? '首页项目入口' : 'Homepage project links'}>
+  <nav class:list={[shell, 'home-project-rail']} aria-label={railLabel}>
     {projects.map((project, index) => {
       const content = project.data.locales[locale]
       return (
@@ -66,4 +44,7 @@ const copy = siteCopy[locale]
       )
     })}
   </nav>
+  <div class={shell}>
+    <HeroDemos locale={locale} projects={projects} />
+  </div>
 </section>

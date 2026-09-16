@@ -21,7 +21,7 @@ export default {
   },
   projects: {
     eyebrow: '项目',
-    title: '五个项目，职责分开',
+    title: '五层职责分开',
     description: '只装一个也完全够用。后面若要叠加工程、样式、组件、数据或迁移能力，边界仍然清楚。',
     documentation: '文档',
     details: '详情',

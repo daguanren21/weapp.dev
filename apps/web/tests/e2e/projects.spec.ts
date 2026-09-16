@@ -46,12 +46,12 @@ for (const prefix of ['', '/en']) {
   test(`filters project rows and recovers from an empty intersection on ${prefix}/projects/`, async ({ page }) => {
     await page.goto(`${prefix}/projects/`)
     await expect(page.locator('section[aria-labelledby="projects-index-title"]')).toHaveCount(1)
-    await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', prefix ? 'weapp.dev five core toolchain projects map' : 'weapp.dev 五个核心工具链项目地图')
+    await expect(page.locator('meta[property="og:image:alt"]')).toHaveAttribute('content', prefix ? 'weapp.dev five-layer toolchain projects map' : 'weapp.dev 五层核心工具链项目地图')
     await expect(page.locator('section[aria-label]')).toHaveCount(1)
     const role = page.locator('[data-filter-role]')
     const maturity = page.locator('[data-filter-maturity]')
     const platform = page.locator('[data-filter-platform]')
-    const visible = page.locator('[data-project-card]:visible')
+    const visible = page.locator('#toolchain-project-list [data-project-card]:visible')
     await expect(page.locator('[data-project-filters]')).toHaveAttribute('aria-label', zh ? '筛选工具链项目' : 'Filter toolchain projects')
     await expect(page.locator('[data-project-filters]')).toHaveAttribute('aria-controls', 'toolchain-project-list')
     await expect(page.locator('[data-project-filters]')).toHaveAttribute('aria-describedby', 'project-filter-count')
@@ -63,13 +63,13 @@ for (const prefix of ['', '/en']) {
       await expect(control).toHaveAttribute('aria-controls', 'toolchain-project-list')
     }
     await expect(role).toBeEnabled()
-    await expect(visible).toHaveCount(5)
+    await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(5)
     await expect(page.locator('[data-project-card]').first().locator('img')).toHaveAttribute('loading', 'eager')
     await expect(page.locator('[data-project-card]').first().locator('img')).toHaveAttribute('fetchpriority', 'high')
     await expect(page.locator('[data-project-card]').nth(1).locator('img')).toHaveAttribute('loading', 'lazy')
     await expect(page.locator('[data-project-card][data-project-id="weapp-sqlite"]')).toHaveAttribute('data-roadmap-count', '2')
     await expect(page.locator('[data-project-card][data-project-id="weapp-sqlite"]')).toContainText(zh ? '平台待确认' : 'Platforms pending')
-    await expect(page.locator('[data-project-card] [data-project-status]')).toHaveCount(5)
+    await expect(page.locator('#toolchain-project-list [data-project-card] [data-project-status]')).toHaveCount(5)
     for (const id of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro']) {
       await expect(page.locator(`[data-project-card][data-project-id="${id}"]`)).toHaveAttribute('aria-labelledby', `project-card-${id}`)
       await expect(page.locator(`[data-project-card][data-project-id="${id}"]`)).toHaveAttribute('aria-describedby', new RegExp(`project-card-description-${id} project-card-audience-${id}`))
@@ -92,7 +92,7 @@ for (const prefix of ['', '/en']) {
     await page.locator('[data-filter-clear]').focus()
     await page.keyboard.press('Enter')
     await expect(role).toBeFocused()
-    await expect(visible).toHaveCount(5)
+    await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(5)
     await expect(page.locator('[data-filter-empty]')).toBeHidden()
     await platform.selectOption('WeChat')
     expect(await visible.count()).toBeGreaterThan(0)
@@ -101,7 +101,7 @@ for (const prefix of ['', '/en']) {
     }
     await page.locator('[data-filter-reset]').click()
     await expect(platform).toHaveValue('')
-    await expect(visible).toHaveCount(5)
+    await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(5)
   })
 
   test(`passes automated accessibility checks on ${prefix}/projects/`, async ({ page }) => {
@@ -115,7 +115,7 @@ for (const prefix of ['', '/en']) {
     await page.goto(`${prefix}/projects/?role=engineering&platform=WeChat`)
     await expect(page.locator('[data-filter-role]')).toHaveValue('engineering')
     await expect(page.locator('[data-filter-platform]')).toHaveValue('WeChat')
-    await expect(page.locator('[data-project-card]:visible')).toHaveCount(1)
+    await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(1)
     await page.locator('[data-filter-maturity]').selectOption('planned')
     await expect(page).toHaveURL(/role=engineering&platform=WeChat&maturity=planned|role=engineering&maturity=planned&platform=WeChat/)
     await page.reload()
@@ -155,7 +155,7 @@ for (const prefix of ['', '/en']) {
     await expect(current.first()).toHaveAttribute('href', `${prefix}/projects/`)
     const collectionSchema = await page.locator('script[type="application/ld+json"]').evaluateAll(elements => elements.map(element => JSON.parse(element.textContent || '{}')).find(schema => schema['@type'] === 'CollectionPage'))
     expect(collectionSchema).toMatchObject({ '@type': 'CollectionPage', 'url': `https://weapp.dev${prefix}/projects/` })
-    expect(collectionSchema.mainEntity.numberOfItems).toBe(5)
+    expect(collectionSchema.mainEntity.numberOfItems).toBe(7)
   })
 
   test(`links the project catalog to sponsor support on ${prefix || 'zh-CN'}`, async ({ page }) => {
@@ -189,12 +189,12 @@ for (const prefix of ['', '/en']) {
     await expect(heroVisual).toHaveAttribute('decoding', 'async')
   })
 
-  test(`publishes all five projects in the localized ItemList schema on ${prefix}/projects/`, async ({ page }) => {
+  test(`publishes toolchain and ecosystem projects in the localized ItemList schema on ${prefix}/projects/`, async ({ page }) => {
     await page.goto(`${prefix}/projects/`)
     const schema = await page.locator('script[type="application/ld+json"]').evaluateAll(scripts => scripts.map(script => JSON.parse(script.textContent ?? '{}')).find(value => value['@type'] === 'ItemList'))
     expect(schema).toBeTruthy()
-    expect(schema.numberOfItems).toBe(5)
-    expect(schema.itemListElement.map((item: { name: string }) => item.name)).toEqual(['weapp-vite', 'weapp-tailwindcss', 'Varo', 'weapp-sqlite', 'VPT'])
+    expect(schema.numberOfItems).toBe(7)
+    expect(schema.itemListElement.map((item: { name: string }) => item.name)).toEqual(['weapp-vite', 'weapp-tailwindcss', 'Varo', 'weapp-sqlite', 'VPT', 'Uni Helper', 'Wot UI'])
   })
 
   test(`ignores unknown project filters on ${prefix}/projects/`, async ({ page }) => {
@@ -203,7 +203,7 @@ for (const prefix of ['', '/en']) {
     await expect(page.locator('[data-filter-maturity]')).toHaveValue('')
     await expect(page.locator('[data-filter-platform]')).toHaveValue('')
     await expect(page.locator('[data-filter-count]')).toContainText(prefix ? '5 projects' : '5 个项目')
-    await expect(page.locator('[data-project-card]:visible')).toHaveCount(5)
+    await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(5)
     await expect(page).toHaveURL(`${prefix}/projects/`)
   })
 }
@@ -238,7 +238,7 @@ test.describe('project catalog without JavaScript', () => {
   for (const prefix of ['', '/en']) {
     test(`keeps all projects readable on ${prefix}/projects/`, async ({ page }) => {
       await page.goto(`${prefix}/projects/`)
-      await expect(page.locator('[data-project-card]:visible')).toHaveCount(5)
+      await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(5)
       await expect(page.locator('[data-project-card]:visible').first().locator('[data-analytics-event="select_project"]')).toHaveCount(1)
       await expect(page.locator('[data-project-card]:visible').first().locator('[data-analytics-event="click_outbound"]')).toHaveCount(1)
       for (const control of await page.locator('[data-project-filters] select, [data-filter-reset]').all()) {
@@ -257,7 +257,7 @@ test.describe('project catalog without JavaScript', () => {
       await back.focus()
       await page.keyboard.press('Enter')
       await expect(page).toHaveURL(`${prefix}/projects/`)
-      await expect(page.locator('[data-project-card]:visible')).toHaveCount(5)
+      await expect(page.locator('#toolchain-project-list [data-project-card]:visible')).toHaveCount(5)
     })
   }
 })

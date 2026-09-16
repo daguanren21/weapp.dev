@@ -1,12 +1,14 @@
 import type { ProjectEntry } from './projects'
 import { describe, expect, it } from 'vitest'
+import uniHelper from '../content/projects/uni-helper.json'
 import varo from '../content/projects/varo.json'
 import taro from '../content/projects/vite-plugin-taro.json'
 import sqlite from '../content/projects/weapp-sqlite.json'
 import tailwind from '../content/projects/weapp-tailwindcss.json'
 import vite from '../content/projects/weapp-vite.json'
+import wotUi from '../content/projects/wot-ui.json'
 import { projectDefinitionSchema } from '../content/schemas'
-import { getToolchainProjects, validateToolchainCatalog } from './toolchain'
+import { getEcosystemProjects, getToolchainProjects, validateToolchainCatalog } from './toolchain'
 
 describe('toolchain project ordering', () => {
   it('keeps the five product roles in build-flow order', () => {
@@ -122,5 +124,21 @@ describe('toolchain project ordering', () => {
 
   it('keeps project roles within the documented toolchain vocabulary', () => {
     expect(() => projectDefinitionSchema.parse({ ...vite, role: 'Documentation' })).toThrow()
+  })
+
+  it('keeps ecosystem partners out of the five-layer map', () => {
+    const projects = [vite, tailwind, varo, sqlite, taro, uniHelper, wotUi].map((data, index) => ({
+      id: ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro', 'uni-helper', 'wot-ui'][index],
+      data: projectDefinitionSchema.parse(data),
+    })) as unknown as ProjectEntry[]
+    expect(() => validateToolchainCatalog(projects)).not.toThrow()
+    expect(getToolchainProjects(projects).map(item => item.project.id)).toEqual([
+      'weapp-vite',
+      'weapp-tailwindcss',
+      'varo',
+      'weapp-sqlite',
+      'vite-plugin-taro',
+    ])
+    expect(getEcosystemProjects(projects).map(project => project.id)).toEqual(['uni-helper', 'wot-ui'])
   })
 })

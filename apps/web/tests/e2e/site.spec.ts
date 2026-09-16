@@ -9,15 +9,11 @@ const projectDefinitions = [viteProject, tailwindProject, varoProject]
 const retiredVisuals = 'canvas, [data-shader-canvas], [data-shader], [data-shader-frame], [data-webgl-fallback], [data-art], .project-art, [class^="art-"], [class*=" art-"]'
 
 async function expectHomeVisuals(page: import('@playwright/test').Page, locale: 'zh-CN' | 'en') {
-  const hero = page.locator('.home-hero-stage img')
-  await expect(hero).toBeVisible()
-  await expect(hero).toHaveAttribute('src', '/media/brand/build-lens.webp')
-  await expect(hero).toHaveAttribute('alt', siteCopy[locale].hero.visualLabel)
-  await expect(hero).toHaveAttribute('width', '1600')
-  await expect(hero).toHaveAttribute('height', '1100')
-  await expect(hero).toHaveAttribute('fetchpriority', 'high')
-  await expect(page.locator('.home-hero-stage source')).toHaveAttribute('srcset', '/media/brand/build-lens.avif')
-  await expect.poll(() => hero.evaluate(image => (image as HTMLImageElement).naturalWidth)).toBe(1600)
+  await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
+  await expect(page.locator('#home-hero-title')).toHaveText('weapp.dev')
+  await expect(page.locator('.home-hero-screen')).toBeVisible()
+  await expect(page.locator('.home-hero-constellation .home-hero-tile')).toHaveCount(6)
+  await expect(page.locator('.home-hero-copy')).toHaveCount(0)
   await expect(page.locator(retiredVisuals)).toHaveCount(0)
   const visuals = page.locator('#projects [data-project-visual]')
   await expect(visuals).toHaveCount(3)
@@ -65,6 +61,7 @@ test('renders the bilingual ecosystem home with valid metadata', async ({ page }
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
   await expectHomeVisuals(page, 'zh-CN')
+  await expect(page.getByRole('heading', { name: 'uni-app 组织也在这里' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'weapp-tailwindcss' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'weapp-vite' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'Varo' })).toBeVisible()
@@ -107,7 +104,7 @@ test('renders the bilingual ecosystem home with valid metadata', async ({ page }
 
   await page.getByRole('link', { name: 'English' }).click()
   await expect(page).toHaveURL(/\/en\/$/)
-  await expect(page.getByText('Built for real mini-app projects')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'uni-app partners are here too' })).toBeVisible()
   await expectHomeVisuals(page, 'en')
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://weapp.dev/en/')
   await expect(page.locator('link[hreflang="zh-CN"]')).toHaveAttribute('href', 'https://weapp.dev/')
@@ -306,16 +303,17 @@ test('keeps every key route stable across responsive viewports', async ({ page }
     await page.setViewportSize(viewport)
     await page.goto('/')
     const layout = await page.evaluate(() => {
-      const heroCta = document.querySelector<HTMLAnchorElement>('[data-analytics-section="projects"]')
+      const title = document.querySelector('#home-hero-title')
+      const box = title?.getBoundingClientRect()
       return {
         overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-        heroCtaVisible: heroCta ? heroCta.getBoundingClientRect().bottom <= innerHeight : false,
+        heroTitleVisible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight),
         wrappedControls: [...document.querySelectorAll<HTMLElement>('a, button, summary')]
           .filter(element => element.scrollWidth > element.clientWidth + 1)
           .map(element => element.textContent?.trim() || element.getAttribute('aria-label')),
       }
     })
-    expect(layout, `${viewport.width}px layout`).toEqual({ overflow: false, heroCtaVisible: true, wrappedControls: [] })
+    expect(layout, `${viewport.width}px layout`).toEqual({ overflow: false, heroTitleVisible: true, wrappedControls: [] })
   }
 })
 
