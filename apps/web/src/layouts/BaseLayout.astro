@@ -86,8 +86,8 @@ const skipLabel = locale === 'zh-CN' ? '跳到主要内容' : 'Skip to main cont
     <script is:inline>
       (() => {
         const saved = localStorage.getItem('weapp-theme')
-        const preferred = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-        document.documentElement.dataset.theme = saved === 'dark' || saved === 'light' ? saved : preferred
+        const defaultTheme = 'dark'
+        document.documentElement.dataset.theme = saved === 'dark' || saved === 'light' ? saved : defaultTheme
         document.documentElement.dataset.motion = 'ready'
       })()
     </script>
