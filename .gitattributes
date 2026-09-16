@@ -1,2 +1,14 @@
 apps/web/worker-configuration.d.ts -whitespace
 patches/*.patch -whitespace
+
+# Agent skill copies ship the same Impeccable JS many times.
+# Keep them out of GitHub language stats so the bar reflects the site.
+.agents/** linguist-vendored
+.claude/** linguist-vendored
+.codex/** linguist-vendored
+.cursor/** linguist-vendored
+.gemini/** linguist-vendored
+.github/skills/** linguist-vendored
+.grok/skills/** linguist-vendored
+.hermes/** linguist-vendored
+.opencode/** linguist-vendored
