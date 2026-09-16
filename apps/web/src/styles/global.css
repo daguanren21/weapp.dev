@@ -182,10 +182,8 @@
   min-height: calc(100svh - 64px);
   overflow: hidden;
   color: #edf5f0;
-  background-color: #050807;
-  background-image:
-    radial-gradient(38rem 22rem at 50% 48%, rgb(14 90 62 / 38%), transparent 64%),
-    radial-gradient(70rem 36rem at 50% 110%, rgb(6 16 12 / 90%), #050807);
+  background-color: #020308;
+  background-image: none;
 }
 
 .home-hero-particles {
@@ -220,14 +218,7 @@
 }
 
 .home-hero-glow {
-  position: absolute;
-  top: 48%;
-  left: 50%;
-  width: min(56vw, 34rem);
-  height: min(22vw, 14rem);
-  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 36%, transparent), transparent 68%);
-  filter: blur(12px);
-  translate: -50% -50%;
+  display: none;
 }
 
 .home-hero-orbit,

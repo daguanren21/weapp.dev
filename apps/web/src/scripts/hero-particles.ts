@@ -31,6 +31,7 @@ in float a_depth;
 in float a_seed;
 in float a_kind;
 in float a_orbit;
+in float a_twinkle;
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform float u_progress;
@@ -65,7 +66,9 @@ void main() {
   clip.y *= -1.0;
   gl_Position = vec4(clip, 0.0, 1.0);
   gl_PointSize = min(48.0, a_size * (0.72 + a_depth * 0.85));
-  v_brightness = a_brightness * (0.82 + 0.18 * sin(u_time * 1.35 + a_seed * 12.0));
+  float pulse = 0.5 + 0.5 * sin(u_time * (0.65 + a_seed * 2.3) + a_seed * 12.6);
+  float flare = pow(max(0.0, sin(u_time * (0.09 + a_seed * 0.18) + a_seed * 4.2)), 12.0);
+  v_brightness = a_brightness * (1.0 - a_twinkle * 0.45 + a_twinkle * (0.55 * pulse + 1.25 * flare));
   v_accent = a_accent;
   v_kind = a_kind;
   v_spin = u_time * (0.11 + a_seed * 0.32);
@@ -88,27 +91,29 @@ void main() {
   vec2 p = vec2(ca * uv.x - sa * uv.y, sa * uv.x + ca * uv.y);
   int k = int(floor(v_kind + 0.5));
   vec3 light = normalize(vec3(0.38, 0.56, 0.74));
-  vec3 cold = vec3(0.93, 0.98, 0.95);
   vec3 green = vec3(0.41, 0.78, 0.65);
-  if (k == 0) {
-    float d = dot(uv, uv);
-    if (d > 1.0) {
+  if (k == 0 || k == 3) {
+    float r2 = dot(uv, uv);
+    if (r2 > 1.0) {
       discard;
     }
-    float alpha = exp(-d * 3.4) * v_brightness;
-    fragColor = vec4(mix(cold, green, v_accent) * alpha, alpha);
-    return;
-  }
-  if (k == 3) {
-    float d = dot(uv, uv);
-    float spike = max(0.0, 1.0 - abs(uv.x) * 9.0) * max(0.0, 1.0 - abs(uv.y) * 1.7)
-      + max(0.0, 1.0 - abs(uv.y) * 9.0) * max(0.0, 1.0 - abs(uv.x) * 1.7);
-    float core = exp(-d * 10.0);
-    float alpha = (core * 1.25 + spike * 0.58) * v_brightness;
-    if (alpha < 0.02) {
+    float core = exp(-r2 * 36.0);
+    float body = exp(-r2 * 7.0) * 0.55;
+    float bloom = exp(-r2 * 1.15) * mix(0.08, 0.3, smoothstep(0.22, 0.9, v_brightness));
+    float spike = 0.0;
+    if (k == 3) {
+      float sx = max(0.0, 1.0 - abs(uv.x) * 14.0) * max(0.0, 1.0 - abs(uv.y) * 2.8);
+      float sy = max(0.0, 1.0 - abs(uv.y) * 14.0) * max(0.0, 1.0 - abs(uv.x) * 2.8);
+      spike = (sx + sy) * 0.12;
+    }
+    float alpha = (core + body + bloom + spike) * v_brightness;
+    if (alpha < 0.01) {
       discard;
     }
-    fragColor = vec4(mix(cold, green, v_accent) * alpha, alpha);
+    vec3 ice = vec3(0.72, 0.86, 1.0);
+    vec3 amber = vec3(1.0, 0.64, 0.34);
+    vec3 col = mix(ice, amber, clamp(v_accent, 0.0, 1.0));
+    fragColor = vec4(col * alpha, alpha);
     return;
   }
   float r = length(p);
@@ -201,6 +206,63 @@ export function pickParticleKind(rand: number, accent: number, role: ParticleRol
   return 2
 }
 
+export interface StarMagnitude {
+  size: number
+  brightness: number
+  kind: number
+  twinkle: number
+  hue: number
+}
+
+export function pickGlyphStar(next: () => number, accent: number): StarMagnitude {
+  const roll = next()
+  const hue = accent > 0.5 ? 0.62 : next() < 0.3 ? 0.85 : next() * 0.22
+  if (roll < 0.48) {
+    return {
+      size: 1.2 + next() * 1.2,
+      brightness: 0.45 + next() * 0.25,
+      kind: 0,
+      twinkle: 0.06,
+      hue,
+    }
+  }
+  if (roll < 0.8) {
+    return {
+      size: 2.6 + next() * 2.9,
+      brightness: 0.55 + next() * 0.3,
+      kind: 0,
+      twinkle: 0.1,
+      hue,
+    }
+  }
+  if (roll < 0.97) {
+    return {
+      size: 4.4 + next() * 3.2,
+      brightness: 0.7 + next() * 0.26,
+      kind: 0,
+      twinkle: 0.16,
+      hue,
+    }
+  }
+  return {
+    size: 7 + next() * 4,
+    brightness: 0.86 + next() * 0.24,
+    kind: 3,
+    twinkle: 0.36,
+    hue,
+  }
+}
+
+export function pickFieldDust(next: () => number): StarMagnitude {
+  return {
+    size: 1.4 + next() * 1.8,
+    brightness: 0.22 + next() * 0.33,
+    kind: 0,
+    twinkle: 0.05,
+    hue: next() < 0.3 ? 0.82 : next() * 0.2,
+  }
+}
+
 export function sampleWordmark(options: SampleWordmarkOptions): GlyphPoint[] {
   const canvas = document.createElement('canvas')
   const step = Math.max(1, options.step ?? 2)
@@ -211,28 +273,20 @@ export function sampleWordmark(options: SampleWordmarkOptions): GlyphPoint[] {
     return []
   }
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-  ctx.fillStyle = '#fff'
   ctx.font = `${options.fontWeight} ${options.fontSize}px ${options.fontFamily}`
-  ctx.textAlign = 'center'
+  ctx.textAlign = 'left'
   ctx.textBaseline = 'middle'
-  const spacing = `${options.letterSpacingEm * options.fontSize}px`
-  if ('letterSpacing' in ctx) {
-    ctx.letterSpacing = spacing
-  }
-  const cx = canvas.width / 2
+  const tracking = options.letterSpacingEm * options.fontSize
+  const chars = [...options.text]
+  const widths = chars.map(char => ctx.measureText(char).width)
+  const total = widths.reduce((sum, width) => sum + width, 0) + tracking * Math.max(0, chars.length - 1)
   const cy = canvas.height / 2
-  const [left, right] = options.text.split('.')
-  const gap = ctx.measureText('.').width
-  const leftWidth = ctx.measureText(left ?? '').width
-  const rightWidth = ctx.measureText(right ?? '').width
-  const total = leftWidth + gap + rightWidth
-  const leftX = cx - total / 2 + leftWidth / 2
-  const dotX = cx - total / 2 + leftWidth + gap / 2
-  const rightX = cx + total / 2 - rightWidth / 2
-  ctx.fillText(left ?? '', leftX, cy)
-  ctx.fillText(right ?? '', rightX, cy)
-  ctx.fillStyle = '#00ff00'
-  ctx.fillText('.', dotX, cy)
+  let cursor = canvas.width / 2 - total / 2
+  chars.forEach((char, index) => {
+    ctx.fillStyle = char === '.' ? '#00ff00' : '#fff'
+    ctx.fillText(char, cursor, cy)
+    cursor += (widths[index] ?? 0) + tracking
+  })
   const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data
   const points: GlyphPoint[] = []
   for (let y = 0; y < canvas.height; y += step) {
@@ -388,6 +442,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     seed: gl.getAttribLocation(program, 'a_seed'),
     kind: gl.getAttribLocation(program, 'a_kind'),
     orbit: gl.getAttribLocation(program, 'a_orbit'),
+    twinkle: gl.getAttribLocation(program, 'a_twinkle'),
     resolution: gl.getUniformLocation(program, 'u_resolution'),
     time: gl.getUniformLocation(program, 'u_time'),
     progress: gl.getUniformLocation(program, 'u_progress'),
@@ -406,6 +461,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     seed: gl.createBuffer(),
     kind: gl.createBuffer(),
     orbit: gl.createBuffer(),
+    twinkle: gl.createBuffer(),
   }
 
   let count = 0
@@ -438,18 +494,18 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     const cssFontSize = Number.parseFloat(titleStyle.fontSize) || Math.min(cssWidth * 0.17, 208)
     const fontSize = cssFontSize * dpr
     const mobile = cssWidth < 720
-    const glyphBudget = mobile ? 2800 : 7800
-    const fieldBudget = mobile ? 1800 : 5200
-    const giantCount = mobile ? 8 : 14
+    const glyphStep = Math.max(3, Math.round(3 * dpr))
+    const glyphBudget = mobile ? 900 : 2400
+    const fieldBudget = mobile ? 320 : 800
     const word = downsamplePoints(sampleWordmark({
       text: 'weapp.dev',
       fontFamily: titleStyle.fontFamily || 'Sora Variable, sans-serif',
       fontWeight: titleStyle.fontWeight || '740',
       fontSize,
-      letterSpacingEm: -0.07,
+      letterSpacingEm: 0.06,
       width: canvas.width,
       height: canvas.height,
-      step: 2,
+      step: glyphStep,
     }), glyphBudget)
     const mark = downsamplePoints(samplePathSilhouette({
       d: MINIPROGRAM_PATH,
@@ -457,7 +513,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
       width: canvas.width,
       height: canvas.height,
       size: Math.min(canvas.width, canvas.height) * (mobile ? 0.42 : 0.46),
-      step: 2,
+      step: glyphStep,
     }), glyphBudget)
     const cx = canvas.width / 2
     const cy = canvas.height / 2
@@ -478,41 +534,43 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     const seed = new Float32Array(total)
     const kind = new Float32Array(total)
     const orbit = new Float32Array(total)
+    const twinkle = new Float32Array(total)
     paired.forEach((pair, index) => {
       start[index * 2] = pair.from.x
       start[index * 2 + 1] = pair.from.y
       target[index * 2] = pair.to.x
       target[index * 2 + 1] = pair.to.y
       delay[index] = glyphDelay(pair.to.x, pair.to.y, cx, cy, maxDist, rand())
-      const picked = pickParticleKind(rand(), pair.to.accent, 'glyph')
-      kind[index] = picked
-      size[index] = (picked === 0 ? 2.1 + rand() * 1.8 : 3.1 + rand() * 2.8) * dpr
-      brightness[index] = 0.55 + rand() * 0.4
-      accent[index] = pair.to.accent && rand() > 0.82 ? 1 : picked === 3 ? 0.35 : 0
+      const star = pickGlyphStar(rand, pair.to.accent)
+      kind[index] = star.kind
+      size[index] = star.size * dpr
+      brightness[index] = star.brightness
+      accent[index] = star.hue
       depth[index] = 0.5 + rand() * 0.5
       seed[index] = rand()
       orbit[index] = (0.016 + rand() * 0.022) * fontSize
+      twinkle[index] = star.twinkle
     })
     for (let index = 0; index < fieldBudget; index += 1) {
       const i = paired.length + index
-      const giant = index < giantCount
       const x = rand() * canvas.width
       const y = rand() * canvas.height
-      const wander = (giant ? 0.08 : 0.035 + rand() * 0.09) * Math.min(canvas.width, canvas.height)
+      const wander = (0.02 + rand() * 0.05) * Math.min(canvas.width, canvas.height)
       const heading = rand() * Math.PI * 2
+      const dust = pickFieldDust(rand)
       start[i * 2] = x
       start[i * 2 + 1] = y
       target[i * 2] = x + Math.cos(heading) * wander
       target[i * 2 + 1] = y + Math.sin(heading) * wander
       delay[i] = -1
-      const picked = pickParticleKind(rand(), 0, giant ? 'giant' : 'field')
-      kind[i] = picked
-      size[i] = (giant ? 20 + rand() * 18 : picked === 0 ? 0.9 + rand() * 1.5 : 3.2 + rand() * 4.8) * dpr
-      brightness[i] = giant ? 0.55 + rand() * 0.25 : 0.1 + rand() * 0.22
-      accent[i] = rand() > 0.82 ? 0.55 : 0
-      depth[i] = giant ? 0.85 : rand()
+      kind[i] = dust.kind
+      size[i] = Math.max(1.05, dust.size) * dpr
+      brightness[i] = dust.brightness
+      accent[i] = dust.hue
+      depth[i] = rand() * 0.45
       seed[i] = rand()
-      orbit[i] = (giant ? 14 + rand() * 18 : 8 + rand() * 20) * dpr
+      orbit[i] = (6 + rand() * 12) * dpr
+      twinkle[i] = dust.twinkle
     }
     count = total
     bindFloat(buffers.start, loc.start, start, 2)
@@ -525,6 +583,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     bindFloat(buffers.seed, loc.seed, seed, 1)
     bindFloat(buffers.kind, loc.kind, kind, 1)
     bindFloat(buffers.orbit, loc.orbit, orbit, 1)
+    bindFloat(buffers.twinkle, loc.twinkle, twinkle, 1)
     return true
   }
 
@@ -533,7 +592,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
   }
   screen.dataset.particlesActive = ''
 
-  const hold = 850
+  const hold = 1400
   const assemble = 1850
   const tick = (now: number) => {
     if (!startedAt) {

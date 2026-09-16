@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { downsamplePoints, glyphDelay, pairClouds, pickParticleKind, sampleWordmark } from './hero-particles'
+import { downsamplePoints, glyphDelay, pairClouds, pickFieldDust, pickGlyphStar, pickParticleKind, sampleWordmark } from './hero-particles'
 
 describe('hero particle layout', () => {
   it('downsamples a dense cloud without emptying it', () => {
@@ -15,6 +15,30 @@ describe('hero particle layout', () => {
     expect(pickParticleKind(0.2, 0, 'glyph')).toBe(0)
     expect(pickParticleKind(0.8, 0, 'glyph')).toBe(1)
     expect(pickParticleKind(0.2, 1, 'glyph')).toBe(3)
+  })
+
+  it('makes glyph stars mixed in size with a few bright spikes', () => {
+    let seed = 1
+    const next = () => {
+      seed = seed * 16807 % 2147483647
+      return seed / 2147483647
+    }
+    const stars = Array.from({ length: 400 }, () => pickGlyphStar(next, 0))
+    const needles = stars.filter(star => star.size < 2.5).length
+    const orbs = stars.filter(star => star.size >= 4.4).length
+    expect(needles).toBeGreaterThan(orbs)
+    expect(orbs).toBeGreaterThan(12)
+    expect(stars.some(star => star.size >= 7)).toBe(true)
+  })
+
+  it('keeps background dust small, dim, and quiet', () => {
+    let seed = 11
+    const next = () => {
+      seed = seed * 16807 % 2147483647
+      return seed / 2147483647
+    }
+    const dust = Array.from({ length: 80 }, () => pickFieldDust(next))
+    expect(dust.every(star => star.size >= 1.4 && star.size < 3.3 && star.kind === 0 && star.twinkle <= 0.06 && star.brightness >= 0.22)).toBe(true)
   })
 
   it('pairs clouds by angle so morphs keep neighborhood', () => {
