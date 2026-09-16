@@ -158,7 +158,7 @@ export const siteCopy = {
       sponsorEmpty: '目前没有可公开展示的记录。',
       sponsorDisplay: '查看 GitHub link',
       roadmapTitle: '建设中的能力',
-      roadmapDescription: '云构建、官方模板和私有组件仓库会在具备稳定交付链路后再开放。Varo 仍是规划中的组件库存，不按 GA 日期收费。',
+      roadmapDescription: 'Varo 公共 Registry 已发布；云构建、官方模板和私有组件仓库仍会在具备稳定交付链路后再开放。',
       templatesTitle: '第一批官方模板',
       templatesDescription: '这是建设方向，不代表模板已经上线或可以购买。未来计划邀请制上架，先做能过审、能换皮的场景。',
       templates: [
@@ -413,7 +413,7 @@ export const siteCopy = {
       sponsorEmpty: 'No public records are available yet.',
       sponsorDisplay: 'View GitHub link',
       roadmapTitle: 'Capabilities in development',
-      roadmapDescription: 'Cloud builds, official templates, and private component registries will open after a stable delivery path exists. Varo remains planned component inventory and is not charged against a GA date.',
+      roadmapDescription: 'The public Varo Registry is available. Cloud builds, official templates, and private component registries will open after a stable delivery path exists.',
       templatesTitle: 'The first official templates',
       templatesDescription: 'This is a direction, not a live catalog or purchasable inventory. Future publishing will be invite-only and focused on reviewable, rebrandable scenarios.',
       templates: [

@@ -14,7 +14,7 @@ export default {
     items: [
       { title: 'Author', body: 'Keep writing native mini-app pages, Vue SFCs, or your current cross-platform setup. Do not reshuffle page boundaries just for tooling.' },
       { title: 'Build', body: 'Hand classes and styles to weapp-tailwindcss. Hand deps, routes, and single-target multi-platform builds to weapp-vite.' },
-      { title: 'Compose', body: 'When you need component delivery, evaluate Varo’s editable-source boundary; installation guidance will follow a stable release.' },
+      { title: 'Compose', body: 'When you need component delivery, use the Varo Registry to install editable source for each target, then add business Blocks and Agent UI.' },
       { title: 'Store', body: 'When you need structured local data, follow the runtime boundaries and migration plan for weapp-sqlite.' },
       { title: 'Migrate', body: 'Existing Taro / React projects can move their development and build pipeline to Vite with VPT.' },
     ],
@@ -33,7 +33,7 @@ export default {
       planned: 'Planned',
     },
     readinessTitle: 'No public metrics yet',
-    readinessBody: 'The component layer is still in progress. We will not show downloads or stars before a stable release, so the page does not pretend with zeros.',
+    readinessBody: 'Downloads and stars stay hidden until a stable release, rather than presenting zeros as proof.',
     proof: {
       styleLabel: 'Default style markup',
       styleFile: 'button.wxml',
@@ -66,7 +66,7 @@ export default {
       },
       {
         title: 'Components · Varo',
-        owns: 'Editable components, Blocks, and registry delivery boundaries (planned).',
+        owns: 'Editable components, Blocks, and Registry delivery boundaries.',
         notOwns: 'Your project scaffold, or forcing a rewrite of existing pages.',
       },
       {

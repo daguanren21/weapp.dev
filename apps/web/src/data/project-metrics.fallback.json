@@ -14,11 +14,11 @@
     "fetchedAt": "2026-08-26T00:00:00.000Z"
   },
   "varo": {
-    "version": "0.0.1",
-    "releasedAt": "2026-08-26T00:00:00.000Z",
-    "stars": 0,
-    "weeklyDownloads": 0,
-    "fetchedAt": "2026-08-26T00:00:00.000Z"
+    "version": "2.1.0",
+    "releasedAt": "2026-09-13T15:45:51.579Z",
+    "stars": 2,
+    "weeklyDownloads": 195,
+    "fetchedAt": "2026-09-16T00:00:00.000Z"
   },
   "vite-plugin-taro": {
     "version": "0.7.1",

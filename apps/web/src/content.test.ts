@@ -13,7 +13,7 @@ describe('project definitions', () => {
     'weapp-vite': 'https://vite.weapp.dev/',
     'vite-plugin-taro': 'https://vpt.js.org/',
     'weapp-sqlite': 'https://github.com/weapp-sqlite/weapp-sqlite#readme',
-    '@varo/cli': 'https://github.com/daguanren21/Varo#readme',
+    '@varo-ui/cli': 'https://daguanren21.github.io/Varo/',
   }
 
   it('provides complete localized content for every project', () => {
@@ -64,12 +64,15 @@ describe('project definitions', () => {
     }
   })
 
-  it('uses explicit placeholders for the planned Varo release', () => {
+  it('publishes the Varo release and package actions', () => {
     expect(varo).toMatchObject({
-      status: 'planned',
-      packageName: '@varo/cli',
+      status: 'stable',
+      maturity: 'stable',
+      packageName: '@varo-ui/cli',
       github: 'daguanren21/Varo',
-      docsUrl: 'https://github.com/daguanren21/Varo#readme',
+      docsUrl: 'https://daguanren21.github.io/Varo/',
+      npmUrl: 'https://www.npmjs.com/package/@varo-ui/cli',
+      installCommand: 'pnpm dlx @varo-ui/cli add --target weapp button input card',
     })
   })
 
@@ -87,6 +90,7 @@ describe('project definitions', () => {
       'weapp-vite': 'https://www.npmjs.com/package/weapp-vite',
       'weapp-tailwindcss': 'https://www.npmjs.com/package/weapp-tailwindcss',
       'vite-plugin-taro': 'https://www.npmjs.com/package/vite-plugin-taro',
+      '@varo-ui/cli': 'https://www.npmjs.com/package/@varo-ui/cli',
     }
 
     for (const project of projects) {

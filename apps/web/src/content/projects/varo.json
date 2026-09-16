@@ -1,9 +1,11 @@
 {
   "order": 3,
-  "status": "planned",
-  "packageName": "@varo/cli",
+  "status": "stable",
+  "packageName": "@varo-ui/cli",
   "github": "daguanren21/Varo",
-  "docsUrl": "https://github.com/daguanren21/Varo#readme",
+  "docsUrl": "https://daguanren21.github.io/Varo/",
+  "npmUrl": "https://www.npmjs.com/package/@varo-ui/cli",
+  "license": "https://opensource.org/license/mit",
   "maintainer": "daguanren21 and contributors",
   "keywords": [
     "Vue 3",
@@ -14,11 +16,12 @@
     "Agent UI",
     "Blocks"
   ],
+  "installCommand": "pnpm dlx @varo-ui/cli add --target weapp button input card",
   "futureDocsPath": "/docs/varo/",
   "logo": "/brands/varo.svg",
   "accent": "#07c160",
   "role": "Components",
-  "maturity": "planned",
+  "maturity": "stable",
   "runtime": [
     "Vue 3",
     "H5",
@@ -28,7 +31,7 @@
     "weapp-tailwindcss",
     "weapp-sqlite"
   ],
-  "dataCompleteness": "partial",
+  "dataCompleteness": "complete",
   "platforms": [
     "H5",
     "WeChat",
@@ -44,12 +47,12 @@
       "height": 990,
       "locales": {
         "zh-CN": {
-          "alt": "Varo 文档首页展示跨运行时组件系统能力",
-          "caption": "Varo 正在规划 primitives、可复制源码与交付校验如何服务 H5 和小程序组件系统。"
+          "alt": "Varo Registry-first 文档首页展示 H5 与小程序双端安装路径",
+          "caption": "Varo 文档首页展示 Registry-first 双端组件交付路径。"
         },
         "en": {
-          "alt": "Varo documentation home showing the cross-runtime component system",
-          "caption": "Varo is planning how primitives, editable source, and delivery checks should serve H5 and mini-program component systems."
+          "alt": "Varo Registry-first documentation home showing H5 and mini-program installation paths",
+          "caption": "The Varo documentation home presents its Registry-first component delivery paths for both runtimes."
         }
       }
     },
@@ -61,11 +64,11 @@
       "locales": {
         "zh-CN": {
           "alt": "Varo Agent UI 完整对话与工具界面",
-          "caption": "Agent UI 与 Agent Chat Block 的交互协议仍在规划中。"
+          "caption": "Agent UI 与 Agent Chat Block 提供对话、工具调用与审批交互。"
         },
         "en": {
           "alt": "Varo Agent UI conversation and tool interface",
-          "caption": "The Agent UI and Agent Chat Block interaction contract is still planned."
+          "caption": "Agent UI and the Agent Chat Block provide conversation, tool-call, and approval interactions."
         }
       }
     }
@@ -73,55 +76,55 @@
   "locales": {
     "zh-CN": {
       "name": "Varo",
-      "tagline": "双端组件交付规划",
-      "description": "Varo 正在整理 H5 与小程序的可编辑组件交付边界，安装方式、运行时范围和稳定资料确认后再公开。",
+      "tagline": "双端移动 UI Registry",
+      "description": "Varo 通过 Registry 向 H5 与 Wevu 小程序交付可编辑组件源码、业务 Blocks 与 Agent UI，并保留各端原生渲染。",
       "audience": "需要在 H5 与小程序之间共享交互语义、组件源码和业务 Blocks 的 Vue 3 团队。",
       "useCases": [
-        "评估可编辑组件源码的交付边界",
-        "规划双端业务 Blocks 与 Agent UI 的组合方式",
-        "确认 primitives 与主题 token 的公开契约"
+        "从 Registry 安装可编辑的 H5 或小程序组件源码",
+        "复用双端业务 Blocks 与 Agent UI",
+        "基于 headless primitives 和主题 token 构建设计系统"
       ],
       "capabilities": [
-        "可编辑组件源码（规划中）",
-        "双端运行时边界（待确认）",
-        "Registry 与 Agent UI 契约（待确认）",
-        "稳定版本与安装路径（待公开）"
+        "56 个 H5 Registry 组件族",
+        "45 个小程序 Registry 组件族",
+        "Registry 与 Agent UI",
+        "Vue 3 + Wevu 双端原生渲染"
       ],
       "faqs": [
         {
           "question": "Varo 和传统 npm 组件库有什么不同？",
-          "answer": "Varo 计划提供可复制、修改并归业务项目所有的组件与 Blocks 源码；具体交付方式仍在确认。"
+          "answer": "Varo 默认通过 Registry 把组件与 Blocks 源码安装到业务项目中，团队可以直接修改并拥有这些源码。"
         },
         {
-          "question": "Varo 当前支持哪些运行时？",
-          "answer": "目标运行时包含 H5 与 weapp-vite，但公开范围、组件数量和稳定 API 仍待确认。"
+          "question": "Varo 支持哪些运行时？",
+          "answer": "H5 使用 Vue 3，小程序使用 Wevu 与 weapp-vite；两端共享类型、纯函数和 headless primitives。"
         }
       ]
     },
     "en": {
       "name": "Varo",
-      "tagline": "A planned boundary for dual-runtime component delivery",
-      "description": "Varo is defining an editable component delivery boundary for H5 and mini-apps. Installation, runtime scope, and stable reference material will be published after confirmation.",
+      "tagline": "Registry-first mobile UI for two runtimes",
+      "description": "Varo delivers editable component source, business Blocks, and Agent UI to H5 and Wevu mini-program projects through its Registry while preserving native rendering on each target.",
       "audience": "Vue 3 teams that need shared interaction semantics, component source, and business blocks across H5 and mini-program products.",
       "useCases": [
-        "Evaluate the boundary for editable component source",
-        "Plan dual-target business blocks and Agent UI composition",
-        "Confirm the public contract for primitives and theme tokens"
+        "Install editable H5 or mini-program component source from the Registry",
+        "Reuse dual-target business Blocks and Agent UI",
+        "Build a design system on headless primitives and theme tokens"
       ],
       "capabilities": [
-        "Editable component source (planned)",
-        "Dual-runtime boundaries (to be confirmed)",
-        "Registry and Agent UI contract (to be confirmed)",
-        "Stable release and install path (not published yet)"
+        "56 H5 Registry component families",
+        "45 mini-program Registry component families",
+        "Registry and Agent UI",
+        "Native Vue 3 and Wevu rendering"
       ],
       "faqs": [
         {
           "question": "How is Varo different from a traditional npm UI library?",
-          "answer": "Varo plans to deliver component and block source that teams can copy, modify, and own; the delivery method is still being confirmed."
+          "answer": "Varo uses its Registry to install component and Block source into the product repository by default, so teams can modify and own that source."
         },
         {
-          "question": "Which runtimes does Varo support today?",
-          "answer": "The target runtimes include H5 and weapp-vite, but public scope, component counts, and stable APIs are still being confirmed."
+          "question": "Which runtimes does Varo support?",
+          "answer": "H5 uses Vue 3, while mini-program projects use Wevu and weapp-vite. The targets share types, pure functions, and headless primitives."
         }
       ]
     }

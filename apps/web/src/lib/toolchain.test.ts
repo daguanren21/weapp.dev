@@ -56,7 +56,7 @@ describe('toolchain project ordering', () => {
       id: ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro'][index],
       data: projectDefinitionSchema.parse(data),
     })) as unknown as ProjectEntry[]
-    projects[2].data.dataCompleteness = 'complete'
+    projects[3].data.dataCompleteness = 'complete'
     expect(() => validateToolchainCatalog(projects)).toThrow('Planned project cannot claim complete data')
   })
 
@@ -86,9 +86,9 @@ describe('toolchain project ordering', () => {
       id: ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro'][index],
       data: projectDefinitionSchema.parse(data),
     })) as unknown as ProjectEntry[]
-    projects[2].data.installCommand = 'pnpm dlx @varo/cli'
+    projects[3].data.installCommand = 'pnpm add weapp-sqlite'
     expect(() => validateToolchainCatalog(projects)).toThrow('Planned project cannot publish package actions')
-    projects[2].data.installCommand = undefined
+    projects[3].data.installCommand = undefined
     projects[0].data.npmUrl = undefined
     expect(() => validateToolchainCatalog(projects)).toThrow('Active project is missing package actions')
   })

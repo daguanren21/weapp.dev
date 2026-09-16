@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import sharp from 'sharp'
 
@@ -32,7 +32,8 @@ const projectMedia = [
   },
   {
     repository: 'daguanren21/Varo',
-    source: 'apps/docs/public/brand-assets/varo-homepage-source.png',
+    page: 'https://daguanren21.github.io/Varo/',
+    localSource: '../media-source/varo-homepage-latest.png',
     output: 'projects/varo-home',
     width: 1440,
   },
@@ -61,7 +62,9 @@ async function downloadGitHubFile(repository: string, source: string): Promise<B
 async function generateProjectMedia() {
   await mkdir(new URL('projects/', publicMediaDir), { recursive: true })
   for (const asset of projectMedia) {
-    const source = await downloadGitHubFile(asset.repository, asset.source)
+    const source = 'localSource' in asset
+      ? await readFile(new URL(asset.localSource, import.meta.url))
+      : await downloadGitHubFile(asset.repository, asset.source)
     const image = sharp(source).resize({ width: asset.width, withoutEnlargement: true })
     await image.clone().webp({ quality: 82, effort: 5 }).toFile(fileURLToPath(new URL(`${asset.output}.webp`, publicMediaDir)))
     await image.clone().avif({ quality: 55, effort: 5 }).toFile(fileURLToPath(new URL(`${asset.output}.avif`, publicMediaDir)))
@@ -114,7 +117,7 @@ async function generateBuildLens() {
 await generateProjectMedia()
 await generateBuildLens()
 await writeFile(new URL('sources.json', publicMediaDir), `${JSON.stringify({
-  generatedAt: '2026-08-27',
+  generatedAt: '2026-09-16',
   projectMedia,
   buildLens: {
     kind: 'deterministic-raster',

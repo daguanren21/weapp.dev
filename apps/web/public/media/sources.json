@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27",
+  "generatedAt": "2026-09-16",
   "projectMedia": [
     {
       "repository": "sonofmagic/weapp-tailwindcss",
@@ -27,7 +27,8 @@
     },
     {
       "repository": "daguanren21/Varo",
-      "source": "apps/docs/public/brand-assets/varo-homepage-source.png",
+      "page": "https://daguanren21.github.io/Varo/",
+      "localSource": "../media-source/varo-homepage-latest.png",
       "output": "projects/varo-home",
       "width": 1440
     },

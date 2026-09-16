@@ -28,13 +28,13 @@ describe('SEO helpers', () => {
     expect(JSON.parse(serializeJsonLd(entity))).toEqual(entity)
   })
 
-  it('does not publish release or package claims for planned projects', () => {
+  it('publishes release and package claims for Varo', () => {
     const project = { id: 'varo', data: varo as unknown as ProjectDefinition }
     const entity = projectSchema('en', project, fallbackMetrics.varo)
-    expect(entity).not.toHaveProperty('version')
-    expect(entity).not.toHaveProperty('dateModified')
-    expect(entity).not.toHaveProperty('downloadUrl')
-    expect(entity.sameAs).not.toContain('https://www.npmjs.com/package/@varo/cli')
+    expect(entity.version).toBe('2.1.0')
+    expect(entity.dateModified).toBe('2026-09-13T15:45:51.579Z')
+    expect(entity.downloadUrl).toBe('https://www.npmjs.com/package/@varo-ui/cli')
+    expect(entity.sameAs).toContain('https://www.npmjs.com/package/@varo-ui/cli')
   })
 
   it('keeps the planned weapp-sqlite schema free of unconfirmed runtime claims', () => {

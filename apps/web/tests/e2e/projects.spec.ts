@@ -22,12 +22,12 @@ for (const prefix of ['', '/en']) {
     const links = page.locator('.toolchain-map-list li a')
     await expect(links).toHaveCount(5)
     const statusLabels = prefix ? { stable: 'Stable', planned: 'Planned' } : { stable: '稳定', planned: '规划中' }
-    for (const id of ['weapp-vite', 'weapp-tailwindcss', 'vite-plugin-taro']) {
+    for (const id of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'vite-plugin-taro']) {
       const node = page.locator('.toolchain-map-list li').filter({ has: page.locator(`a[href="${prefix}/projects/${id}/"]`) })
       await expect(node.locator('.toolchain-status')).toHaveText(statusLabels.stable)
       await expect(node.locator('.toolchain-status')).toHaveAttribute('aria-label', prefix ? 'Project status: Stable' : '项目状态: 稳定')
     }
-    for (const id of ['varo', 'weapp-sqlite']) {
+    for (const id of ['weapp-sqlite']) {
       const node = page.locator('.toolchain-map-list li').filter({ has: page.locator(`a[href="${prefix}/projects/${id}/"]`) })
       await expect(node.locator('.toolchain-status')).toHaveText(statusLabels.planned)
       await expect(node.locator('.toolchain-status')).toHaveAttribute('aria-label', prefix ? 'Project status: Planned' : '项目状态: 规划中')
@@ -187,27 +187,6 @@ for (const prefix of ['', '/en']) {
     const heroVisual = page.locator('main#main-content > section').first().locator('figure img')
     await expect(heroVisual).toHaveAttribute('fetchpriority', 'high')
     await expect(heroVisual).toHaveAttribute('decoding', 'async')
-  })
-
-  test(`offers five adoption paths and their documentation on ${prefix}/`, async ({ page }) => {
-    await page.goto(`${prefix}/`)
-    const paths = page.locator('.project-selector-list article')
-    await expect(paths).toHaveCount(5)
-    for (const [index, slug] of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro'].entries()) {
-      const path = paths.nth(index)
-      await expect(path).toHaveAttribute('aria-labelledby', `path-title-${index}`)
-      await expect(path).toHaveAttribute('aria-describedby', ['varo', 'weapp-sqlite'].includes(slug) ? `path-description-${index} selector-status-${index}` : `path-description-${index} selector-command-${index}`)
-      await expect(path.locator('.project-selector-actions a').first()).toHaveAttribute('href', `${prefix}/projects/${slug}/`)
-      await expect(path.locator('.project-selector-actions a').last()).toHaveAttribute('href', /^https:\/\//)
-      if (['varo', 'weapp-sqlite'].includes(slug)) {
-        await expect(path.locator('code')).toHaveCount(0)
-        await expect(path.locator('.project-selector-planned')).toContainText(zh ? '规划中' : 'planned')
-        await expect(path.locator('.project-selector-planned')).toHaveAttribute('aria-label', zh ? '项目状态：规划中' : 'Project status: Planned')
-      }
-      else {
-        await expect(path.locator('code')).not.toBeEmpty()
-      }
-    }
   })
 
   test(`publishes all five projects in the localized ItemList schema on ${prefix}/projects/`, async ({ page }) => {

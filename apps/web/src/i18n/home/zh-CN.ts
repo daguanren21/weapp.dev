@@ -14,7 +14,7 @@ export default {
     items: [
       { title: '编写', body: '继续写原生小程序、Vue SFC，或你现在的跨端框架。页面边界不用为了工具先改一轮。' },
       { title: '构建', body: '类名和样式交给 weapp-tailwindcss；依赖、路由和多平台单目标构建交给 weapp-vite。' },
-      { title: '组装', body: '需要组件交付时，先评估 Varo 的可编辑源码与组件边界；项目稳定后再公布安装路径。' },
+      { title: '组装', body: '需要组件交付时，用 Varo Registry 按目标安装可编辑源码，再叠加业务 Blocks 与 Agent UI。' },
       { title: '存储', body: '需要本地结构化数据时，关注 weapp-sqlite 的运行时边界和迁移计划。' },
       { title: '迁移', body: '已有 Taro / React 项目可以通过 VPT 把开发构建链路切到 Vite。' },
     ],
@@ -33,7 +33,7 @@ export default {
       planned: '规划中',
     },
     readinessTitle: '现在还没公开指标',
-    readinessBody: '组件层还在做。稳定发布前不展示下载和 Stars，免得页面上挂两个 0 装样子。',
+    readinessBody: '项目稳定发布前不展示下载和 Stars，避免用两个 0 充当可信度。',
     proof: {
       styleLabel: '默认样式写法',
       styleFile: 'button.wxml',
@@ -66,7 +66,7 @@ export default {
       },
       {
         title: '组件 · Varo',
-        owns: '可编辑组件、Blocks 与 Registry 交付边界（规划中）。',
+        owns: '可编辑组件、Blocks 与 Registry 交付边界。',
         notOwns: '整个工程脚手架，也不强迫你改掉现有页面写法。',
       },
       {
