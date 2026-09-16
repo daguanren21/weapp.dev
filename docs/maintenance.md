@@ -8,7 +8,7 @@
 
 环境要求：
 
-- Node.js 22.12.0 或更高版本，本仓库和 Cloudflare Builds 使用 22.23.2。
+- Node.js 22.12.0 或更高版本，本仓库和 GitHub Actions 使用 22.23.2。
 - pnpm 12.3.4（与根目录 `package.json` 的 `packageManager` 一致）。
 
 ```bash
@@ -49,31 +49,30 @@ pnpm exec wrangler versions upload --dry-run
 
 现有文档分别发布在 [`tw.weapp.dev`](https://tw.weapp.dev/) 和 [`vite.weapp.dev`](https://vite.weapp.dev/)。未来聚合文档使用 `/docs/<project>/`，届时再将 canonical 统一指向对应的 `weapp.dev` 路径。
 
-## Cloudflare Workers Builds
+## GitHub Actions 部署
 
-现有 Worker `weapp-dev` 使用 Cloudflare 原生 Git 集成连接 `sonofmagic/weapp.dev`，配置如下：
+站点仍发布到现有 Worker `weapp-dev`。构建、校验和 Wrangler 发布都在 GitHub Actions 工作流 `CI`（`.github/workflows/ci.yml`）里完成。Cloudflare 只作为运行时，不再用 Workers Builds 的 Git 集成。
 
-| 设置                          | 值                                              |
-| ----------------------------- | ----------------------------------------------- |
-| Production branch             | `main`                                          |
-| Root directory                | `/apps/web`                                     |
-| Build command                 | `pnpm build:cloudflare`                         |
-| Production deploy command     | `pnpm exec wrangler deploy`                     |
-| Non-production deploy command | `pnpm exec wrangler versions upload`            |
-| Build variables               | `NODE_VERSION=22.23.2`、`PNPM_VERSION=12.3.4`  |
-| Build cache                   | 启用                                            |
-| Path filters                  | 不配置                                          |
-| Runtime variables / secrets   | 不配置                                          |
+| 设置        | 值                                                                         |
+| ----------- | -------------------------------------------------------------------------- |
+| 生产分支    | `main`                                                                     |
+| 质量门      | `pnpm check`、静态构建、Playwright e2e 全部通过后才发布                    |
+| 生产命令    | `pnpm exec wrangler deploy --message "$GITHUB_SHA"`（工作目录 `apps/web`） |
+| 预览命令    | `pnpm exec wrangler versions upload --preview-alias pr-<n>`                |
+| Node / pnpm | `.node-version`（22.23.2）和根目录 `packageManager`（pnpm@12.3.4）         |
+| Secrets     | `CLOUDFLARE_ACCOUNT_ID`、`CLOUDFLARE_API_TOKEN`                            |
 
-`main` 推送会创建并激活生产部署；其他分支只上传 Worker Version，不切换生产流量。版本预览 URL 已启用，公开地址格式为：
+`push` 到 `main` 或在 `main` 上 `workflow_dispatch` 会把 `verify` 产出的 `apps/web/dist` 激活为生产部署。同仓库 PR 只上传 Worker Version，别名为 `pr-<number>`，不切换生产流量。Fork PR 没有仓库 secrets，跳过预览。
 
-Cloudflare 的 Git 构建只负责生成静态站点产物，不执行 workspace 级别的 `check`。完整 lint、类型检查、单元测试和 E2E 由 GitHub CI 执行。当前 Root directory 为 `/apps/web`，因此 Dashboard 中的输出目录应为 `dist`；若将 Root directory 改为仓库根目录，则使用 `pnpm build:cloudflare` 并将输出目录改为 `apps/web/dist`。
+版本预览 URL 已启用，公开地址格式为：
 
 ```text
-https://<version-prefix>-weapp-dev.sonofmagic.workers.dev
+https://<version-prefix>-weapp-dev.<account>.workers.dev
 ```
 
-Worker 的生产 `workers.dev` 地址保持关闭，版本预览保持开启。`apps/web/wrangler.jsonc` 中的 `preview_urls: true` 是后续 Wrangler 部署的配置事实来源。
+Worker 的生产 `workers.dev` 地址保持关闭，版本预览保持开启。`apps/web/wrangler.jsonc` 中的 `preview_urls: true` 是 Wrangler 部署的配置事实来源。
+
+断开 Cloudflare Dashboard 里 Worker `weapp-dev` 的 Git 连接，避免和 GitHub Actions 双发布。不要删除 Worker，也不要改自定义域或 Redirect Rules。
 
 生产自定义域保持绑定现有 Worker 的生产部署：
 
@@ -97,7 +96,7 @@ Worker 的生产 `workers.dev` 地址保持关闭，版本预览保持开启。`
 
 GA4 首屏浏览由一次 `config` 命令产生，`page_location`、`page_path` 和 `page_title` 在配置时写入；不要再追加手动 `page_view`，否则会产生重复浏览。`gtag` 包装器必须像 Google 标准片段一样向 `dataLayer` 压入函数的 `arguments` 对象，改成剩余参数数组会导致目标无法初始化。修改统计加载器后，先完成网站构建，再运行 `pnpm --filter @weapp.dev/web test:e2e:analytics-live`。该测试加载 Google 官方 `gtag.js`，但会在 `/g/collect` 请求离开浏览器前返回 `204`，用于验证衡量 ID、事件名和脱敏 URL，不会向生产数据流写入测试访问。
 
-生产发布后先确认 Cloudflare Workers Build 成功，再使用未拒绝统计且未启用 Global Privacy Control 或 Do Not Track 的浏览器访问正式域名。Google Analytics 实时报告通常应在 5–30 分钟内出现访问；数据流首页的“未收到数据”状态可能最多延迟 24–48 小时，不能单独作为发布失败的判断依据。
+生产发布后先确认 GitHub Actions 的 `deploy-production` 成功，再使用未拒绝统计且未启用 Global Privacy Control 或 Do Not Track 的浏览器访问正式域名。Google Analytics 实时报告通常应在 5–30 分钟内出现访问；数据流首页的“未收到数据”状态可能最多延迟 24–48 小时，不能单独作为发布失败的判断依据。
 
 ## SEO 与 GEO
 
