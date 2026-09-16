@@ -6,7 +6,7 @@ import viteProject from '../../src/content/projects/weapp-vite.json' with { type
 import { siteCopy } from '../../src/i18n/ui'
 
 const projectDefinitions = [viteProject, tailwindProject, varoProject]
-const retiredVisuals = 'canvas, [data-shader-canvas], [data-shader], [data-shader-frame], [data-webgl-fallback], [data-art], .project-art, [class^="art-"], [class*=" art-"]'
+const retiredVisuals = 'canvas:not(.home-hero-particle-canvas), [data-shader-canvas], [data-shader], [data-shader-frame], [data-webgl-fallback], [data-art], .project-art, [class^="art-"], [class*=" art-"]'
 
 async function expectHomeVisuals(page: import('@playwright/test').Page, locale: 'zh-CN' | 'en') {
   await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
@@ -186,16 +186,18 @@ test('theme control changes and persists the selected theme', async ({ page }) =
   await expect(page.locator('html')).toHaveAttribute('data-theme', next)
 })
 
-test('home hero follows the active theme without an inverted surface', async ({ page }) => {
+test('home hero keeps a cosmic first screen while the rest of the page follows theme', async ({ page }) => {
   for (const theme of ['light', 'dark']) {
     await page.addInitScript(selectedTheme => localStorage.setItem('weapp-theme', selectedTheme), theme)
     await page.goto('/')
-    const colors = await page.locator('.home-hero').evaluate((hero) => {
-      const style = getComputedStyle(hero)
-      const body = getComputedStyle(document.body)
-      return { text: style.color === body.color, background: style.backgroundColor === body.backgroundColor }
-    })
-    expect(colors, theme).toEqual({ text: true, background: true })
+    const screen = page.locator('.home-hero-screen')
+    await expect(screen).toBeVisible()
+    const background = await screen.evaluate(element => getComputedStyle(element).backgroundColor)
+    expect(background, theme).toBe('rgb(5, 8, 7)')
+    await expect(page.locator('[data-hero-particles] canvas')).toHaveCount(1)
+    await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeAttached()
+    await page.locator('#about').scrollIntoViewIfNeeded()
+    await expect.poll(() => page.locator('html').evaluate(element => element.hasAttribute('data-hero-cosmos'))).toBe(false)
   }
 })
 

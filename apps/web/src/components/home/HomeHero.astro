@@ -4,6 +4,7 @@ import type { Locale } from '../../types/project'
 import type { HomeProject } from '../../lib/home-projects'
 import { shell } from '../../styles/classes'
 import HeroDemos from './demos/HeroDemos.astro'
+import HeroParticles from './HeroParticles.astro'
 
 interface RailProject {
   id: string
@@ -27,6 +28,10 @@ const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
 
 <section class="home-hero" aria-labelledby="home-hero-title">
   <div class="home-hero-screen">
+    <script is:inline>
+      document.documentElement.setAttribute('data-hero-cosmos', '')
+    </script>
+    <HeroParticles />
     <div class="home-hero-constellation">
       <span class="home-hero-gridlines" aria-hidden="true"></span>
       <span class="home-hero-glow" aria-hidden="true"></span>

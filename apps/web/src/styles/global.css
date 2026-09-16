@@ -181,9 +181,24 @@
   place-items: center;
   min-height: calc(100svh - 64px);
   overflow: hidden;
-  background:
-    radial-gradient(48rem 28rem at 50% 46%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
-    var(--background);
+  color: #edf5f0;
+  background-color: #050807;
+  background-image:
+    radial-gradient(38rem 22rem at 50% 48%, rgb(14 90 62 / 38%), transparent 64%),
+    radial-gradient(70rem 36rem at 50% 110%, rgb(6 16 12 / 90%), #050807);
+}
+
+.home-hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.home-hero-particle-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .home-hero-constellation {
@@ -298,7 +313,19 @@
   letter-spacing: -0.07em;
   text-align: center;
   white-space: nowrap;
-  text-shadow: 0 0 72px color-mix(in srgb, var(--accent) 26%, transparent);
+  color: #edf5f0;
+  text-shadow: 0 0 72px rgb(105 199 165 / 42%);
+}
+
+.home-hero-screen[data-particles-ready] .home-hero-title > [aria-hidden] {
+  visibility: hidden;
+}
+
+.home-hero-screen[data-particles-ready] .home-hero-gridlines,
+.home-hero-screen[data-particles-ready] .home-hero-glow,
+.home-hero-screen[data-particles-ready] .home-hero-orbit,
+.home-hero-screen[data-particles-ready] .home-hero-orbit-2 {
+  opacity: 0;
 }
 
 .home-hero-letter {
@@ -306,7 +333,26 @@
 }
 
 .home-hero-dot {
-  color: var(--accent);
+  color: #69c7a5;
+}
+
+html[data-hero-cosmos] [data-site-header] {
+  --text: #edf5f0;
+  --muted: #d5e4dc;
+  --border: rgb(237 245 240 / 16%);
+  --header: rgb(5 8 7 / 72%);
+  --accent: #69c7a5;
+  --color-ink: #edf5f0;
+  --color-copy-muted: #d5e4dc;
+
+  color: #edf5f0;
+  background: rgb(5 8 7 / 72%);
+  border-color: rgb(237 245 240 / 16%);
+}
+html[data-hero-cosmos] [data-site-header] a,
+html[data-hero-cosmos] [data-site-header] button,
+html[data-hero-cosmos] [data-site-header] summary {
+  color: #edf5f0;
 }
 
 .home-hero .home-project-rail {
@@ -779,11 +825,6 @@
   }
   .home-hero-letter {
     animation: home-hero-letter 700ms calc(var(--i) * 45ms) cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-  .home-hero-dot {
-    animation:
-      home-hero-letter 700ms calc(var(--i) * 45ms) cubic-bezier(0.16, 1, 0.3, 1) both,
-      home-hero-dot-pulse 2.8s ease-in-out 1.2s infinite;
   }
   .home-hero-tile-1 {
     animation: home-hero-float 6.4s ease-in-out infinite;
