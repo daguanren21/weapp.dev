@@ -26,14 +26,14 @@
   },
   "devDependencies": {
     "@commitlint/cli": "21.2.2",
-    "@vitest/coverage-v8": "5.0.0",
+    "@vitest/coverage-v8": "5.0.1",
     "eslint": "10.10.0",
     "husky": "9.1.7",
-    "lint-staged": "17.5.0",
-    "repoctl": "5.4.9",
+    "lint-staged": "17.5.1",
+    "repoctl": "5.5.3",
     "stylelint": "17.15.0",
-    "turbo": "2.10.12",
+    "turbo": "2.10.13",
     "typescript": "6.0.3",
-    "vitest": "5.0.0"
+    "vitest": "5.0.1"
   }
 }
