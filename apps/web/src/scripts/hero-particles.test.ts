@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { downsamplePoints, glyphDelay, pickParticleKind, sampleWordmark } from './hero-particles'
+import { downsamplePoints, glyphDelay, pairClouds, pickParticleKind, sampleWordmark } from './hero-particles'
 
 describe('hero particle layout', () => {
   it('downsamples a dense cloud without emptying it', () => {
@@ -15,6 +15,22 @@ describe('hero particle layout', () => {
     expect(pickParticleKind(0.2, 0, 'glyph')).toBe(0)
     expect(pickParticleKind(0.8, 0, 'glyph')).toBe(1)
     expect(pickParticleKind(0.2, 1, 'glyph')).toBe(3)
+  })
+
+  it('pairs clouds by angle so morphs keep neighborhood', () => {
+    const from = [
+      { x: 2, y: 0, accent: 0 },
+      { x: 0, y: 2, accent: 0 },
+    ]
+    const to = [
+      { x: 4, y: 0, accent: 1 },
+      { x: 0, y: 4, accent: 0 },
+      { x: -4, y: 0, accent: 0 },
+    ]
+    const pairs = pairClouds(from, to, 0, 0)
+    expect(pairs).toHaveLength(3)
+    expect(pairs[0]?.from).toEqual(from[0])
+    expect(pairs.every(pair => pair.from && pair.to)).toBe(true)
   })
 
   it('delays edge glyph particles more than the center', () => {

@@ -17,6 +17,9 @@ export interface SampleWordmarkOptions {
 
 export type ParticleRole = 'glyph' | 'field' | 'giant'
 
+export const MINIPROGRAM_VIEWBOX = 1024
+export const MINIPROGRAM_PATH = 'M512 0a512 512 0 1 0 512 512A512 512 0 0 0 512 0z m256.717 460.186a151.962 151.962 0 0 1-87.347 65.74 83.251 83.251 0 0 1-24.474 4.096 29.082 29.082 0 0 1 0-58.163 15.667 15.667 0 0 0 6.451-1.229 91.443 91.443 0 0 0 55.91-40.96 75.264 75.264 0 0 0 11.06-39.628c0-45.978-42.496-83.866-94.31-83.866a105.267 105.267 0 0 0-51.2 13.414 81.92 81.92 0 0 0-43.725 70.452v244.224a138.445 138.445 0 0 1-72.704 120.422 159.642 159.642 0 0 1-79.77 20.48c-84.378 0-153.6-63.488-153.6-142.029a136.192 136.192 0 0 1 19.763-69.837 151.962 151.962 0 0 1 87.347-65.74 85.914 85.914 0 0 1 24.474-4.096 29.082 29.082 0 1 1 0 58.163 15.667 15.667 0 0 0-6.451 1.229 95.949 95.949 0 0 0-55.91 40.96 75.264 75.264 0 0 0-11.06 39.628c0 45.978 42.496 83.866 94.925 83.866a105.267 105.267 0 0 0 51.2-13.414 81.92 81.92 0 0 0 43.622-70.452V390.35a138.752 138.752 0 0 1 72.807-120.525 151.245 151.245 0 0 1 79.155-21.504c84.378 0 153.6 63.488 153.6 142.029a136.192 136.192 0 0 1-19.763 69.837z'
+
 const VERTEX = `#version 300 es
 in vec2 a_start;
 in vec2 a_target;
@@ -43,7 +46,10 @@ void main() {
   float t = clamp((u_progress - a_delay) / span, 0.0, 1.0);
   float e = 1.0 - pow(1.0 - t, 3.0);
   vec2 pos = mix(a_start, a_target, e);
-  float idle = smoothstep(0.55, 1.0, u_progress);
+  float idle = max(
+    1.0 - smoothstep(0.0, 0.12, u_progress),
+    smoothstep(0.55, 1.0, u_progress)
+  );
   float glyph = step(0.0, a_delay);
   float speed = mix(0.06, 0.38, glyph) * (0.55 + a_seed);
   float ang = u_time * speed + a_seed * 6.2832;
@@ -244,6 +250,73 @@ export function sampleWordmark(options: SampleWordmarkOptions): GlyphPoint[] {
   return points
 }
 
+export interface SamplePathOptions {
+  d: string
+  viewBox: number
+  width: number
+  height: number
+  size: number
+  step?: number
+}
+
+export function samplePathSilhouette(options: SamplePathOptions): GlyphPoint[] {
+  const canvas = document.createElement('canvas')
+  const step = Math.max(1, options.step ?? 2)
+  canvas.width = Math.max(1, Math.floor(options.width))
+  canvas.height = Math.max(1, Math.floor(options.height))
+  const ctx = canvas.getContext('2d', { willReadFrequently: true })
+  if (!ctx || typeof Path2D !== 'function') {
+    return []
+  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height)
+  ctx.translate(canvas.width / 2, canvas.height / 2)
+  const scale = options.size / options.viewBox
+  ctx.scale(scale, scale)
+  ctx.translate(-options.viewBox / 2, -options.viewBox / 2)
+  ctx.fillStyle = '#fff'
+  ctx.fill(new Path2D(options.d), 'evenodd')
+  const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+  const points: GlyphPoint[] = []
+  for (let y = 0; y < canvas.height; y += step) {
+    for (let x = 0; x < canvas.width; x += step) {
+      const index = (y * canvas.width + x) * 4
+      const a = pixels[index + 3] ?? 0
+      if (a < 36) {
+        continue
+      }
+      points.push({ x, y, accent: 0 })
+    }
+  }
+  return points
+}
+
+export function sortCloud(points: GlyphPoint[], cx: number, cy: number): GlyphPoint[] {
+  return [...points].sort((left, right) => {
+    const angle = Math.atan2(left.y - cy, left.x - cx) - Math.atan2(right.y - cy, right.x - cx)
+    if (angle !== 0) {
+      return angle
+    }
+    return left.x - right.x
+  })
+}
+
+export function pairClouds(from: GlyphPoint[], to: GlyphPoint[], cx: number, cy: number): Array<{ from: GlyphPoint, to: GlyphPoint }> {
+  if (from.length === 0 || to.length === 0) {
+    return []
+  }
+  const start = sortCloud(from, cx, cy)
+  const end = sortCloud(to, cx, cy)
+  const count = Math.max(start.length, end.length)
+  const pairs: Array<{ from: GlyphPoint, to: GlyphPoint }> = []
+  for (let index = 0; index < count; index += 1) {
+    pairs.push({
+      from: start[index % start.length]!,
+      to: end[index % end.length]!,
+    })
+  }
+  return pairs
+}
+
 function mulberry32(seed: number) {
   let value = seed >>> 0
   return () => {
@@ -368,7 +441,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     const glyphBudget = mobile ? 2800 : 7800
     const fieldBudget = mobile ? 1800 : 5200
     const giantCount = mobile ? 8 : 14
-    const sampled = downsamplePoints(sampleWordmark({
+    const word = downsamplePoints(sampleWordmark({
       text: 'weapp.dev',
       fontFamily: titleStyle.fontFamily || 'Sora Variable, sans-serif',
       fontWeight: titleStyle.fontWeight || '740',
@@ -378,14 +451,23 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
       height: canvas.height,
       step: 2,
     }), glyphBudget)
-    if (sampled.length < 40) {
+    const mark = downsamplePoints(samplePathSilhouette({
+      d: MINIPROGRAM_PATH,
+      viewBox: MINIPROGRAM_VIEWBOX,
+      width: canvas.width,
+      height: canvas.height,
+      size: Math.min(canvas.width, canvas.height) * (mobile ? 0.42 : 0.46),
+      step: 2,
+    }), glyphBudget)
+    const cx = canvas.width / 2
+    const cy = canvas.height / 2
+    const paired = pairClouds(mark, word, cx, cy)
+    if (paired.length < 40) {
       return false
     }
     const rand = mulberry32(0x5EED ^ Math.floor(cssWidth * 13 + cssHeight))
-    const cx = canvas.width / 2
-    const cy = canvas.height / 2
     const maxDist = Math.hypot(canvas.width, canvas.height) * 0.28
-    const total = sampled.length + fieldBudget
+    const total = paired.length + fieldBudget
     const start = new Float32Array(total * 2)
     const target = new Float32Array(total * 2)
     const delay = new Float32Array(total)
@@ -396,25 +478,23 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     const seed = new Float32Array(total)
     const kind = new Float32Array(total)
     const orbit = new Float32Array(total)
-    sampled.forEach((point, index) => {
-      const angle = rand() * Math.PI * 2
-      const radius = (0.22 + rand() * 0.62) * Math.min(canvas.width, canvas.height) * 0.48
-      start[index * 2] = cx + Math.cos(angle) * radius
-      start[index * 2 + 1] = cy + Math.sin(angle) * radius * 0.72
-      target[index * 2] = point.x
-      target[index * 2 + 1] = point.y
-      delay[index] = glyphDelay(point.x, point.y, cx, cy, maxDist, rand())
-      const picked = pickParticleKind(rand(), point.accent, 'glyph')
+    paired.forEach((pair, index) => {
+      start[index * 2] = pair.from.x
+      start[index * 2 + 1] = pair.from.y
+      target[index * 2] = pair.to.x
+      target[index * 2 + 1] = pair.to.y
+      delay[index] = glyphDelay(pair.to.x, pair.to.y, cx, cy, maxDist, rand())
+      const picked = pickParticleKind(rand(), pair.to.accent, 'glyph')
       kind[index] = picked
       size[index] = (picked === 0 ? 2.1 + rand() * 1.8 : 3.1 + rand() * 2.8) * dpr
       brightness[index] = 0.55 + rand() * 0.4
-      accent[index] = point.accent && rand() > 0.82 ? 1 : picked === 3 ? 0.35 : 0
+      accent[index] = pair.to.accent && rand() > 0.82 ? 1 : picked === 3 ? 0.35 : 0
       depth[index] = 0.5 + rand() * 0.5
       seed[index] = rand()
       orbit[index] = (0.016 + rand() * 0.022) * fontSize
     })
     for (let index = 0; index < fieldBudget; index += 1) {
-      const i = sampled.length + index
+      const i = paired.length + index
       const giant = index < giantCount
       const x = rand() * canvas.width
       const y = rand() * canvas.height
@@ -453,13 +533,14 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
   }
   screen.dataset.particlesActive = ''
 
-  const assemble = 2100
+  const hold = 850
+  const assemble = 1850
   const tick = (now: number) => {
     if (!startedAt) {
       startedAt = now
     }
     const elapsed = now - startedAt
-    const progress = assembled ? 1 : Math.min(1, Math.max(0, elapsed / assemble))
+    const progress = assembled ? 1 : Math.min(1, Math.max(0, (elapsed - hold) / assemble))
     if (progress >= 1) {
       assembled = true
       screen.dataset.particlesReady = ''
