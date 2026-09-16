@@ -56,7 +56,7 @@ pnpm exec wrangler versions upload --dry-run
 | 设置        | 值                                                                         |
 | ----------- | -------------------------------------------------------------------------- |
 | 生产分支    | `main`                                                                     |
-| 质量门      | `pnpm check`、静态构建、Playwright e2e 全部通过后才发布                    |
+| 质量门      | `pnpm check` 和静态构建通过后发布；Playwright e2e 仍运行但不阻断生产       |
 | 生产命令    | `pnpm exec wrangler deploy --message "$GITHUB_SHA"`（工作目录 `apps/web`） |
 | 预览命令    | `pnpm exec wrangler versions upload --preview-alias pr-<n>`                |
 | Node / pnpm | `.node-version`（22.23.2）和根目录 `packageManager`（pnpm@12.3.4）         |
