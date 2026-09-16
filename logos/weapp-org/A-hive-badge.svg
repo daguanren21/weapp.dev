@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp hive badge</title>
+  <desc id="desc">Hive cluster inscribed in a WeUI-green superellipse. GitHub org avatar, favicon, and app icon.</desc>
+  <rect width="128" height="128" rx="36" fill="#07C160"/>
+  <g transform="translate(64 64) scale(.76) translate(-64 -64)">
+    <rect x="30.5" y="18.5" width="36" height="36" rx="9" fill="#fff" fill-opacity=".42"/>
+    <rect x="61.5" y="18.5" width="36" height="36" rx="9" fill="#fff" fill-opacity=".58"/>
+    <rect x="15" y="46.5" width="36" height="36" rx="9" fill="#fff" fill-opacity=".7"/>
+    <rect x="77" y="46.5" width="36" height="36" rx="9" fill="#fff" fill-opacity=".88"/>
+    <rect x="30.5" y="73.5" width="36" height="36" rx="9" fill="#fff" fill-opacity=".5"/>
+    <rect x="61.5" y="73.5" width="36" height="36" rx="9" fill="#fff" fill-opacity=".64"/>
+    <rect x="46" y="46.5" width="36" height="36" rx="9" fill="#fff"/>
+  </g>
+</svg>

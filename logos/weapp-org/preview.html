@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>weapp org icon concepts</title>
+    <style>
+      :root {
+        --canvas: #f4f7f5;
+        --ink: #0d1712;
+        --muted: #5a6861;
+        --line: #d5ddd8;
+        --panel: #fff;
+        --brand: #0e7958;
+        --weui: #07c160;
+        --dark: #0b110e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        background: var(--canvas);
+        color: var(--ink);
+      }
+      body {
+        font-family: ui-sans-serif, system-ui, 'PingFang SC', 'Geist', sans-serif;
+        line-height: 1.45;
+      }
+      header {
+        padding: 48px 48px 24px;
+        max-width: 1280px;
+        margin: 0 auto;
+      }
+      header p.kicker {
+        font-family: ui-monospace, monospace;
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        color: var(--brand);
+        font-weight: 650;
+        margin: 0 0 8px;
+      }
+      h1 {
+        font-size: 32px;
+        font-weight: 720;
+        margin: 0 0 8px;
+        letter-spacing: -0.03em;
+      }
+      .lede {
+        color: var(--muted);
+        max-width: 52ch;
+        margin: 0;
+      }
+      main {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 8px 48px 64px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+      article {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      article header {
+        padding: 20px 20px 12px;
+        max-width: none;
+      }
+      article h2 {
+        font-size: 16px;
+        margin: 0 0 4px;
+        font-weight: 680;
+      }
+      article .why {
+        color: var(--muted);
+        font-size: 13px;
+        margin: 0;
+      }
+      .board {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
+      .cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+        padding: 24px;
+      }
+      .cell.light {
+        background: #f4f7f5;
+      }
+      .cell.dark {
+        background: var(--dark);
+      }
+      .cell img {
+        width: 112px;
+        height: 112px;
+        display: block;
+      }
+      .sizes {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 20px 20px;
+        border-top: 1px solid var(--line);
+      }
+      .sizes.dark-row {
+        background: var(--dark);
+        border-top-color: #304039;
+      }
+      .size {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+      }
+      .size span {
+        font-family: ui-monospace, monospace;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .sizes.dark-row .size span {
+        color: #aab8b0;
+      }
+      .size img {
+        display: block;
+      }
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #0d1117;
+        display: grid;
+        place-items: center;
+      }
+      .avatar img {
+        width: 40px;
+        height: 40px;
+      }
+      .avatar.green {
+        background: #07c160;
+      }
+      .lockup {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 20px 20px;
+        font-weight: 720;
+        letter-spacing: -0.03em;
+      }
+      .lockup img {
+        width: 28px;
+        height: 28px;
+      }
+      .now {
+        margin-top: 28px;
+        padding: 20px;
+        border: 1px dashed var(--line);
+        border-radius: 8px;
+        display: flex;
+        gap: 16px;
+        align-items: center;
+      }
+      .now img {
+        width: 64px;
+        height: 64px;
+      }
+      .now h2 {
+        margin: 0 0 4px;
+        font-size: 14px;
+      }
+      .now p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 860px) {
+        header,
+        main {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <p class="kicker">weapp open-source org</p>
+      <h1>Icon concepts</h1>
+      <p class="lede">
+        核心语义：把一大堆小程序和相关开源项目聚合成一个组织。不用平台 logo 拼贴，沿用 WeUI 绿和现有 Build Lens
+        的层叠语言。
+      </p>
+    </header>
+    <main>
+      <div class="now">
+        <img src="../../apps/web/public/logo.svg" alt="current hub mark" />
+        <div>
+          <h2>Current hub mark</h2>
+          <p>三层等轴卡片（Build Lens）。清晰、能缩到 favicon，但“很多项目聚在一起”的意思偏弱。</p>
+        </div>
+      </div>
+
+      <div class="grid" style="margin-top: 20px">
+        <article>
+          <header>
+            <h2>A · Hive 蜂巢</h2>
+            <p class="why">七个小程序砖块六边形挤在一起。组织本身就是这场聚合。推荐作为主标记。</p>
+          </header>
+          <div class="board">
+            <div class="cell light"><img src="A-hive.svg" alt="Hive on light" /></div>
+            <div class="cell dark"><img src="A-hive-inverse.svg" alt="Hive on dark" /></div>
+          </div>
+          <div class="sizes">
+            <div class="size"><img src="A-hive.svg" width="64" height="64" alt="" /><span>64</span></div>
+            <div class="size"><img src="A-hive.svg" width="32" height="32" alt="" /><span>32</span></div>
+            <div class="size"><img src="A-hive.svg" width="16" height="16" alt="" /><span>16</span></div>
+            <div class="avatar"><img src="A-hive-inverse.svg" alt="GitHub avatar" /></div>
+            <div class="size"><img src="A-hive-badge.svg" width="48" height="48" alt="badge" /><span>badge</span></div>
+          </div>
+          <div class="lockup"><img src="A-hive.svg" alt="" />weapp</div>
+        </article>
+
+        <article>
+          <header>
+            <h2>B · Vessel 容器</h2>
+            <p class="why">WeUI 绿超椭圆里装 3×3 马赛克。组织是容器，项目是砖。适合 GitHub / App 头像。</p>
+          </header>
+          <div class="board">
+            <div class="cell light"><img src="B-vessel.svg" alt="Vessel on light" /></div>
+            <div class="cell dark"><img src="B-vessel-inverse.svg" alt="Vessel on dark" /></div>
+          </div>
+          <div class="sizes">
+            <div class="size"><img src="B-vessel.svg" width="64" height="64" alt="" /><span>64</span></div>
+            <div class="size"><img src="B-vessel.svg" width="32" height="32" alt="" /><span>32</span></div>
+            <div class="size"><img src="B-vessel.svg" width="16" height="16" alt="" /><span>16</span></div>
+            <div class="avatar green"><img src="B-vessel.svg" alt="GitHub avatar" /></div>
+          </div>
+          <div class="lockup"><img src="B-vessel.svg" alt="" />weapp</div>
+        </article>
+
+        <article>
+          <header>
+            <h2>C · Cascade 层叠</h2>
+            <p class="why">把现有 Build Lens 加厚成五层。连续性最强，字面意思就是“一堆项目”。</p>
+          </header>
+          <div class="board">
+            <div class="cell light"><img src="C-cascade.svg" alt="Cascade on light" /></div>
+            <div class="cell dark"><img src="C-cascade-inverse.svg" alt="Cascade on dark" /></div>
+          </div>
+          <div class="sizes">
+            <div class="size"><img src="C-cascade.svg" width="64" height="64" alt="" /><span>64</span></div>
+            <div class="size"><img src="C-cascade.svg" width="32" height="32" alt="" /><span>32</span></div>
+            <div class="size"><img src="C-cascade.svg" width="16" height="16" alt="" /><span>16</span></div>
+            <div class="avatar"><img src="C-cascade-inverse.svg" alt="GitHub avatar" /></div>
+          </div>
+          <div class="lockup"><img src="C-cascade.svg" alt="" />weapp</div>
+        </article>
+
+        <article>
+          <header>
+            <h2>D · W-windows</h2>
+            <p class="why">四张小程序卡片组成 W。每一笔都是一个应用窗口。</p>
+          </header>
+          <div class="board">
+            <div class="cell light"><img src="D-w-windows.svg" alt="W on light" /></div>
+            <div class="cell dark"><img src="D-w-windows-inverse.svg" alt="W on dark" /></div>
+          </div>
+          <div class="sizes">
+            <div class="size"><img src="D-w-windows.svg" width="64" height="64" alt="" /><span>64</span></div>
+            <div class="size"><img src="D-w-windows.svg" width="32" height="32" alt="" /><span>32</span></div>
+            <div class="size"><img src="D-w-windows.svg" width="16" height="16" alt="" /><span>16</span></div>
+            <div class="avatar"><img src="D-w-windows-inverse.svg" alt="GitHub avatar" /></div>
+          </div>
+          <div class="lockup"><img src="D-w-windows.svg" alt="" />weapp</div>
+        </article>
+
+        <article>
+          <header>
+            <h2>E · Deck 一叠</h2>
+            <p class="why">五张小程序卡片错位叠在一起。字面意思就是手里的一堆项目。</p>
+          </header>
+          <div class="board">
+            <div class="cell light"><img src="E-fan.svg" alt="Fan on light" /></div>
+            <div class="cell dark"><img src="E-fan-inverse.svg" alt="Fan on dark" /></div>
+          </div>
+          <div class="sizes">
+            <div class="size"><img src="E-fan.svg" width="64" height="64" alt="" /><span>64</span></div>
+            <div class="size"><img src="E-fan.svg" width="32" height="32" alt="" /><span>32</span></div>
+            <div class="size"><img src="E-fan.svg" width="16" height="16" alt="" /><span>16</span></div>
+            <div class="avatar"><img src="E-fan-inverse.svg" alt="GitHub avatar" /></div>
+          </div>
+          <div class="lockup"><img src="E-fan.svg" alt="" />weapp</div>
+        </article>
+
+        <article>
+          <header>
+            <h2>F · Hub 核心</h2>
+            <p class="why">中间一块大的小程序，四周停靠八个项目。组织是核，项目往上挂。</p>
+          </header>
+          <div class="board">
+            <div class="cell light"><img src="F-hub.svg" alt="Hub on light" /></div>
+            <div class="cell dark"><img src="F-hub-inverse.svg" alt="Hub on dark" /></div>
+          </div>
+          <div class="sizes">
+            <div class="size"><img src="F-hub.svg" width="64" height="64" alt="" /><span>64</span></div>
+            <div class="size"><img src="F-hub.svg" width="32" height="32" alt="" /><span>32</span></div>
+            <div class="size"><img src="F-hub.svg" width="16" height="16" alt="" /><span>16</span></div>
+            <div class="avatar"><img src="F-hub-inverse.svg" alt="GitHub avatar" /></div>
+          </div>
+          <div class="lockup"><img src="F-hub.svg" alt="" />weapp</div>
+        </article>
+      </div>
+    </main>
+  </body>
+</html>

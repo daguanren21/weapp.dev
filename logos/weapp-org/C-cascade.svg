@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp cascade</title>
+  <desc id="desc">Five isometric mini-program sheets stacked in the existing Build Lens language, a literal pile of projects.</desc>
+  <g stroke-linejoin="round">
+    <!-- Back to front. Same parallelogram as the current hub mark, retimed for five layers. -->
+    <path d="M14 34L54 10L110 24L70 48Z" fill="#D9E7DF" stroke="#7E9E8F" stroke-width="1.5"/>
+    <path d="M14 48L54 24L110 38L70 62Z" fill="#A8D4C0" stroke="#6FA08A" stroke-width="1.5"/>
+    <path d="M14 62L54 38L110 52L70 76Z" fill="#79D0AE" stroke="#3C9E78" stroke-width="1.5"/>
+    <path d="M14 76L54 52L110 66L70 90Z" fill="#07C160" stroke="#0a9e4e" stroke-width="1.5"/>
+    <path d="M14 90L54 66L110 80L70 104Z" fill="#0e7958" stroke="#07583F" stroke-width="1.5"/>
+  </g>
+</svg>

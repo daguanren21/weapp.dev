@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp hive inverse</title>
+  <desc id="desc">White hexagonal cluster of mini-program tiles for dark surfaces.</desc>
+  <rect x="30.5" y="18.5" width="36" height="36" rx="9" fill="#fff" opacity=".42"/>
+  <rect x="61.5" y="18.5" width="36" height="36" rx="9" fill="#fff" opacity=".52"/>
+  <rect x="15" y="46.5" width="36" height="36" rx="9" fill="#fff" opacity=".64"/>
+  <rect x="77" y="46.5" width="36" height="36" rx="9" fill="#fff" opacity=".78"/>
+  <rect x="30.5" y="73.5" width="36" height="36" rx="9" fill="#fff" opacity=".88"/>
+  <rect x="61.5" y="73.5" width="36" height="36" rx="9" fill="#fff" opacity=".96"/>
+  <rect x="46" y="46.5" width="36" height="36" rx="9" fill="#fff"/>
+</svg>

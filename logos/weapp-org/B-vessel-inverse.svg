@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp vessel inverse</title>
+  <desc id="desc">White superellipse with a 3×3 mosaic cut from the field, for dark surfaces.</desc>
+  <rect width="128" height="128" rx="36" fill="#fff"/>
+  <rect x="22" y="22" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".18"/>
+  <rect x="52" y="22" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".06"/>
+  <rect x="82" y="22" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".28"/>
+  <rect x="22" y="52" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".08"/>
+  <rect x="52" y="52" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".04"/>
+  <rect x="82" y="52" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".34"/>
+  <rect x="22" y="82" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".14"/>
+  <rect x="52" y="82" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".4"/>
+  <rect x="82" y="82" width="24" height="24" rx="6" fill="#0b110e" fill-opacity=".1"/>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp cascade inverse</title>
+  <desc id="desc">White isometric pile for dark surfaces.</desc>
+  <g fill="#fff" stroke="#fff" stroke-width="1.5" stroke-linejoin="round">
+    <path d="M14 34L54 10L110 24L70 48Z" opacity=".4"/>
+    <path d="M14 48L54 24L110 38L70 62Z" opacity=".55"/>
+    <path d="M14 62L54 38L110 52L70 76Z" opacity=".7"/>
+    <path d="M14 76L54 52L110 66L70 90Z" opacity=".85"/>
+    <path d="M14 90L54 66L110 80L70 104Z"/>
+  </g>
+</svg>

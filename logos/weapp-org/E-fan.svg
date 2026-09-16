@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp deck</title>
+  <desc id="desc">Five mini-program cards stacked with a slight fan — a handful of projects held together.</desc>
+  <g transform="translate(-8 0)">
+    <g transform="translate(36 22) rotate(-14)">
+      <rect width="52" height="68" rx="14" fill="#D9E7DF"/>
+      <rect x="10" y="10" width="32" height="44" rx="8" fill="#0e7958" fill-opacity=".1"/>
+    </g>
+    <g transform="translate(42 26) rotate(-7)">
+      <rect width="52" height="68" rx="14" fill="#A8D4C0"/>
+      <rect x="10" y="10" width="32" height="44" rx="8" fill="#fff" fill-opacity=".18"/>
+    </g>
+    <g transform="translate(48 30) rotate(0)">
+      <rect width="52" height="68" rx="14" fill="#79D0AE"/>
+      <rect x="10" y="10" width="32" height="44" rx="8" fill="#fff" fill-opacity=".2"/>
+    </g>
+    <g transform="translate(54 34) rotate(6)">
+      <rect width="52" height="68" rx="14" fill="#07C160"/>
+      <rect x="10" y="10" width="32" height="44" rx="8" fill="#fff" fill-opacity=".24"/>
+    </g>
+    <g transform="translate(60 38) rotate(12)">
+      <rect width="52" height="68" rx="14" fill="#07C160"/>
+      <rect x="10" y="10" width="32" height="44" rx="8" fill="#fff" fill-opacity=".26"/>
+    </g>
+  </g>
+</svg>

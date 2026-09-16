@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">weapp deck inverse</title>
+  <desc id="desc">White stacked mini-program cards for dark surfaces.</desc>
+  <g fill="#fff" transform="translate(-8 0)">
+    <rect transform="translate(36 22) rotate(-14)" width="52" height="68" rx="14" opacity=".4"/>
+    <rect transform="translate(42 26) rotate(-7)" width="52" height="68" rx="14" opacity=".55"/>
+    <rect transform="translate(48 30) rotate(0)" width="52" height="68" rx="14" opacity=".7"/>
+    <rect transform="translate(54 34) rotate(6)" width="52" height="68" rx="14" opacity=".86"/>
+    <rect transform="translate(60 38) rotate(12)" width="52" height="68" rx="14"/>
+  </g>
+</svg>
