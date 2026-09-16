@@ -15,6 +15,8 @@ export interface SampleWordmarkOptions {
   step?: number
 }
 
+export type ParticleRole = 'glyph' | 'field' | 'giant'
+
 const VERTEX = `#version 300 es
 in vec2 a_start;
 in vec2 a_target;
@@ -24,6 +26,8 @@ in float a_brightness;
 in float a_accent;
 in float a_depth;
 in float a_seed;
+in float a_kind;
+in float a_orbit;
 uniform vec2 u_resolution;
 uniform float u_time;
 uniform float u_progress;
@@ -31,24 +35,35 @@ uniform vec2 u_pointer;
 uniform float u_pointerStrength;
 out float v_brightness;
 out float v_accent;
+out float v_kind;
+out float v_spin;
+out float v_seed;
 void main() {
   float span = max(0.18, 1.0 - max(a_delay, 0.0));
   float t = clamp((u_progress - a_delay) / span, 0.0, 1.0);
   float e = 1.0 - pow(1.0 - t, 3.0);
   vec2 pos = mix(a_start, a_target, e);
-  float idle = smoothstep(0.82, 1.0, u_progress);
-  float swirl = u_time * (0.22 + a_seed * 0.18);
+  float idle = smoothstep(0.55, 1.0, u_progress);
   float glyph = step(0.0, a_delay);
-  pos += vec2(sin(swirl + a_seed * 6.2832), cos(swirl * 0.83 + a_depth * 4.0)) * mix(2.4, 0.45, glyph) * idle;
+  float speed = mix(0.06, 0.38, glyph) * (0.55 + a_seed);
+  float ang = u_time * speed + a_seed * 6.2832;
+  pos += vec2(cos(ang), sin(ang * 0.87)) * a_orbit * idle;
+  pos += vec2(
+    sin(u_time * 0.042 + a_seed * 5.1),
+    cos(u_time * 0.031 + a_depth * 2.7)
+  ) * mix(a_orbit * 2.4, 0.35, glyph) * idle;
   vec2 away = pos - u_pointer;
   float dist = length(away);
   pos += normalize(away + 0.0001) * u_pointerStrength * exp(-dist / 170.0);
   vec2 clip = (pos / u_resolution) * 2.0 - 1.0;
   clip.y *= -1.0;
   gl_Position = vec4(clip, 0.0, 1.0);
-  gl_PointSize = a_size * (0.65 + a_depth * 1.05);
-  v_brightness = a_brightness * (0.72 + 0.28 * sin(u_time * 1.7 + a_seed * 12.0));
+  gl_PointSize = min(48.0, a_size * (0.72 + a_depth * 0.85));
+  v_brightness = a_brightness * (0.82 + 0.18 * sin(u_time * 1.35 + a_seed * 12.0));
   v_accent = a_accent;
+  v_kind = a_kind;
+  v_spin = u_time * (0.11 + a_seed * 0.32);
+  v_seed = a_seed;
 }
 `
 
@@ -56,13 +71,69 @@ const FRAGMENT = `#version 300 es
 precision mediump float;
 in float v_brightness;
 in float v_accent;
+in float v_kind;
+in float v_spin;
+in float v_seed;
 out vec4 fragColor;
 void main() {
-  vec2 p = gl_PointCoord * 2.0 - 1.0;
-  float d = dot(p, p);
-  if (d > 1.0) discard;
-  float alpha = exp(-d * 3.4) * v_brightness;
-  vec3 color = mix(vec3(0.93, 0.98, 0.95), vec3(0.41, 0.78, 0.65), v_accent);
+  vec2 uv = gl_PointCoord * 2.0 - 1.0;
+  float ca = cos(v_spin);
+  float sa = sin(v_spin);
+  vec2 p = vec2(ca * uv.x - sa * uv.y, sa * uv.x + ca * uv.y);
+  int k = int(floor(v_kind + 0.5));
+  vec3 light = normalize(vec3(0.38, 0.56, 0.74));
+  vec3 cold = vec3(0.93, 0.98, 0.95);
+  vec3 green = vec3(0.41, 0.78, 0.65);
+  if (k == 0) {
+    float d = dot(uv, uv);
+    if (d > 1.0) {
+      discard;
+    }
+    float alpha = exp(-d * 3.4) * v_brightness;
+    fragColor = vec4(mix(cold, green, v_accent) * alpha, alpha);
+    return;
+  }
+  if (k == 3) {
+    float d = dot(uv, uv);
+    float spike = max(0.0, 1.0 - abs(uv.x) * 9.0) * max(0.0, 1.0 - abs(uv.y) * 1.7)
+      + max(0.0, 1.0 - abs(uv.y) * 9.0) * max(0.0, 1.0 - abs(uv.x) * 1.7);
+    float core = exp(-d * 10.0);
+    float alpha = (core * 1.25 + spike * 0.58) * v_brightness;
+    if (alpha < 0.02) {
+      discard;
+    }
+    fragColor = vec4(mix(cold, green, v_accent) * alpha, alpha);
+    return;
+  }
+  float r = length(p);
+  float ring = 0.0;
+  if (k == 5) {
+    float ell = abs(p.y * 3.15 + p.x * 0.14);
+    ring = smoothstep(0.18, 0.02, ell) * smoothstep(1.28, 0.7, length(vec2(p.x, p.y * 0.32)));
+  }
+  if (r > 1.0 && ring < 0.02) {
+    discard;
+  }
+  float z = sqrt(max(0.0, 1.0 - r * r));
+  vec3 n = vec3(p, z);
+  float ndl = max(0.16, dot(n, light));
+  vec3 albedo = mix(vec3(0.5, 0.58, 0.54), green, v_accent * 0.55);
+  if (k == 2) {
+    albedo = mix(vec3(0.42, 0.6, 0.56), green, 0.4) * (0.58 + 0.42 * sin((p.y + v_seed) * 10.0));
+  }
+  else if (k == 4) {
+    albedo = vec3(0.66, 0.68, 0.7) * (0.82 + 0.18 * sin(p.x * 14.0 + v_seed * 8.0));
+  }
+  else if (k == 1) {
+    albedo *= 0.78 + 0.22 * sin((p.x * 3.4 + p.y * 5.1 + v_seed) * 4.0);
+  }
+  vec3 color = albedo * ndl;
+  float limb = smoothstep(1.02, 0.76, r);
+  float alpha = v_brightness * limb;
+  if (k == 5) {
+    color += mix(vec3(0.55, 0.72, 0.66), green, 0.35) * ring * 0.9;
+    alpha = max(alpha, ring * v_brightness);
+  }
   fragColor = vec4(color * alpha, alpha);
 }
 `
@@ -82,6 +153,46 @@ export function downsamplePoints<T>(items: T[], max: number): T[] {
 export function glyphDelay(x: number, y: number, cx: number, cy: number, maxDist: number, jitter: number): number {
   const dist = Math.hypot(x - cx, y - cy)
   return Math.min(0.52, (dist / Math.max(1, maxDist)) * 0.38 + jitter * 0.16)
+}
+
+export function pickParticleKind(rand: number, accent: number, role: ParticleRole): number {
+  if (role === 'giant') {
+    if (rand < 0.34) {
+      return 5
+    }
+    if (rand < 0.7) {
+      return 2
+    }
+    return 1
+  }
+  if (accent > 0.5) {
+    return rand < 0.55 ? 3 : 1
+  }
+  if (role === 'glyph') {
+    if (rand < 0.68) {
+      return 0
+    }
+    if (rand < 0.88) {
+      return 1
+    }
+    if (rand < 0.95) {
+      return 4
+    }
+    return 3
+  }
+  if (rand < 0.74) {
+    return 0
+  }
+  if (rand < 0.88) {
+    return 1
+  }
+  if (rand < 0.94) {
+    return 3
+  }
+  if (rand < 0.98) {
+    return 4
+  }
+  return 2
 }
 
 export function sampleWordmark(options: SampleWordmarkOptions): GlyphPoint[] {
@@ -202,6 +313,8 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     accent: gl.getAttribLocation(program, 'a_accent'),
     depth: gl.getAttribLocation(program, 'a_depth'),
     seed: gl.getAttribLocation(program, 'a_seed'),
+    kind: gl.getAttribLocation(program, 'a_kind'),
+    orbit: gl.getAttribLocation(program, 'a_orbit'),
     resolution: gl.getUniformLocation(program, 'u_resolution'),
     time: gl.getUniformLocation(program, 'u_time'),
     progress: gl.getUniformLocation(program, 'u_progress'),
@@ -218,6 +331,8 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     accent: gl.createBuffer(),
     depth: gl.createBuffer(),
     seed: gl.createBuffer(),
+    kind: gl.createBuffer(),
+    orbit: gl.createBuffer(),
   }
 
   let count = 0
@@ -247,10 +362,12 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     canvas.height = Math.floor(cssHeight * dpr)
     gl.viewport(0, 0, canvas.width, canvas.height)
     const titleStyle = getComputedStyle(title)
-    const fontSize = Number.parseFloat(titleStyle.fontSize) || Math.min(cssWidth * 0.12, 140)
+    const cssFontSize = Number.parseFloat(titleStyle.fontSize) || Math.min(cssWidth * 0.17, 208)
+    const fontSize = cssFontSize * dpr
     const mobile = cssWidth < 720
-    const glyphBudget = mobile ? 3200 : 8200
-    const fieldBudget = mobile ? 2200 : 6200
+    const glyphBudget = mobile ? 2800 : 7800
+    const fieldBudget = mobile ? 1800 : 5200
+    const giantCount = mobile ? 8 : 14
     const sampled = downsamplePoints(sampleWordmark({
       text: 'weapp.dev',
       fontFamily: titleStyle.fontFamily || 'Sora Variable, sans-serif',
@@ -259,7 +376,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
       letterSpacingEm: -0.07,
       width: canvas.width,
       height: canvas.height,
-      step: mobile ? 3 : 2,
+      step: 2,
     }), glyphBudget)
     if (sampled.length < 40) {
       return false
@@ -277,34 +394,45 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     const accent = new Float32Array(total)
     const depth = new Float32Array(total)
     const seed = new Float32Array(total)
+    const kind = new Float32Array(total)
+    const orbit = new Float32Array(total)
     sampled.forEach((point, index) => {
       const angle = rand() * Math.PI * 2
-      const radius = (0.18 + rand() * 0.55) * Math.min(canvas.width, canvas.height) * 0.42
+      const radius = (0.22 + rand() * 0.62) * Math.min(canvas.width, canvas.height) * 0.48
       start[index * 2] = cx + Math.cos(angle) * radius
       start[index * 2 + 1] = cy + Math.sin(angle) * radius * 0.72
       target[index * 2] = point.x
       target[index * 2 + 1] = point.y
       delay[index] = glyphDelay(point.x, point.y, cx, cy, maxDist, rand())
-      size[index] = (1.5 + rand() * 1.35) * dpr
-      brightness[index] = 0.52 + rand() * 0.42
-      accent[index] = point.accent && rand() > 0.9 ? 1 : 0
-      depth[index] = 0.55 + rand() * 0.45
+      const picked = pickParticleKind(rand(), point.accent, 'glyph')
+      kind[index] = picked
+      size[index] = (picked === 0 ? 2.1 + rand() * 1.8 : 3.1 + rand() * 2.8) * dpr
+      brightness[index] = 0.55 + rand() * 0.4
+      accent[index] = point.accent && rand() > 0.82 ? 1 : picked === 3 ? 0.35 : 0
+      depth[index] = 0.5 + rand() * 0.5
       seed[index] = rand()
+      orbit[index] = (0.016 + rand() * 0.022) * fontSize
     })
     for (let index = 0; index < fieldBudget; index += 1) {
       const i = sampled.length + index
+      const giant = index < giantCount
       const x = rand() * canvas.width
       const y = rand() * canvas.height
+      const wander = (giant ? 0.08 : 0.035 + rand() * 0.09) * Math.min(canvas.width, canvas.height)
+      const heading = rand() * Math.PI * 2
       start[i * 2] = x
       start[i * 2 + 1] = y
-      target[i * 2] = x
-      target[i * 2 + 1] = y
+      target[i * 2] = x + Math.cos(heading) * wander
+      target[i * 2 + 1] = y + Math.sin(heading) * wander
       delay[i] = -1
-      size[i] = (0.8 + rand() * 1.4) * dpr
-      brightness[i] = 0.08 + rand() * 0.22
-      accent[i] = rand() > 0.86 ? 0.65 : 0
-      depth[i] = rand()
+      const picked = pickParticleKind(rand(), 0, giant ? 'giant' : 'field')
+      kind[i] = picked
+      size[i] = (giant ? 20 + rand() * 18 : picked === 0 ? 0.9 + rand() * 1.5 : 3.2 + rand() * 4.8) * dpr
+      brightness[i] = giant ? 0.55 + rand() * 0.25 : 0.1 + rand() * 0.22
+      accent[i] = rand() > 0.82 ? 0.55 : 0
+      depth[i] = giant ? 0.85 : rand()
       seed[i] = rand()
+      orbit[i] = (giant ? 14 + rand() * 18 : 8 + rand() * 20) * dpr
     }
     count = total
     bindFloat(buffers.start, loc.start, start, 2)
@@ -315,21 +443,23 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     bindFloat(buffers.accent, loc.accent, accent, 1)
     bindFloat(buffers.depth, loc.depth, depth, 1)
     bindFloat(buffers.seed, loc.seed, seed, 1)
+    bindFloat(buffers.kind, loc.kind, kind, 1)
+    bindFloat(buffers.orbit, loc.orbit, orbit, 1)
     return true
   }
 
   if (!rebuild()) {
     return null
   }
+  screen.dataset.particlesActive = ''
 
-  const hold = 280
-  const assemble = 1750
+  const assemble = 2100
   const tick = (now: number) => {
     if (!startedAt) {
       startedAt = now
     }
     const elapsed = now - startedAt
-    const progress = assembled ? 1 : Math.min(1, Math.max(0, (elapsed - hold) / assemble))
+    const progress = assembled ? 1 : Math.min(1, Math.max(0, elapsed / assemble))
     if (progress >= 1) {
       assembled = true
       screen.dataset.particlesReady = ''
@@ -366,7 +496,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     const sy = canvas.height / Math.max(1, box.height)
     pointer.x = (event.clientX - box.left) * sx
     pointer.y = (event.clientY - box.top) * sy
-    pointer.strength = 42
+    pointer.strength = 48
   }
   const onPointerLeave = () => {
     pointer.strength = 0
@@ -385,6 +515,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     if (!rebuild()) {
       return
     }
+    screen.dataset.particlesActive = ''
     if (ready) {
       assembled = true
       screen.dataset.particlesReady = ''
@@ -395,7 +526,9 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
     if (visible) {
       play()
     }
-    else { pause() }
+    else {
+      pause()
+    }
   }, { threshold: 0.08 })
 
   screen.addEventListener('pointermove', onPointer)
@@ -414,6 +547,7 @@ function createEngine(canvas: HTMLCanvasElement, screen: HTMLElement, title: HTM
       screen.removeEventListener('pointerleave', onPointerLeave)
       document.removeEventListener('visibilitychange', onVisibility)
       delete screen.dataset.particlesReady
+      delete screen.dataset.particlesActive
       const ext = gl.getExtension('WEBGL_lose_context')
       ext?.loseContext()
     },
@@ -459,6 +593,7 @@ export function defineHeroParticles() {
       }
       const engine = createEngine(canvas, screen, title)
       if (!engine) {
+        delete screen.dataset.particlesActive
         this.#stop = unbind
         return
       }

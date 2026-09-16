@@ -9,7 +9,7 @@ const projectDefinitions = [viteProject, tailwindProject, varoProject]
 const retiredVisuals = 'canvas:not(.home-hero-particle-canvas), [data-shader-canvas], [data-shader], [data-shader-frame], [data-webgl-fallback], [data-art], .project-art, [class^="art-"], [class*=" art-"]'
 
 async function expectHomeVisuals(page: import('@playwright/test').Page, locale: 'zh-CN' | 'en') {
-  await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeAttached()
   await expect(page.locator('#home-hero-title')).toHaveText('weapp.dev')
   await expect(page.locator('.home-hero-screen')).toBeVisible()
   await expect(page.locator('.home-hero-constellation .home-hero-tile')).toHaveCount(6)

@@ -1,11 +1,20 @@
 import { describe, expect, it } from 'vitest'
-import { downsamplePoints, glyphDelay, sampleWordmark } from './hero-particles'
+import { downsamplePoints, glyphDelay, pickParticleKind, sampleWordmark } from './hero-particles'
 
 describe('hero particle layout', () => {
   it('downsamples a dense cloud without emptying it', () => {
     const source = Array.from({ length: 40 }, (_, index) => index)
     expect(downsamplePoints(source, 10)).toHaveLength(10)
     expect(downsamplePoints(source, 80)).toEqual(source)
+  })
+
+  it('assigns planet kinds for giants and mixed glyph dust', () => {
+    expect(pickParticleKind(0.1, 0, 'giant')).toBe(5)
+    expect(pickParticleKind(0.5, 0, 'giant')).toBe(2)
+    expect(pickParticleKind(0.9, 0, 'giant')).toBe(1)
+    expect(pickParticleKind(0.2, 0, 'glyph')).toBe(0)
+    expect(pickParticleKind(0.8, 0, 'glyph')).toBe(1)
+    expect(pickParticleKind(0.2, 1, 'glyph')).toBe(3)
   })
 
   it('delays edge glyph particles more than the center', () => {
