@@ -24,6 +24,14 @@ const railLabel = locale === 'zh-CN' ? '首页项目入口' : 'Homepage project 
 const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
   .map((char, index) => `<span class="${char === '.' ? 'home-hero-letter home-hero-dot' : 'home-hero-letter'}" style="--i:${index}">${char}</span>`)
   .join('')
+const planetOrbits = [
+  { kind: 'rock', rx: '42vw', ry: '22vh', t: '28s', p: '0.08' },
+  { kind: 'ice', rx: '45vw', ry: '27vh', t: '40s', p: '0.22' },
+  { kind: 'gas', rx: '42vw', ry: '22vh', t: '28s', p: '0.58' },
+  { kind: 'moon', rx: '45vw', ry: '27vh', t: '40s', p: '0.72' },
+  { kind: 'ring', rx: '48vw', ry: '32vh', t: '56s', p: '0.38' },
+  { kind: 'warm', rx: '48vw', ry: '32vh', t: '56s', p: '0.88' },
+] as const
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
@@ -37,23 +45,28 @@ const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
     <HeroParticles />
     <div class="home-hero-constellation">
       <span class="home-hero-gridlines" aria-hidden="true"></span>
-      <span class="home-hero-glow" aria-hidden="true"></span>
-      <span class="home-hero-orbit" aria-hidden="true"></span>
-      <span class="home-hero-orbit home-hero-orbit-2" aria-hidden="true"></span>
-      {constellation.map((mark, index) => (
-        <a
-          class={`home-hero-tile home-hero-tile-${index + 1}`}
-          href={mark.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={locale === 'zh-CN' ? `打开 ${mark.name} 官方站点` : `Open ${mark.name} official site`}
-          data-analytics-event="click_outbound"
-          data-analytics-target="project_home"
-          data-analytics-project={mark.id}
-        >
-          <img src={mark.logo} width="48" height="48" alt="" decoding="async" />
-        </a>
-      ))}
+      <span class="home-hero-orbit home-hero-orbit-inner" aria-hidden="true"></span>
+      <span class="home-hero-orbit home-hero-orbit-mid" aria-hidden="true"></span>
+      <span class="home-hero-orbit home-hero-orbit-outer" aria-hidden="true"></span>
+      {constellation.map((mark, index) => {
+        const orbit = planetOrbits[index]!
+        return (
+          <a
+            class={`home-hero-tile home-hero-planet home-hero-planet--${orbit.kind}`}
+            href={mark.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={locale === 'zh-CN' ? `打开 ${mark.name} 官方站点` : `Open ${mark.name} official site`}
+            data-analytics-event="click_outbound"
+            data-analytics-target="project_home"
+            data-analytics-project={mark.id}
+            style={`--orbit-rx: ${orbit.rx}; --orbit-ry: ${orbit.ry}; --orbit-t: ${orbit.t}; --orbit-p: ${orbit.p};`}
+          >
+            <span class="home-hero-planet-body" aria-hidden="true"></span>
+            <img src={mark.logo} width="48" height="48" alt="" decoding="async" />
+          </a>
+        )
+      })}
     </div>
     <h1 id="home-hero-title" class="home-hero-title" aria-label="weapp.dev">
       <span aria-hidden="true" set:html={wordmarkMarkup} />
