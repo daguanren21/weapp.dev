@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { applyTheme } from './theme'
 
 for (const route of ['/sponsors/', '/en/sponsors/']) {
   test(`passes automated accessibility checks on ${route}`, async ({ page }) => {
@@ -204,7 +205,7 @@ for (const width of [1440, 768, 390]) {
   for (const theme of ['light', 'dark'] as const) {
     test(`fits ${width}px in ${theme} with reduced motion`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 1000 })
-      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+      await applyTheme(page, theme, { reducedMotion: 'reduce' })
       await page.goto('/sponsors/')
       const graphs = page.locator('[data-sponsor-graphs]')
       await expect(graphs).toHaveAttribute('data-ready', 'true')

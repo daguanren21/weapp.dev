@@ -8,6 +8,11 @@ export function showsPublicMetrics(status: ProjectDefinition['status']): boolean
   return status !== 'planned'
 }
 
+/** Live GitHub/npm metrics are only fetched for published packages. */
+export function usesLiveMetrics(project: { status: string, npmUrl?: string }): boolean {
+  return project.status !== 'planned' && Boolean(project.npmUrl)
+}
+
 const generatedMetricsPath = fileURLToPath(new URL('../../.cache/project-metrics.json', import.meta.url))
 
 function isFiniteNonNegative(value: unknown): value is number {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatCompactNumber, hasSameProjectMetricValues, isProjectMetrics, parseMetricsMap, showsPublicMetrics } from './metrics'
+import { formatCompactNumber, hasSameProjectMetricValues, isProjectMetrics, parseMetricsMap, showsPublicMetrics, usesLiveMetrics } from './metrics'
 
 const validMetrics = {
   version: '1.2.3',
@@ -40,5 +40,13 @@ describe('project metrics', () => {
     expect(showsPublicMetrics('planned')).toBe(false)
     expect(showsPublicMetrics('stable')).toBe(true)
     expect(showsPublicMetrics('beta')).toBe(true)
+  })
+
+  it('refreshes live metrics only for published packages', () => {
+    expect(usesLiveMetrics({ status: 'planned' })).toBe(false)
+    expect(usesLiveMetrics({ status: 'planned', npmUrl: 'https://www.npmjs.com/package/weapp-sqlite' })).toBe(false)
+    expect(usesLiveMetrics({ status: 'stable' })).toBe(false)
+    expect(usesLiveMetrics({ status: 'stable', npmUrl: 'https://www.npmjs.com/package/weapp-vite' })).toBe(true)
+    expect(usesLiveMetrics({ status: 'beta', npmUrl: 'https://www.npmjs.com/package/weapp-vite' })).toBe(true)
   })
 })

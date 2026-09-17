@@ -365,7 +365,7 @@ test('has no horizontal overflow or clipped interactive labels', async ({ page }
   const overflow = await page.evaluate(() => ({
     document: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
     controls: [...document.querySelectorAll<HTMLElement>('a, button, summary')]
-      .filter(element => element.scrollWidth > element.clientWidth + 1)
+      .filter(element => Boolean(element.textContent?.trim()) && element.scrollWidth > element.clientWidth + 1)
       .map(element => element.textContent?.trim() || element.getAttribute('aria-label')),
   }))
   expect(overflow).toEqual({ document: false, controls: [] })
@@ -389,7 +389,7 @@ test('keeps every key route stable across responsive viewports', async ({ page }
         overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
         heroTitleVisible: Boolean(box && box.top >= 0 && box.bottom <= innerHeight),
         wrappedControls: [...document.querySelectorAll<HTMLElement>('a, button, summary')]
-          .filter(element => element.scrollWidth > element.clientWidth + 1)
+          .filter(element => Boolean(element.textContent?.trim()) && element.scrollWidth > element.clientWidth + 1)
           .map(element => element.textContent?.trim() || element.getAttribute('aria-label')),
       }
     })

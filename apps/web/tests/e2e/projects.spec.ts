@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { applyTheme } from './theme'
 
 for (const prefix of ['', '/en']) {
   test(`does not fetch sponsor chart runtime on ${prefix || 'zh-CN'} project routes`, async ({ page }) => {
@@ -210,9 +211,8 @@ for (const prefix of ['', '/en']) {
 
 for (const prefix of ['', '/en']) {
   test(`audits all project detail pages in ${prefix || 'zh-CN'} for accessibility`, async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' })
     for (const theme of ['light', 'dark'] as const) {
-      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+      await applyTheme(page, theme, { reducedMotion: 'reduce' })
       for (const slug of ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro']) {
         await page.goto(`${prefix}/projects/${slug}/`)
         await expect(page.getByRole('link', { name: prefix ? 'Back to the stack' : '返回工具栈', exact: true })).toHaveAttribute('href', `${prefix}/projects/`)
@@ -266,7 +266,7 @@ for (const width of [1440, 768, 390]) {
   for (const theme of ['light', 'dark'] as const) {
     test(`keeps the planned project detail compact at ${width}px in ${theme}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 1000 })
-      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+      await applyTheme(page, theme, { reducedMotion: 'reduce' })
       await page.goto('/en/projects/weapp-sqlite/')
       await expect(page.getByRole('heading', { level: 1, name: 'weapp-sqlite' })).toBeVisible()
       await expect(page.getByRole('region', { name: 'Project data', exact: true })).toBeVisible()
@@ -279,7 +279,7 @@ for (const width of [1440, 768, 390]) {
 
     test(`keeps project filters readable at ${width}px in ${theme}`, async ({ page }, testInfo) => {
       await page.setViewportSize({ width, height: 1000 })
-      await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
+      await applyTheme(page, theme, { reducedMotion: 'reduce' })
       await page.goto('/en/projects/')
       await expect(page.locator('[data-filter-role]')).toBeEnabled()
       expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)

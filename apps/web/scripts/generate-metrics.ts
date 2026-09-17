@@ -2,7 +2,7 @@ import type { ProjectMetrics, ProjectMetricsMap } from '../src/types/project'
 import { mkdir, readdir, readFile, rename, writeFile } from 'node:fs/promises'
 import { basename, dirname, extname, resolve } from 'node:path'
 import process from 'node:process'
-import { hasSameProjectMetricValues } from '../src/lib/metrics'
+import { hasSameProjectMetricValues, usesLiveMetrics } from '../src/lib/metrics'
 
 interface ProjectSource {
   slug: string
@@ -89,11 +89,15 @@ const requireFresh = process.argv.includes('--require-fresh')
 const updateFallback = process.argv.includes('--update-fallback')
 
 await Promise.all(projectSources.map(async (project) => {
-  if (project.status === 'planned' || !project.npmUrl) {
+  if (!usesLiveMetrics(project)) {
+    if (project.status === 'planned') {
+      console.log(`Skipping live metrics for ${project.slug}: planned project`)
+      return
+    }
     if (!fallback[project.slug]) {
       failures.push(project.slug)
     }
-    console.log(`Using fallback metrics for ${project.slug}: ${project.status === 'planned' ? 'planned project' : 'no public npm package'}`)
+    console.log(`Using fallback metrics for ${project.slug}: no public npm package`)
     return
   }
   try {
