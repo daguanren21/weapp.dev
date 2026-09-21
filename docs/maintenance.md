@@ -80,7 +80,7 @@ Worker 的生产 `workers.dev` 地址保持关闭，版本预览保持开启。`
 - `weapp.dev`
 - `www.weapp.dev`
 
-`weapp.js.org` 不写进 `wrangler.jsonc`。js.org 的 DNS 在 js-org 的 Cloudflare 账号里，站点通过 GitHub Pages 提供内容：产物里有 `CNAME`（`weapp.js.org`）和 `.nojekyll`（避免 Jekyll 丢掉 `_astro/`）。子域要在 [js-org/js.org](https://github.com/js-org/js.org) 的 `cnames_active.js` 登记 `"weapp": "weappjs.github.io/weapp.dev"`，仓库 Settings → Pages 的 Source 选 GitHub Actions。
+`weapp.js.org` 不写进 `wrangler.jsonc`。js.org 的 DNS 在 js-org 的 Cloudflare 账号里，站点通过 GitHub Pages 提供内容：产物里有 `CNAME`（`weapp.js.org`）和 `.nojekyll`（避免 Jekyll 丢掉 `_astro/`）。GitHub 项目页挂在 `/weapp.dev/` 下，所以 Pages 产物会把根路径资源改成相对路径，`https://weappjs.github.io/weapp.dev/` 和以后的 `https://weapp.js.org/` 都能加载 `_astro` 与 logo。子域要在 [js-org/js.org](https://github.com/js-org/js.org) 的 `cnames_active.js` 登记 `"weapp": "weappjs.github.io/weapp.dev"`，仓库 Settings → Pages 的 Source 选 GitHub Actions。
 
 `wrangler.jsonc` 只配置静态 Assets 和两个自定义域名，不包含 Worker 入口或 `run_worker_first`。`www.weapp.dev` 的 308 跳转在 Cloudflare Redirect Rules 中配置，条件为 `http.host eq "www.weapp.dev"`，目标为 `https://weapp.dev` 加原始路径，并保留查询参数。
 
