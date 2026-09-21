@@ -3,7 +3,7 @@ import { ArrowRight, ArrowUpRight } from '@lucide/astro'
 import type { Locale } from '../../types/project'
 import type { ProjectEntry } from '../../lib/projects'
 import { projectPath, siteCopy } from '../../i18n/ui'
-import { buttonPrimary, buttonSecondary, homeSection, sectionTitle, shell } from '../../styles/classes'
+import { buttonPrimary, buttonSecondary, homeSection, homeSectionPack, sectionTitle, shell } from '../../styles/classes'
 
 interface Props {
   locale: Locale
@@ -12,14 +12,16 @@ interface Props {
   eyebrow: string
   title: string
   description: string
+  pack?: keyof typeof homeSectionPack
 }
 
-const { locale, projects, id, eyebrow, title, description } = Astro.props
+const { locale, projects, id, eyebrow, title, description, pack } = Astro.props
 const copy = siteCopy[locale]
+const sectionClass = pack ? homeSectionPack[pack] : homeSection
 ---
 
-{projects.length ? <section class:list={[homeSection, shell, 'scroll-mt-20']} id={id} aria-labelledby={`${id}-title`}>
-  <header data-reveal class="mb-12 max-w-[720px]">
+{projects.length ? <section class:list={[sectionClass, shell, 'scroll-mt-20']} id={id} aria-labelledby={`${id}-title`}>
+  <header data-reveal class="mb-8 max-w-[720px]">
     <p class="mb-3 font-mono text-xs font-[650] text-brand">{eyebrow}</p>
     <h2 id={`${id}-title`} class={sectionTitle}>{title}</h2>
     <p class="mb-0 text-lg text-copy-muted max-[720px]:text-base">{description}</p>

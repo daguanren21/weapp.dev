@@ -385,12 +385,14 @@
 }
 
 .home-hero .home-project-rail {
+  padding-block: 1.5rem 2rem;
   margin-top: 0;
 }
 
 .home-project-rail {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
   overflow: visible;
   background: transparent;
   box-shadow: none;
@@ -402,9 +404,12 @@
   border-radius: 10px;
   background: var(--surface);
 }
+.home-project-rail-group:has(.home-project-link:nth-child(3)) {
+  grid-column: 1 / -1;
+}
 .home-project-rail-title {
   margin: 0;
-  padding: 0.75rem 1.1rem 0.55rem;
+  padding: 0.55rem 1rem 0.4rem;
   color: var(--accent);
   font: 650 0.72rem/1 var(--font-mono);
   letter-spacing: 0.08em;
@@ -421,8 +426,8 @@
   gap: 0.75rem;
   align-items: center;
   min-width: 0;
-  min-height: 78px;
-  padding: 1rem 1.1rem;
+  min-height: 56px;
+  padding: 0.7rem 1rem;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--surface);
@@ -485,7 +490,6 @@
   text-decoration: underline;
 }
 [data-project-row] {
-  padding-top: 3.5rem;
   border-color: var(--border);
 }
 [data-project-visual] {
@@ -523,7 +527,7 @@
   gap: 2.25rem;
   align-items: start;
   min-width: 0;
-  padding-top: clamp(2.25rem, 5vw, 3.5rem);
+  padding-top: 2rem;
   border-top: 1px solid var(--border);
 }
 .home-project-row:first-child {
@@ -533,7 +537,15 @@
 .home-project-row-reversed .home-project-proof-slot {
   order: 2;
 }
+.home-project-row.home-project-row-with-lab {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.home-project-row-with-lab .home-project-lab-slot {
+  order: 2;
+}
 .home-project-proof-slot,
+.home-project-lab-slot,
 .home-project-proof,
 .home-project-proof .demo-code {
   min-width: 0;
@@ -801,7 +813,7 @@
   }
   .home-project-row {
     grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
+    gap: 1.5rem;
   }
   .home-project-row-reversed .home-project-proof-slot {
     order: 0;
@@ -825,6 +837,13 @@
     width: 68vw;
     height: 52vh;
   }
+  .home-hero .home-project-rail {
+    padding-block: 1.25rem 1.5rem;
+  }
+  .home-project-rail {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
   .home-project-rail-group {
     border-radius: 9px;
   }
@@ -833,16 +852,16 @@
   }
   .home-project-link {
     grid-template-columns: 2rem minmax(0, 1fr) auto;
-    min-height: 68px;
-    padding: 0.8rem 0.9rem;
+    min-height: 52px;
+    padding: 0.65rem 0.9rem;
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }
   .home-project-link:last-child {
     border-bottom: 0;
   }
-  [data-project-row] {
-    padding-top: 2.75rem;
+  .home-project-row {
+    padding-top: 1.5rem;
   }
   .build-rail {
     width: calc(100% - 2rem);

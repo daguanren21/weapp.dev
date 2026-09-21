@@ -3,7 +3,6 @@ import { ArrowUpRight } from '@lucide/astro'
 import type { Locale } from '../../types/project'
 import type { HomeProject } from '../../lib/home-projects'
 import { shell } from '../../styles/classes'
-import HeroDemos from './demos/HeroDemos.astro'
 import HeroParticles from './HeroParticles.astro'
 import { siteCopy } from '../../i18n/ui'
 
@@ -21,12 +20,11 @@ interface RailGroup {
 
 interface Props {
   locale: Locale
-  projects: HomeProject[]
   railGroups: RailGroup[]
   constellation: Array<{ id: string, href: string, logo: string, name: string }>
 }
 
-const { locale, projects, railGroups, constellation } = Astro.props
+const { locale, railGroups, constellation } = Astro.props
 const copy = siteCopy[locale]
 const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
   .map((char, index) => `<span class="${char === '.' ? 'home-hero-letter home-hero-dot' : 'home-hero-letter'}" style="--i:${index}">${char}</span>`)
@@ -91,7 +89,4 @@ const planetKinds = ['rock', 'ice', 'gas', 'moon', 'warm'] as const
       </section>
     ))}
   </nav>
-  <div class={shell}>
-    <HeroDemos locale={locale} projects={projects} />
-  </div>
 </section>
