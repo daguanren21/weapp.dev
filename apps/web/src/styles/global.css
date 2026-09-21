@@ -497,6 +497,7 @@
   color: var(--accent);
 }
 
+
 .home-project-visual-link {
   display: block;
   min-width: 0;
@@ -523,6 +524,38 @@
 [data-project-visual] {
   border-radius: 12px;
   box-shadow: none;
+}
+
+/* The screenshot is the proof; perspective connects it to the project row as it enters view. */
+.home-project-visual-frame {
+  transform-origin: center bottom;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html[data-project-proof-motion] [data-scroll-proof] {
+    opacity: var(--proof-opacity, 0.62);
+    transform: perspective(1400px) rotateX(var(--proof-rotate, 18deg)) translateY(var(--proof-lift, 3.5rem)) scale(var(--proof-scale, 0.84));
+  }
+}
+
+.toolchain-proof-heading {
+  margin-top: clamp(3rem, 7vw, 5.5rem);
+  margin-bottom: 1rem;
+}
+.toolchain-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+@media (max-width: 980px) {
+  .toolchain-proof-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 560px) {
+  .toolchain-proof-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .section-intro {

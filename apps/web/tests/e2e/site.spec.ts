@@ -12,6 +12,7 @@ async function expectHomeVisuals(page: import('@playwright/test').Page, locale: 
   await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeAttached()
   await expect(page.locator('#home-hero-title')).toHaveText('weapp.dev')
   await expect(page.locator('.home-hero-screen')).toBeVisible()
+  await expect(page.locator('[data-scroll-proof]')).toHaveCount(3)
   await expect(page.locator('.home-hero-constellation .home-hero-tile')).toHaveCount(6)
   await expect(page.locator('.home-hero-constellation a.home-hero-tile').evaluateAll(links => links.map(link => ({
     href: link.getAttribute('href'),
@@ -266,7 +267,7 @@ test('hero planets stay between the wordmark and the first-screen edges', async 
 test('reduced motion keeps content visible and product interactions stationary', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
-  const movingOrHidden = () => page.locator('[data-reveal], [data-hero-enter], [data-project-visual] img').evaluateAll(elements => elements.filter((element) => {
+  const movingOrHidden = () => page.locator('[data-reveal], [data-hero-enter], [data-project-visual] img, [data-scroll-proof]').evaluateAll(elements => elements.filter((element) => {
     const style = getComputedStyle(element)
     return style.opacity !== '1' || style.transform !== 'none' || style.animationName !== 'none' || style.transitionDuration !== '0s'
   }).map(element => element.tagName))
@@ -280,6 +281,54 @@ test('reduced motion keeps content visible and product interactions stationary',
   await page.locator('[data-principle-card]').first().hover()
   expect(await movingOrHidden()).toEqual([])
   expect(await page.evaluate(() => document.getAnimations().length)).toBe(0)
+})
+
+test('disables proof motion when reduced motion changes at runtime', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'no-preference' })
+  await page.goto('/')
+  await expect(page.locator('html')).toHaveAttribute('data-project-proof-motion', '')
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect.poll(() => page.locator('html').getAttribute('data-project-proof-motion')).toBeNull()
+  await expect.poll(() => page.locator('[data-scroll-proof]').first().evaluate(element => ({
+    opacity: getComputedStyle(element).opacity,
+    transform: getComputedStyle(element).transform,
+  }))).toEqual({ opacity: '1', transform: 'none' })
+})
+
+test('scrolls project proof frames into place', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/')
+  const proof = page.locator('[data-scroll-proof]').first()
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }))
+  await page.waitForTimeout(50)
+  const initial = await proof.evaluate(element => ({
+    opacity: getComputedStyle(element).opacity,
+    transform: getComputedStyle(element).transform,
+  }))
+  await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }))
+  await page.waitForTimeout(100)
+  const settled = await proof.evaluate(element => ({
+    opacity: getComputedStyle(element).opacity,
+    transform: getComputedStyle(element).transform,
+  }))
+  expect(Number(settled.opacity)).toBeGreaterThan(Number(initial.opacity))
+  expect(settled.transform).not.toBe(initial.transform)
+})
+
+test('keeps proof cards comparative across responsive widths', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, columns: 3 },
+    { width: 700, columns: 2 },
+    { width: 390, columns: 1 },
+  ]) {
+    await page.setViewportSize({ width: viewport.width, height: 900 })
+    await page.goto('/')
+    const layout = await page.locator('.toolchain-proof-grid').evaluate(element => ({
+      cards: element.querySelectorAll('.home-project-proof').length,
+      columns: getComputedStyle(element).gridTemplateColumns.split(' ').length,
+    }))
+    expect(layout, `${viewport.width}px proof grid`).toEqual({ cards: 5, columns: viewport.columns })
+  }
 })
 
 test('reveals content after the timeout when the observer never reports visibility', async ({ page }) => {
