@@ -1,16 +1,18 @@
 import type { ProjectEntry } from './projects'
 
-export const toolchainRoles = ['engineering', 'styling', 'components', 'data', 'migration'] as const
+export const toolchainRoles = ['engineering', 'styling', 'components', 'data'] as const
 export type ToolchainRole = typeof toolchainRoles[number]
 
-export const toolchainProjectIds = ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro'] as const
+export const catalogEcosystems = ['weapp', 'taro', 'vue-mini', 'rezor', 'uni-app'] as const
+export type CatalogEcosystem = typeof catalogEcosystems[number]
+
+export const toolchainProjectIds = ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite'] as const
 
 const roleById: Record<string, ToolchainRole> = {
   'weapp-vite': 'engineering',
   'weapp-tailwindcss': 'styling',
   'varo': 'components',
   'weapp-sqlite': 'data',
-  'vite-plugin-taro': 'migration',
 }
 
 const declaredRoleById: Record<string, string> = {
@@ -21,6 +23,18 @@ const declaredRoleById: Record<string, string> = {
   'vite-plugin-taro': 'Migration',
 }
 
+const declaredEcosystemById: Record<string, CatalogEcosystem> = {
+  'weapp-vite': 'weapp',
+  'weapp-tailwindcss': 'weapp',
+  'varo': 'weapp',
+  'weapp-sqlite': 'weapp',
+  'vite-plugin-taro': 'taro',
+  'vue-mini': 'vue-mini',
+  'rezor': 'rezor',
+  'uni-helper': 'uni-app',
+  'wot-ui': 'uni-app',
+}
+
 export function getToolchainProjects(projects: ProjectEntry[]) {
   return projects
     .filter(project => roleById[project.id])
@@ -28,9 +42,28 @@ export function getToolchainProjects(projects: ProjectEntry[]) {
     .map(project => ({ project, role: roleById[project.id] }))
 }
 
-export function getEcosystemProjects(projects: ProjectEntry[]) {
+export function getProjectsInEcosystem(projects: ProjectEntry[], ecosystem: CatalogEcosystem) {
   return projects
-    .filter(project => project.data.role === 'Ecosystem')
+    .filter(project => project.data.ecosystem === ecosystem)
+    .sort((left, right) => left.data.order - right.data.order)
+}
+
+export function getCatalogEcosystemGroups(projects: ProjectEntry[]) {
+  return catalogEcosystems
+    .map(id => ({ id, projects: getProjectsInEcosystem(projects, id) }))
+    .filter(group => group.projects.length > 0)
+}
+
+export function getEcosystemProjects(projects: ProjectEntry[]) {
+  return getProjectsInEcosystem(projects, 'uni-app')
+}
+
+const constellationExcludedIds = new Set(['weapp-sqlite', 'rezor'])
+
+/** Marks that have a dedicated logo and belong on the homepage constellation. */
+export function getConstellationProjects(projects: ProjectEntry[]) {
+  return projects
+    .filter(project => !constellationExcludedIds.has(project.id))
     .sort((left, right) => left.data.order - right.data.order)
 }
 
@@ -54,15 +87,16 @@ export function validateToolchainCatalog(projects: ProjectEntry[]): void {
     if (expectedOrder > 0 && project.data.order !== expectedOrder) {
       throw new Error(`Project order differs from toolchain flow: ${project.id}`)
     }
+    const expectedEcosystem = declaredEcosystemById[project.id]
+    if (expectedEcosystem && project.data.ecosystem !== expectedEcosystem) {
+      throw new Error(`Project ecosystem differs from catalog: ${project.id}`)
+    }
     for (const relatedId of project.data.relatedProjects ?? []) {
       if (!byId.has(relatedId)) {
         throw new Error(`Unknown related project ${relatedId} on ${project.id}`)
       }
       if (relatedId === project.id) {
         throw new Error(`Project cannot relate to itself: ${project.id}`)
-      }
-      if (!roleById[relatedId]) {
-        throw new Error(`Related project is outside the toolchain: ${relatedId}`)
       }
     }
     if (project.data.status === 'planned' && project.data.dataCompleteness === 'complete') {

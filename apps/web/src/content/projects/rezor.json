@@ -1,0 +1,95 @@
+{
+  "order": 7,
+  "status": "beta",
+  "packageName": "rezor",
+  "github": "rezorjs/rezor",
+  "docsUrl": "https://github.com/rezorjs/rezor",
+  "npmUrl": "https://www.npmjs.com/package/rezor",
+  "license": "https://opensource.org/license/mit",
+  "maintainer": "Yang Mingshan and contributors",
+  "keywords": [
+    "React",
+    "mini-program",
+    "WeChat",
+    "hooks"
+  ],
+  "installCommand": "npm create rezor@latest",
+  "futureDocsPath": "/docs/rezor/",
+  "logo": "/brands/react.svg",
+  "accent": "#61dafb",
+  "role": "Framework",
+  "ecosystem": "rezor",
+  "maturity": "beta",
+  "runtime": [
+    "React"
+  ],
+  "relatedProjects": [
+    "weapp-vite",
+    "vite-plugin-taro"
+  ],
+  "dataCompleteness": "partial",
+  "platforms": [
+    "WeChat"
+  ],
+  "quickStart": {
+    "command": "npm create rezor@latest",
+    "note": {
+      "zh-CN": "独立站点尚未上线，资料先看 GitHub 仓库。",
+      "en": "A dedicated docs site is not online yet; start from the GitHub repository."
+    }
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "Rezor",
+      "tagline": "基于 React 的小程序框架",
+      "description": "Rezor 用 React Hooks 写小程序，目标是接近原生性能。当前先列在目录里，文档入口是 GitHub 仓库 rezorjs/rezor。",
+      "audience": "想在微信小程序里用 React Hooks，并接受资料仍以仓库为主的团队。",
+      "useCases": [
+        "用 npm create rezor@latest 创建项目",
+        "用 React Hooks 编写小程序页面",
+        "与 VPT / weapp-vite 对照，而不是当成五层工具链的新一层"
+      ],
+      "capabilities": [
+        "React Hooks 小程序运行时",
+        "创建器 npm create rezor@latest",
+        "源码仓库 rezorjs/rezor"
+      ],
+      "faqs": [
+        {
+          "question": "为什么现在没有独立文档站？",
+          "answer": "rezor.dev 尚未解析。weapp.dev 先指向 GitHub 仓库，站点上线后再更新文档链接。"
+        },
+        {
+          "question": "它和 VPT 是一回事吗？",
+          "answer": "不是。VPT 把已有 Taro / React 工程的构建切到 Vite。Rezor 是 React 小程序运行时本身。"
+        }
+      ]
+    },
+    "en": {
+      "name": "Rezor",
+      "tagline": "A React framework for mini programs",
+      "description": "Rezor uses React Hooks to write mini programs, aiming for near-native performance. It is listed in the catalog now; the docs entry is the GitHub repo rezorjs/rezor.",
+      "audience": "Teams who want React Hooks in WeChat mini programs and can work from the repository while the docs site is still landing.",
+      "useCases": [
+        "Scaffold a project with npm create rezor@latest",
+        "Write mini-program pages with React Hooks",
+        "Compare it with VPT / weapp-vite instead of treating it as a new toolchain layer"
+      ],
+      "capabilities": [
+        "React Hooks mini-program runtime",
+        "Scaffolder via npm create rezor@latest",
+        "Source at rezorjs/rezor"
+      ],
+      "faqs": [
+        {
+          "question": "Why is there no dedicated docs site yet?",
+          "answer": "rezor.dev does not resolve yet. weapp.dev points at the GitHub repository until a docs site is published."
+        },
+        {
+          "question": "Is this the same as VPT?",
+          "answer": "No. VPT switches an existing Taro / React project's build to Vite. Rezor is a React mini-program runtime."
+        }
+      ]
+    }
+  }
+}

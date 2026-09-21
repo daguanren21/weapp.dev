@@ -1,0 +1,96 @@
+{
+  "order": 6,
+  "status": "stable",
+  "packageName": "@vue-mini/core",
+  "github": "vue-mini/vue-mini",
+  "docsUrl": "https://vuemini.org/",
+  "npmUrl": "https://www.npmjs.com/package/@vue-mini/core",
+  "license": "https://opensource.org/license/mit",
+  "maintainer": "Yang Mingshan and contributors",
+  "keywords": [
+    "Vue 3",
+    "mini-program",
+    "WeChat",
+    "composition API",
+    "reactivity"
+  ],
+  "installCommand": "pnpm add @vue-mini/core",
+  "futureDocsPath": "/docs/vue-mini/",
+  "logo": "/brands/vue-mini.png",
+  "accent": "#42b883",
+  "role": "Framework",
+  "ecosystem": "vue-mini",
+  "maturity": "stable",
+  "runtime": [
+    "Vue 3"
+  ],
+  "relatedProjects": [
+    "weapp-vite",
+    "weapp-tailwindcss"
+  ],
+  "dataCompleteness": "complete",
+  "platforms": [
+    "WeChat"
+  ],
+  "quickStart": {
+    "command": "npm create vue-mini@latest",
+    "note": {
+      "zh-CN": "脚手架入口是 create-vue-mini；运行时包是 @vue-mini/core。",
+      "en": "Scaffold with create-vue-mini; the runtime package is @vue-mini/core."
+    }
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "Vue Mini",
+      "tagline": "基于 Vue 3 的小程序框架",
+      "description": "Vue Mini 用 Vue 3 的响应式数据和组合式 API 写小程序，兼容原生语法，可以渐进接入。文档在 vuemini.org，源码在 vue-mini/vue-mini。",
+      "audience": "想在微信小程序里用 Vue 3 组合式 API，又不想换一套全新写法的团队。",
+      "useCases": [
+        "用 npm create vue-mini@latest 创建项目",
+        "在页面和组件里使用响应式数据，不再手写 setData",
+        "与 weapp 工具链并存，而不是替换五层构建职责"
+      ],
+      "capabilities": [
+        "Vue 3 响应式与组合式 API",
+        "与小程序原生语法兼容的渐进接入",
+        "文档站点 vuemini.org"
+      ],
+      "faqs": [
+        {
+          "question": "Vue Mini 是 weapp.dev 的第六层吗？",
+          "answer": "不是。它是小程序运行时框架，负责页面写法。weapp-vite 仍管构建，weapp-tailwindcss 仍管样式。"
+        },
+        {
+          "question": "包名为什么是 @vue-mini/core？",
+          "answer": "运行时发布名是 @vue-mini/core。创建项目用 npm create vue-mini@latest。"
+        }
+      ]
+    },
+    "en": {
+      "name": "Vue Mini",
+      "tagline": "A Vue 3 framework for mini programs",
+      "description": "Vue Mini lets you write mini programs with Vue 3 reactivity and the Composition API, while staying compatible with native syntax for gradual adoption. Docs live at vuemini.org; source is vue-mini/vue-mini.",
+      "audience": "Teams who want Vue 3 Composition API in WeChat mini programs without throwing away native page structure.",
+      "useCases": [
+        "Scaffold a project with npm create vue-mini@latest",
+        "Use reactive state in pages and components instead of setData",
+        "Keep it beside the weapp toolchain rather than replacing the five build layers"
+      ],
+      "capabilities": [
+        "Vue 3 reactivity and Composition API",
+        "Gradual adoption alongside native mini-program syntax",
+        "Documentation at vuemini.org"
+      ],
+      "faqs": [
+        {
+          "question": "Is Vue Mini a sixth weapp.dev layer?",
+          "answer": "No. It is a mini-program runtime framework for how you write pages. weapp-vite still owns the build; weapp-tailwindcss still owns styles."
+        },
+        {
+          "question": "Why is the package named @vue-mini/core?",
+          "answer": "That is the runtime publish name. Scaffolding uses npm create vue-mini@latest."
+        }
+      ]
+    }
+  }
+}

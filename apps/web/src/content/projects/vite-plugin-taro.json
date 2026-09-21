@@ -22,6 +22,7 @@
   "logo": "/brands/vpt.svg",
   "accent": "#17673d",
   "role": "Migration",
+  "ecosystem": "taro",
   "maturity": "stable",
   "runtime": [
     "React",

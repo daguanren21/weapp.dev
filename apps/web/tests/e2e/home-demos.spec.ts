@@ -26,7 +26,7 @@ for (const locale of ['zh-CN', 'en'] as const) {
     expect(after.color).not.toBe(before.color)
     expect(after.radius).not.toBe(before.radius)
     expect(after.padding).not.toBe(before.padding)
-    await expect(page.locator('#projects .home-project-proof')).toHaveCount(5)
+    await expect(page.locator('#projects .home-project-proof')).toHaveCount(4)
     await button.click()
     await expect(button).toHaveText(copy.saved)
     await expect(hero.locator('code')).toContainText(copy.saved)
@@ -128,7 +128,7 @@ test('default examples remain readable without JavaScript', async ({ browser, vi
     await expect(page.locator('hero-demos [data-demo="sqlite"]')).toContainText(route === '/' ? '不提供生产 API' : 'no production API')
     await expect(page.locator('hero-demos [role="tablist"]')).toBeHidden()
     await expect(page.locator('.demo-controls:visible, [data-copy]:visible')).toHaveCount(0)
-    await expect(page.locator('#projects .home-project-proof')).toHaveCount(5)
+    await expect(page.locator('#projects .home-project-proof')).toHaveCount(4)
     await expect(page.locator('#projects .home-lab')).toHaveCount(0)
   }
   await context.close()

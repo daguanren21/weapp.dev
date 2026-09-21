@@ -5,6 +5,7 @@ import type { HomeProject } from '../../lib/home-projects'
 import { shell } from '../../styles/classes'
 import HeroDemos from './demos/HeroDemos.astro'
 import HeroParticles from './HeroParticles.astro'
+import { siteCopy } from '../../i18n/ui'
 
 interface RailProject {
   id: string
@@ -12,26 +13,25 @@ interface RailProject {
   stage: HomeProject['stage']
 }
 
+interface RailGroup {
+  id: string
+  label: string
+  projects: RailProject[]
+}
+
 interface Props {
   locale: Locale
   projects: HomeProject[]
-  railProjects: RailProject[]
+  railGroups: RailGroup[]
   constellation: Array<{ id: string, href: string, logo: string, name: string }>
 }
 
-const { locale, projects, railProjects, constellation } = Astro.props
-const railLabel = locale === 'zh-CN' ? '首页项目入口' : 'Homepage project links'
+const { locale, projects, railGroups, constellation } = Astro.props
+const copy = siteCopy[locale]
 const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
   .map((char, index) => `<span class="${char === '.' ? 'home-hero-letter home-hero-dot' : 'home-hero-letter'}" style="--i:${index}">${char}</span>`)
   .join('')
-const planetOrbits = [
-  { kind: 'rock', ring: 'inner', t: '56s', p: '0.08' },
-  { kind: 'ice', ring: 'mid', t: '80s', p: '0.22' },
-  { kind: 'gas', ring: 'inner', t: '56s', p: '0.58' },
-  { kind: 'moon', ring: 'mid', t: '80s', p: '0.72' },
-  { kind: 'ring', ring: 'outer', t: '110s', p: '0.38' },
-  { kind: 'warm', ring: 'outer', t: '110s', p: '0.88' },
-] as const
+const planetKinds = ['rock', 'ice', 'gas', 'moon', 'warm'] as const
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
@@ -45,14 +45,13 @@ const planetOrbits = [
     <HeroParticles />
     <div class="home-hero-constellation">
       <span class="home-hero-gridlines" aria-hidden="true"></span>
-      <span class="home-hero-orbit home-hero-orbit-inner" aria-hidden="true"></span>
-      <span class="home-hero-orbit home-hero-orbit-mid" aria-hidden="true"></span>
-      <span class="home-hero-orbit home-hero-orbit-outer" aria-hidden="true"></span>
+      <span class="home-hero-orbit" aria-hidden="true"></span>
       {constellation.map((mark, index) => {
-        const orbit = planetOrbits[index]!
+        const kind = planetKinds[index % planetKinds.length]
+        const orbitP = ((index + 0.5) / constellation.length).toFixed(4)
         return (
           <a
-            class={`home-hero-tile home-hero-planet home-hero-planet--${orbit.kind} home-hero-planet-ring--${orbit.ring}`}
+            class={`home-hero-tile home-hero-planet home-hero-planet--${kind}`}
             href={mark.href}
             target="_blank"
             rel="noopener noreferrer"
@@ -60,7 +59,7 @@ const planetOrbits = [
             data-analytics-event="click_outbound"
             data-analytics-target="project_home"
             data-analytics-project={mark.id}
-            style={`--orbit-t: ${orbit.t}; --orbit-p: ${orbit.p};`}
+            style={`--orbit-t: 80s; --orbit-p: ${orbitP};`}
           >
             <span class="home-hero-planet-body" aria-hidden="true"></span>
             <img src={mark.logo} width="48" height="48" alt="" decoding="async" />
@@ -73,18 +72,24 @@ const planetOrbits = [
     </h1>
   </div>
 
-  <nav class:list={[shell, 'home-project-rail']} aria-label={railLabel}>
-    {railProjects.map((project, index) => {
-      const content = project.data.locales[locale]
-      return (
-        <a class="home-project-link" href={project.data.docsUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="click_outbound" data-analytics-target="project_home" data-analytics-project={project.id}>
-          <span class="home-project-index">{String(index + 1).padStart(2, '0')}</span>
-          <img src={project.data.logo} width="34" height="34" alt="" loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : undefined} decoding="async" />
-          <span class="min-w-0"><strong>{content.name}</strong><small>{project.stage[locale]} / {content.tagline}</small></span>
-          <ArrowUpRight class="home-project-arrow" size={17} stroke-width={1.8} aria-hidden="true" />
-        </a>
-      )
-    })}
+  <nav class:list={[shell, 'home-project-rail']} aria-label={copy.rail.label}>
+    {railGroups.map(group => (
+      <section class="home-project-rail-group" aria-labelledby={`home-rail-${group.id}`}>
+        <h2 id={`home-rail-${group.id}`} class="home-project-rail-title">{group.label}</h2>
+        <div class="home-project-rail-items">
+          {group.projects.map((project, index) => {
+            const content = project.data.locales[locale]
+            return (
+              <a class="home-project-link" href={project.data.docsUrl} target="_blank" rel="noopener noreferrer" data-analytics-event="click_outbound" data-analytics-target="project_home" data-analytics-project={project.id}>
+                <img src={project.data.logo} width="34" height="34" alt="" loading={index === 0 && group.id === 'weapp' ? 'eager' : 'lazy'} fetchpriority={index === 0 && group.id === 'weapp' ? 'high' : undefined} decoding="async" />
+                <span class="min-w-0"><strong>{content.name}</strong><small>{project.stage[locale]} / {content.tagline}</small></span>
+                <ArrowUpRight class="home-project-arrow" size={17} stroke-width={1.8} aria-hidden="true" />
+              </a>
+            )
+          })}
+        </div>
+      </section>
+    ))}
   </nav>
   <div class={shell}>
     <HeroDemos locale={locale} projects={projects} />

@@ -1,15 +1,16 @@
 ---
-import { ArrowRight, ArrowUpRight, BadgeCheck, BookOpen, GitFork, Heart, Layers2, Package, ScanLine, ShieldCheck } from '@lucide/astro'
+import { ArrowRight, ArrowUpRight, GitFork, Heart, Layers2, Package, ScanLine, ShieldCheck, BadgeCheck } from '@lucide/astro'
 import type { Locale, ProjectMetricsMap } from '../types/project'
 import type { ProjectEntry } from '../lib/projects'
-import { formatCompactNumber, formatReleaseDate } from '../lib/metrics'
-import { localizePath, projectPath, siteCopy } from '../i18n/ui'
-import { buttonPrimary, buttonSecondary, iconControl, projectTone, section, shell } from '../styles/classes'
+import { formatReleaseDate } from '../lib/metrics'
+import { localizePath, siteCopy } from '../i18n/ui'
+import { buttonPrimary, buttonSecondary, iconControl, section, shell } from '../styles/classes'
 import BuildRail from './BuildRail.astro'
 import HomeHero from './home/HomeHero.astro'
 import type { HomeProject } from '../lib/home-projects'
-import { getEcosystemProjects } from '../lib/toolchain'
-import HomeProjectProof from './home/HomeProjectProof.astro'
+import { getCatalogEcosystemGroups, getConstellationProjects } from '../lib/toolchain'
+import HomePartnerSection from './home/HomePartnerSection.astro'
+import HomeProjects from './home/HomeProjects.astro'
 import ToolchainMap from './ToolchainMap.astro'
 
 interface Props {
@@ -22,40 +23,32 @@ interface Props {
 const { locale, projects, metrics, homeProjects = [] } = Astro.props
 const copy = siteCopy[locale]
 const numberLocale = locale === 'zh-CN' ? 'zh-CN' : 'en-US'
-const featuredProjects = projects.filter(project => project.data.visuals?.primary && project.data.role !== 'Ecosystem').slice(0, 3)
-const ecosystemProjects = getEcosystemProjects(projects)
-const constellationIds = ['weapp-vite', 'weapp-tailwindcss', 'varo', 'vite-plugin-taro', 'uni-helper', 'wot-ui'] as const
-const projectById = new Map(projects.map(project => [project.id, project]))
-const constellation = constellationIds.map((id) => {
-  const project = projectById.get(id)
-  if (!project) {
-    throw new Error(`Missing constellation project: ${id}`)
-  }
-  return {
-    id: project.id,
-    href: project.data.docsUrl,
-    logo: project.data.logo,
-    name: project.data.locales[locale].name,
-  }
-})
-const railProjects = [
-  ...homeProjects,
-  ...ecosystemProjects.map(project => ({
+const ecosystemGroups = getCatalogEcosystemGroups(projects)
+const weappHome = homeProjects.filter(project => project.data.ecosystem === 'weapp')
+const taroHome = homeProjects.filter(project => project.data.ecosystem === 'taro')
+const constellation = getConstellationProjects(projects).map(project => ({
+  id: project.id,
+  href: project.data.docsUrl,
+  logo: project.data.logo,
+  name: project.data.locales[locale].name,
+}))
+const stageById = new Map(homeProjects.map(project => [project.id, project.stage]))
+const railGroups = ecosystemGroups.map(group => ({
+  id: group.id,
+  label: copy.rail[group.id],
+  projects: group.projects.map(project => ({
     id: project.id,
     data: project.data,
-    stage: { 'zh-CN': '生态', en: 'ECO' },
+    stage: stageById.get(project.id) ?? { 'zh-CN': copy.rail[group.id], en: copy.rail[group.id] },
   })),
-]
+}))
 const releaseProjects = projects.filter(project => metrics[project.id])
 const stepIcons = [Layers2, ScanLine, Package]
 const principleIcons = [Layers2, ShieldCheck, BadgeCheck]
-const projectStages: Record<string, string> = locale === 'zh-CN'
-  ? { 'weapp-tailwindcss': '样式', 'weapp-vite': '构建', varo: '组件' }
-  : { 'weapp-tailwindcss': 'STYLE', 'weapp-vite': 'BUILD', varo: 'COMPOSE' }
 ---
 
 <main id="main-content">
-  <HomeHero locale={locale} projects={homeProjects} railProjects={railProjects} constellation={constellation} />
+  <HomeHero locale={locale} projects={homeProjects} railGroups={railGroups} constellation={constellation} />
 
   <section class="border-y border-line bg-panel" id="about">
     <div class:list={[section, shell]}>
@@ -80,102 +73,15 @@ const projectStages: Record<string, string> = locale === 'zh-CN'
     </div>
   </section>
 
-  <section class:list={[section, shell]} id="projects">
-    <header data-reveal class="mb-14 max-w-[720px]">
-      <p class="mb-3 font-mono text-xs font-[650] text-brand">{copy.projects.eyebrow}</p>
-      <h2 class="mb-4 text-[48px] font-[680] max-[720px]:text-[35px]">{copy.projects.title}</h2>
-      <p class="mb-0 text-lg text-copy-muted max-[720px]:text-base">{copy.projects.description}</p>
-    </header>
+  <HomeProjects locale={locale} projects={weappHome} metrics={metrics} id="projects" eyebrow={copy.ecosystems.weapp.eyebrow} title={copy.ecosystems.weapp.title} description={copy.ecosystems.weapp.description} />
 
-    <div class="grid gap-20 max-[720px]:gap-14">
-      {featuredProjects.map((project, index) => {
-        const content = project.data.locales[locale]
-        const projectMetrics = metrics[project.id]
-        const visual = project.data.visuals?.primary
-        if (!visual) return null
-        const visualCopy = visual.locales[locale]
-        return (
-          <article data-project-row class:list={['group/project relative grid items-center gap-14 border-t border-line pt-14 first:border-t-0 first:pt-0 max-[960px]:gap-9', index === 0 ? 'grid-cols-[1.12fr_.88fr] max-[800px]:grid-cols-1' : 'grid-cols-[.82fr_1.18fr] max-[800px]:grid-cols-1']} style={`--project-accent: ${project.data.accent}`}>
-            <a class:list={['home-project-visual-link', index === 1 ? 'order-2 max-[800px]:order-none' : '']} href={project.data.docsUrl} target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="project_home_visual" data-analytics-project={project.id} aria-label={locale === 'zh-CN' ? `打开 ${content.name} 官方站点` : `Open ${content.name} official site`}>
-            <figure data-reveal data-project-visual class="relative m-0 overflow-hidden rounded-panel border border-line bg-panel-soft">
-              <div class="aspect-[16/11] overflow-hidden">
-                <picture class="size-full">
-                  <source srcset={visual.avif} type="image/avif" />
-                  <img class="size-full object-cover object-top" src={visual.src} width={visual.width} height={visual.height} alt={visualCopy.alt} loading="lazy" />
-                </picture>
-              </div>
-              <figcaption class="border-t border-line bg-panel px-4 py-3 text-xs text-copy-muted">{visualCopy.caption}</figcaption>
-            </figure>
-            </a>
+  <HomeProjects locale={locale} projects={taroHome} metrics={metrics} id="ecosystem-taro" eyebrow={copy.ecosystems.taro.eyebrow} title={copy.ecosystems.taro.title} description={copy.ecosystems.taro.description} />
 
-            <div data-reveal data-project-copy style={`--reveal-delay: ${80 + index * 60}ms`} class:list={[index === 1 ? 'order-1 max-[800px]:order-none' : '']}>
-              <p class="mb-4 font-mono text-[10px] font-bold text-brand">{String(index + 1).padStart(2, '0')} / {projectStages[project.id] ?? 'TOOL'}</p>
-              <div class="mb-5 flex items-center gap-3">
-                <img class="size-12 object-contain" src={project.data.logo} width="48" height="48" alt="" />
-                <span class:list={['inline-flex items-center gap-1.5 font-mono text-xs font-[650]', projectTone]}>
-                  <BadgeCheck size={15} stroke-width={1.8} aria-hidden="true" />
-                  {copy.projects.status[project.data.status]}
-                </span>
-              </div>
-              <h3 class="mb-4 text-[38px] font-[680] [overflow-wrap:anywhere] max-[720px]:text-[30px]"><a class="home-project-title-link" href={project.data.docsUrl} target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="project_home_title" data-analytics-project={project.id}>{content.name}</a></h3>
-              <p class="mb-3 text-xl font-[620]">{content.tagline}</p>
-              <p class="mb-6 max-w-[590px] text-copy-muted">{content.description}</p>
-              <dl class="mb-7 grid grid-cols-2 gap-8 border-y border-line py-5">
-                <div><dt class="mb-1 text-xs text-copy-muted">{copy.projects.weeklyDownloads}</dt><dd class="m-0 font-mono text-xl font-[700]">{formatCompactNumber(projectMetrics.weeklyDownloads, numberLocale)}</dd></div>
-                <div><dt class="mb-1 text-xs text-copy-muted">{copy.projects.stars}</dt><dd class="m-0 font-mono text-xl font-[700]">{formatCompactNumber(projectMetrics.stars, numberLocale)}</dd></div>
-              </dl>
-              <div class="flex flex-wrap items-center gap-3">
-                <a class={buttonPrimary} href={project.data.docsUrl} target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="docs" data-analytics-project={project.id}>
-                  <BookOpen size={18} stroke-width={1.9} aria-hidden="true" />
-                  {copy.projects.documentation}
-                </a>
-                <a class={buttonSecondary} href={projectPath(locale, project.id)} data-analytics-event="select_project" data-analytics-project={project.id}>
-                  {copy.projects.details}
-                  <ArrowRight size={17} stroke-width={1.9} aria-hidden="true" />
-                </a>
-              </div>
-            </div>
-          </article>
-        )
-      })}
-    </div>
-    <div class="toolchain-proof-grid" aria-label={locale === 'zh-CN' ? '项目运行证明' : 'Project runtime proofs'}>
-      {homeProjects.map(project => <HomeProjectProof kind={project.demo} locale={locale} projectName={project.data.locales[locale].name} status={project.data.status} proof={project.data.proof} proofId={`home-proof-${project.id}`} />)}
-    </div>
-  </section>
+  <HomePartnerSection locale={locale} id="ecosystem-vue-mini" projects={ecosystemGroups.find(group => group.id === 'vue-mini')?.projects ?? []} eyebrow={copy.ecosystems['vue-mini'].eyebrow} title={copy.ecosystems['vue-mini'].title} description={copy.ecosystems['vue-mini'].description} />
 
-  <section class:list={[section, shell, 'scroll-mt-20']} id="ecosystem" aria-labelledby="home-ecosystem-title">
-    <header data-reveal class="mb-12 max-w-[720px]">
-      <p class="mb-3 font-mono text-xs font-[650] text-brand">{copy.ecosystem.eyebrow}</p>
-      <h2 id="home-ecosystem-title" class="mb-4 text-balance text-[44px] font-[680] max-[720px]:text-[1.875rem]">{copy.ecosystem.title}</h2>
-      <p class="mb-0 text-lg text-copy-muted max-[720px]:text-base">{copy.ecosystem.description}</p>
-    </header>
-    <div class="grid grid-cols-2 gap-px overflow-hidden rounded-panel border border-line bg-line max-[720px]:grid-cols-1">
-      {ecosystemProjects.map((project, index) => {
-        const content = project.data.locales[locale]
-        return (
-          <article data-reveal style={`--reveal-delay: ${index * 70}ms; --project-accent: ${project.data.accent}`} class="grid gap-5 bg-panel p-8">
-            <img class="size-12 object-contain" src={project.data.logo} width="48" height="48" alt="" />
-            <div>
-              <h3 class="mb-2 text-2xl font-[660]">{content.name}</h3>
-              <p class="mb-0 text-copy-muted">{content.tagline}</p>
-            </div>
-            <p class="mb-0 max-w-[36rem] text-sm leading-[1.7] text-copy-muted">{content.description}</p>
-            <div class="flex flex-wrap items-center gap-3">
-              <a class={buttonPrimary} href={project.data.docsUrl} target="_blank" rel="noreferrer" data-analytics-event="click_outbound" data-analytics-target="docs" data-analytics-project={project.id}>
-                {copy.projects.documentation}
-                <ArrowUpRight size={16} stroke-width={1.8} aria-hidden="true" />
-              </a>
-              <a class={buttonSecondary} href={projectPath(locale, project.id)} data-analytics-event="select_project" data-analytics-project={project.id}>
-                {copy.projects.details}
-                <ArrowRight size={16} stroke-width={1.8} aria-hidden="true" />
-              </a>
-            </div>
-          </article>
-        )
-      })}
-    </div>
-  </section>
+  <HomePartnerSection locale={locale} id="ecosystem-rezor" projects={ecosystemGroups.find(group => group.id === 'rezor')?.projects ?? []} eyebrow={copy.ecosystems.rezor.eyebrow} title={copy.ecosystems.rezor.title} description={copy.ecosystems.rezor.description} />
+
+  <HomePartnerSection locale={locale} id="ecosystem" projects={ecosystemGroups.find(group => group.id === 'uni-app')?.projects ?? []} eyebrow={copy.ecosystems['uni-app'].eyebrow} title={copy.ecosystems['uni-app'].title} description={copy.ecosystems['uni-app'].description} />
 
   <section class:list={[section, shell]} aria-label={locale === 'zh-CN' ? '工具链地图' : 'Toolchain map'}>
     <ToolchainMap locale={locale} projects={projects} />

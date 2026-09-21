@@ -1,49 +1,46 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import varoProject from '../../src/content/projects/varo.json' with { type: 'json' }
-import tailwindProject from '../../src/content/projects/weapp-tailwindcss.json' with { type: 'json' }
-import viteProject from '../../src/content/projects/weapp-vite.json' with { type: 'json' }
 import { siteCopy } from '../../src/i18n/ui'
 
-const projectDefinitions = [viteProject, tailwindProject, varoProject]
 const retiredVisuals = 'canvas:not(.home-hero-particle-canvas), [data-shader-canvas], [data-shader], [data-shader-frame], [data-webgl-fallback], [data-art], .project-art, [class^="art-"], [class*=" art-"]'
+const constellationLinks = [
+  { href: 'https://vite.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
+  { href: 'https://tw.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
+  { href: 'https://daguanren21.github.io/Varo/', target: '_blank', rel: 'noopener noreferrer' },
+  { href: 'https://vpt.js.org/', target: '_blank', rel: 'noopener noreferrer' },
+  { href: 'https://vuemini.org/', target: '_blank', rel: 'noopener noreferrer' },
+  { href: 'https://uni-helper.cn/', target: '_blank', rel: 'noopener noreferrer' },
+  { href: 'https://wot-ui.cn/', target: '_blank', rel: 'noopener noreferrer' },
+]
+const railLinks = [
+  'https://vite.weapp.dev/',
+  'https://tw.weapp.dev/',
+  'https://daguanren21.github.io/Varo/',
+  'https://github.com/weapp-sqlite/weapp-sqlite#readme',
+  'https://vpt.js.org/',
+  'https://vuemini.org/',
+  'https://github.com/rezorjs/rezor',
+  'https://uni-helper.cn/',
+  'https://wot-ui.cn/',
+]
 
-async function expectHomeVisuals(page: import('@playwright/test').Page, locale: 'zh-CN' | 'en') {
+async function expectHomeVisuals(page: import('@playwright/test').Page) {
   await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeAttached()
   await expect(page.locator('#home-hero-title')).toHaveText('weapp.dev')
   await expect(page.locator('.home-hero-screen')).toBeVisible()
-  await expect(page.locator('.home-hero-constellation .home-hero-tile')).toHaveCount(6)
+  await expect(page.locator('.home-hero-constellation .home-hero-tile')).toHaveCount(7)
+  await expect(page.locator('.home-hero-orbit-inner, .home-hero-orbit-mid, .home-hero-orbit-outer, .home-hero-planet--ring')).toHaveCount(0)
   await expect(page.locator('.home-hero-constellation a.home-hero-tile').evaluateAll(links => links.map(link => ({
     href: link.getAttribute('href'),
     target: link.getAttribute('target'),
     rel: link.getAttribute('rel'),
-  })))).resolves.toEqual([
-    { href: 'https://vite.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://tw.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://daguanren21.github.io/Varo/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://vpt.js.org/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://uni-helper.cn/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://wot-ui.cn/', target: '_blank', rel: 'noopener noreferrer' },
-  ])
+  })))).resolves.toEqual(constellationLinks)
   await expect(page.locator('.home-hero-copy')).toHaveCount(0)
   await expect(page.locator(retiredVisuals)).toHaveCount(0)
-  const visuals = page.locator('#projects [data-project-visual]')
-  await expect(visuals).toHaveCount(3)
-  for (const [index, project] of projectDefinitions.entries()) {
-    const visual = project.visuals.primary
-    const figure = visuals.nth(index)
-    const image = figure.locator('img')
-    await figure.scrollIntoViewIfNeeded()
-    await expect(image).toBeVisible()
-    await expect(image).toHaveAttribute('src', visual.src)
-    await expect(figure.locator('source')).toHaveAttribute('srcset', visual.avif)
-    await expect(image).toHaveAttribute('width', String(visual.width))
-    await expect(image).toHaveAttribute('height', String(visual.height))
-    await expect(image).toHaveAttribute('loading', 'lazy')
-    await expect(image).toHaveAttribute('alt', visual.locales[locale].alt)
-    await expect(figure.locator('figcaption')).toHaveText(visual.locales[locale].caption)
-    await expect.poll(() => image.evaluate(element => (element as HTMLImageElement).naturalWidth)).toBe(visual.width)
-  }
+  await expect(page.locator('#projects [data-project-visual]')).toHaveCount(0)
+  await expect(page.locator('#projects [data-project-row]')).toHaveCount(4)
+  await expect(page.locator('#ecosystem-taro [data-project-row]')).toHaveCount(1)
+  await expect(page.locator('.home-project-rail-group')).toHaveCount(5)
 }
 
 async function enableAnalyticsTestMode(page: import('@playwright/test').Page) {
@@ -72,8 +69,8 @@ async function mockAnalyticsScripts(
 test('renders the bilingual ecosystem home with valid metadata', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
-  await expectHomeVisuals(page, 'zh-CN')
-  await expect(page.getByRole('heading', { name: 'uni-app 组织也在这里' })).toBeVisible()
+  await expectHomeVisuals(page)
+  await expect(page.getByRole('heading', { name: 'Uni Helper 和 Wot UI' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'weapp-tailwindcss' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'weapp-vite' })).toBeVisible()
   await expect(page.locator('#projects').getByRole('heading', { name: 'Varo' })).toBeVisible()
@@ -84,58 +81,37 @@ test('renders the bilingual ecosystem home with valid metadata', async ({ page }
   await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(4)
   await expect(page.locator('#about')).toContainText('weapp-tailwindcss')
   const docsLinks = page.locator('#projects').getByRole('link', { name: '阅读文档' })
-  await expect(docsLinks).toHaveCount(3)
+  await expect(docsLinks).toHaveCount(4)
   await expect(docsLinks.evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
     'https://vite.weapp.dev/',
     'https://tw.weapp.dev/',
     'https://daguanren21.github.io/Varo/',
+    'https://github.com/weapp-sqlite/weapp-sqlite#readme',
   ])
   const projectHomeLinks = page.locator('.home-project-rail a')
-  await expect(projectHomeLinks.evaluateAll(links => links.map(link => ({ href: link.getAttribute('href'), target: link.getAttribute('target'), rel: link.getAttribute('rel') })))).resolves.toEqual([
-    { href: 'https://vite.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://tw.weapp.dev/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://daguanren21.github.io/Varo/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://github.com/weapp-sqlite/weapp-sqlite#readme', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://vpt.js.org/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://uni-helper.cn/', target: '_blank', rel: 'noopener noreferrer' },
-    { href: 'https://wot-ui.cn/', target: '_blank', rel: 'noopener noreferrer' },
-  ])
-  await expect(page.locator('.home-project-visual-link').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
-    'https://vite.weapp.dev/',
-    'https://tw.weapp.dev/',
-    'https://daguanren21.github.io/Varo/',
-  ])
-  await expect(page.locator('.home-project-title-link').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
-    'https://vite.weapp.dev/',
-    'https://tw.weapp.dev/',
-    'https://daguanren21.github.io/Varo/',
-  ])
+  await expect(projectHomeLinks.evaluateAll(links => links.map(link => ({ href: link.getAttribute('href'), target: link.getAttribute('target'), rel: link.getAttribute('rel') })))).resolves.toEqual(
+    railLinks.map(href => ({ href, target: '_blank', rel: 'noopener noreferrer' })),
+  )
   await expect(page.locator('#projects a[data-analytics-event="select_project"]').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
     '/projects/weapp-vite/',
     '/projects/weapp-tailwindcss/',
     '/projects/varo/',
+    '/projects/weapp-sqlite/',
   ])
 
   await page.getByRole('link', { name: 'English' }).click()
   await expect(page).toHaveURL(/\/en\/$/)
-  await expect(page.getByRole('heading', { name: 'uni-app partners are here too' })).toBeVisible()
-  await expectHomeVisuals(page, 'en')
+  await expect(page.getByRole('heading', { name: 'Uni Helper and Wot UI' })).toBeVisible()
+  await expectHomeVisuals(page)
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://weapp.dev/en/')
   await expect(page.locator('link[hreflang="zh-CN"]')).toHaveAttribute('href', 'https://weapp.dev/')
   await expect(page.locator('#projects a[data-analytics-event="select_project"]').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
     '/en/projects/weapp-vite/',
     '/en/projects/weapp-tailwindcss/',
     '/en/projects/varo/',
+    '/en/projects/weapp-sqlite/',
   ])
-  await expect(page.locator('.home-project-rail a').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual([
-    'https://vite.weapp.dev/',
-    'https://tw.weapp.dev/',
-    'https://daguanren21.github.io/Varo/',
-    'https://github.com/weapp-sqlite/weapp-sqlite#readme',
-    'https://vpt.js.org/',
-    'https://uni-helper.cn/',
-    'https://wot-ui.cn/',
-  ])
+  await expect(page.locator('.home-project-rail a').evaluateAll(links => links.map(link => link.getAttribute('href')))).resolves.toEqual(railLinks)
 })
 
 test('renders the bilingual pricing and delivery page', async ({ page }) => {
@@ -237,7 +213,7 @@ test('hero planets stay between the wordmark and the first-screen edges', async 
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/')
   const planets = page.locator('.home-hero-planet')
-  await expect(planets).toHaveCount(6)
+  await expect(planets).toHaveCount(7)
   for (const distance of ['0%', '25%', '50%', '75%']) {
     await planets.evaluateAll((elements, value) => {
       for (const element of elements) {
@@ -271,10 +247,10 @@ test('reduced motion keeps content visible and product interactions stationary',
     return style.opacity !== '1' || style.transform !== 'none' || style.animationName !== 'none' || style.transitionDuration !== '0s'
   }).map(element => element.tagName))
   expect(await movingOrHidden()).toEqual([])
-  for (const link of await page.locator('.home-project-visual-link').all()) {
-    await link.hover()
+  for (const row of await page.locator('#projects [data-project-row]').all()) {
+    await row.hover()
     expect(await movingOrHidden()).toEqual([])
-    await link.focus()
+    await row.locator('a').first().focus()
     expect(await movingOrHidden()).toEqual([])
   }
   await page.locator('[data-principle-card]').first().hover()
@@ -463,7 +439,7 @@ test('keeps core content and links available without JavaScript', async ({ brows
     await page.goto(locale === 'en' ? '/en/' : '/')
     await expect(page.getByRole('heading', { level: 1, name: 'weapp.dev' })).toBeVisible()
     await expect(page.getByRole('link', { name: siteCopy[locale].projects.documentation }).first()).toBeVisible()
-    await expectHomeVisuals(page, locale)
+    await expectHomeVisuals(page)
   }
   await context.close()
 })

@@ -15,6 +15,7 @@
   "logo": "/logo.svg",
   "accent": "#0e7958",
   "role": "Local data",
+  "ecosystem": "weapp",
   "maturity": "planned",
   "relatedProjects": [
     "weapp-vite",
