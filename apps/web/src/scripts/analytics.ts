@@ -5,6 +5,12 @@ export const ANALYTICS_SITE_IDS = {
   ga4: 'G-P7XL4TEVNM',
 } as const
 
+export const PRODUCTION_ANALYTICS_HOSTS = ['weapp.dev', 'weapp.js.org'] as const
+
+export function isProductionAnalyticsHost(hostname: string): boolean {
+  return (PRODUCTION_ANALYTICS_HOSTS as readonly string[]).includes(hostname)
+}
+
 type AnalyticsProvider = keyof typeof ANALYTICS_SITE_IDS
 
 export type AnalyticsEventName
@@ -172,7 +178,7 @@ export function initAnalytics(): void {
   }
 
   const privacySignal = hasPrivacySignal(navigator)
-  const shouldRun = window.location.hostname === 'weapp.dev' || window.__WEAPP_ANALYTICS_TEST__ === true
+  const shouldRun = isProductionAnalyticsHost(window.location.hostname) || window.__WEAPP_ANALYTICS_TEST__ === true
   const preferenceElements = getPreferenceElements()
   let lastPreferenceTrigger: HTMLElement | null = null
   const providerStates: Record<AnalyticsProvider, {

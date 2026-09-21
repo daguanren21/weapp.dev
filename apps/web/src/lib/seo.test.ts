@@ -51,6 +51,7 @@ describe('SEO helpers', () => {
     const organization = organizationSchema([project])
 
     expect(organization.sameAs).toContain('https://tw.weapp.dev/')
+    expect(organization.sameAs).toContain('https://weapp.js.org/')
     expect(organization.sameAs).toContain('https://github.com/sonofmagic/weapp-tailwindcss')
   })
 

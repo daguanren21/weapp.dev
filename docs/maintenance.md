@@ -51,18 +51,19 @@ pnpm exec wrangler versions upload --dry-run
 
 ## GitHub Actions 部署
 
-站点仍发布到现有 Worker `weapp-dev`。构建、校验和 Wrangler 发布都在 GitHub Actions 工作流 `CI`（`.github/workflows/ci.yml`）里完成。Cloudflare 只作为运行时，不再用 Workers Builds 的 Git 集成。
+站点仍发布到现有 Worker `weapp-dev`。同一份 `apps/web/dist` 还会发到 GitHub Pages，供 `weapp.js.org` 使用。构建、校验和 Wrangler 发布都在 GitHub Actions 工作流 `CI`（`.github/workflows/ci.yml`）里完成。Cloudflare 只作为 `weapp.dev` 的运行时，不再用 Workers Builds 的 Git 集成。
 
-| 设置        | 值                                                                         |
-| ----------- | -------------------------------------------------------------------------- |
-| 生产分支    | `main`                                                                     |
-| 质量门      | `pnpm check` 和静态构建通过后发布；Playwright e2e 仍运行但不阻断生产       |
-| 生产命令    | `pnpm exec wrangler deploy --message "$GITHUB_SHA"`（工作目录 `apps/web`） |
-| 预览命令    | `pnpm exec wrangler versions upload --preview-alias pr-<n>`                |
-| Node / pnpm | `.node-version`（22.23.2）和根目录 `packageManager`（pnpm@12.3.4）         |
-| Secrets     | `CLOUDFLARE_ACCOUNT_ID`、`CLOUDFLARE_API_TOKEN`                            |
+| 设置        | 值                                                                              |
+| ----------- | ------------------------------------------------------------------------------- |
+| 生产分支    | `main`                                                                          |
+| 质量门      | `pnpm check` 和静态构建通过后发布；Playwright e2e 仍运行但不阻断生产            |
+| 生产命令    | `pnpm exec wrangler deploy --message "$GITHUB_SHA"`（工作目录 `apps/web`）      |
+| Pages 发布  | `actions/upload-pages-artifact` + `actions/deploy-pages`（`deploy-pages` 作业） |
+| 预览命令    | `pnpm exec wrangler versions upload --preview-alias pr-<n>`                     |
+| Node / pnpm | `.node-version`（22.23.2）和根目录 `packageManager`（pnpm@12.3.4）              |
+| Secrets     | `CLOUDFLARE_ACCOUNT_ID`、`CLOUDFLARE_API_TOKEN`                                 |
 
-`push` 到 `main` 或在 `main` 上 `workflow_dispatch` 会把 `verify` 产出的 `apps/web/dist` 激活为生产部署。同仓库 PR 只上传 Worker Version，别名为 `pr-<number>`，不切换生产流量。Fork PR 没有仓库 secrets，跳过预览。
+`push` 到 `main` 或在 `main` 上 `workflow_dispatch` 会把 `verify` 产出的 `apps/web/dist` 同时激活为 Cloudflare 生产部署和 GitHub Pages。canonical、sitemap 和 JSON-LD 仍指向 `https://weapp.dev`。同仓库 PR 只上传 Worker Version，别名为 `pr-<number>`，不切换生产流量。Fork PR 没有仓库 secrets，跳过预览。
 
 版本预览 URL 已启用，公开地址格式为：
 
@@ -79,6 +80,8 @@ Worker 的生产 `workers.dev` 地址保持关闭，版本预览保持开启。`
 - `weapp.dev`
 - `www.weapp.dev`
 
+`weapp.js.org` 不写进 `wrangler.jsonc`。js.org 的 DNS 在 js-org 的 Cloudflare 账号里，站点通过 GitHub Pages 提供内容：产物里有 `CNAME`（`weapp.js.org`）和 `.nojekyll`（避免 Jekyll 丢掉 `_astro/`）。子域要在 [js-org/js.org](https://github.com/js-org/js.org) 的 `cnames_active.js` 登记 `"weapp": "weappjs.github.io/weapp.dev"`，仓库 Settings → Pages 的 Source 选 GitHub Actions。
+
 `wrangler.jsonc` 只配置静态 Assets 和两个自定义域名，不包含 Worker 入口或 `run_worker_first`。`www.weapp.dev` 的 308 跳转在 Cloudflare Redirect Rules 中配置，条件为 `http.host eq "www.weapp.dev"`，目标为 `https://weapp.dev` 加原始路径，并保留查询参数。
 
 ## 访问统计
@@ -86,7 +89,7 @@ Worker 的生产 `workers.dev` 地址保持关闭，版本预览保持开启。`
 生产站点使用三层统计，并且不会在预览域名或本地开发环境加载第三方脚本：
 
 - Cloudflare Web Analytics 提供无 Cookie 的基础流量与 Core Web Vitals。
-- 正式域名访问同时加载百度统计和 Google Analytics 4；预览域名和本地开发不会加载生产统计。
+- 正式域名（`weapp.dev` 和 `weapp.js.org`）访问同时加载百度统计和 Google Analytics 4；预览域名和本地开发不会加载生产统计。
 - 首次访问不显示同意横幅，页脚的统计偏好入口可以随时关闭或重新开启两个平台。
 - 浏览器启用 Global Privacy Control 或 Do Not Track 时不会加载百度统计或 GA4。
 

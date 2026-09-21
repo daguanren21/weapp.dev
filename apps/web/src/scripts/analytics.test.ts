@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   ANALYTICS_CONSENT_KEY,
   hasPrivacySignal,
+  isProductionAnalyticsHost,
   mapBaiduEvent,
   normalizeAnalyticsEvent,
   readAnalyticsConsent,
@@ -23,6 +24,13 @@ describe('analytics client policy', () => {
     expect(readAnalyticsConsent(storage)).toBe('granted')
     values.set(ANALYTICS_CONSENT_KEY, '{"choice":"granted","version":2}')
     expect(readAnalyticsConsent(storage)).toBeNull()
+  })
+
+  it('loads production analytics only on weapp.dev and weapp.js.org', () => {
+    expect(isProductionAnalyticsHost('weapp.dev')).toBe(true)
+    expect(isProductionAnalyticsHost('weapp.js.org')).toBe(true)
+    expect(isProductionAnalyticsHost('www.weapp.dev')).toBe(false)
+    expect(isProductionAnalyticsHost('localhost')).toBe(false)
   })
 
   it('honors Global Privacy Control and Do Not Track', () => {

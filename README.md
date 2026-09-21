@@ -5,6 +5,7 @@
   <p>
     <a href="https://weapp.dev/">中文官网</a> ·
     <a href="https://weapp.dev/en/">English</a> ·
+    <a href="https://weapp.js.org/">weapp.js.org</a> ·
     <a href="https://github.com/sonofmagic/weapp.dev">GitHub</a>
   </p>
 </div>
