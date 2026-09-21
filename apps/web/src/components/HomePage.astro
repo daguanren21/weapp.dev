@@ -31,6 +31,7 @@ const constellation = getConstellationProjects(projects).map(project => ({
   href: project.data.docsUrl,
   logo: project.data.logo,
   name: project.data.locales[locale].name,
+  accent: project.data.accent,
 }))
 const stageById = new Map(homeProjects.map(project => [project.id, project.stage]))
 const railGroups = ecosystemGroups.map(group => ({

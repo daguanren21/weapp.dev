@@ -214,14 +214,14 @@ test('hero planets stay between the wordmark and the first-screen edges', async 
   await page.goto('/')
   const planets = page.locator('.home-hero-planet')
   await expect(planets).toHaveCount(7)
-  for (const distance of ['0%', '25%', '50%', '75%']) {
+  for (const turn of [0, 0.25, 0.5, 0.75]) {
     await planets.evaluateAll((elements, value) => {
       for (const element of elements) {
         const node = element as HTMLElement
         node.style.animation = 'none'
-        node.style.offsetDistance = value
+        node.style.setProperty('--orbit-turn', String(value))
       }
-    }, distance)
+    }, turn)
     const stray = await page.evaluate(() => {
       const word = document.querySelector('#home-hero-title')!.getBoundingClientRect()
       const screen = document.querySelector('.home-hero-screen')!.getBoundingClientRect()
@@ -235,7 +235,7 @@ test('hero planets stay between the wordmark and the first-screen edges', async 
         return [{ id: (element as HTMLElement).dataset.analyticsProject, hitsWord, outside }]
       })
     })
-    expect(stray, distance).toEqual([])
+    expect(stray, String(turn)).toEqual([])
   }
 })
 

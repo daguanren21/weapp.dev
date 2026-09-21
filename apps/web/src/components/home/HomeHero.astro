@@ -21,7 +21,7 @@ interface RailGroup {
 interface Props {
   locale: Locale
   railGroups: RailGroup[]
-  constellation: Array<{ id: string, href: string, logo: string, name: string }>
+  constellation: Array<{ id: string, href: string, logo: string, name: string, accent: string }>
 }
 
 const { locale, railGroups, constellation } = Astro.props
@@ -29,7 +29,6 @@ const copy = siteCopy[locale]
 const wordmarkMarkup = ['w', 'e', 'a', 'p', 'p', '.', 'd', 'e', 'v']
   .map((char, index) => `<span class="${char === '.' ? 'home-hero-letter home-hero-dot' : 'home-hero-letter'}" style="--i:${index}">${char}</span>`)
   .join('')
-const planetKinds = ['rock', 'ice', 'gas', 'moon', 'warm'] as const
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
@@ -45,11 +44,10 @@ const planetKinds = ['rock', 'ice', 'gas', 'moon', 'warm'] as const
       <span class="home-hero-gridlines" aria-hidden="true"></span>
       <span class="home-hero-orbit" aria-hidden="true"></span>
       {constellation.map((mark, index) => {
-        const kind = planetKinds[index % planetKinds.length]
         const orbitP = ((index + 0.5) / constellation.length).toFixed(4)
         return (
           <a
-            class={`home-hero-tile home-hero-planet home-hero-planet--${kind}`}
+            class={`home-hero-tile home-hero-planet home-hero-planet--${mark.id}`}
             href={mark.href}
             target="_blank"
             rel="noopener noreferrer"
@@ -57,7 +55,7 @@ const planetKinds = ['rock', 'ice', 'gas', 'moon', 'warm'] as const
             data-analytics-event="click_outbound"
             data-analytics-target="project_home"
             data-analytics-project={mark.id}
-            style={`--orbit-t: 80s; --orbit-p: ${orbitP};`}
+            style={`--orbit-t: 80s; --orbit-p: ${orbitP}; --planet-accent: ${mark.accent};`}
           >
             <span class="home-hero-planet-body" aria-hidden="true"></span>
             <img src={mark.logo} width="48" height="48" alt="" decoding="async" />
@@ -90,3 +88,16 @@ const planetKinds = ['rock', 'ice', 'gas', 'moon', 'warm'] as const
     ))}
   </nav>
 </section>
+
+<style is:global>
+  /* Layout CSS can emit a truncated copy of this name; this file loads later so 0% → 100% survives. */
+  @keyframes home-hero-revolve {
+    0% {
+      --orbit-turn: 0;
+    }
+
+    100% {
+      --orbit-turn: 1;
+    }
+  }
+</style>
