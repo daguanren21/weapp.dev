@@ -502,7 +502,6 @@
   color: var(--accent);
 }
 
-
 .home-project-visual-link {
   display: block;
   min-width: 0;
@@ -537,7 +536,8 @@
 @media (prefers-reduced-motion: no-preference) {
   html[data-project-proof-motion] [data-scroll-proof] {
     opacity: var(--proof-opacity, 0.62);
-    transform: perspective(1400px) rotateX(var(--proof-rotate, 18deg)) translateY(var(--proof-lift, 3.5rem)) scale(var(--proof-scale, 0.84));
+    transform: perspective(1400px) rotateX(var(--proof-rotate, 18deg)) translateY(var(--proof-lift, 3.5rem))
+      scale(var(--proof-scale, 0.84));
   }
 }
 
