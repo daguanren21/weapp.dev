@@ -5,13 +5,14 @@
 ## 职责与数据流
 
 - `HomePage.astro` 只组合章节和读取首页数据；`home.css` 负责章节布局和响应式断点。
-- 章节阅读顺序（证明弧先于商业化）：Hero → About → Projects → Ecosystem → Toolchain map → BuildRail → Commercial → Vision → Releases → Collaboration。
-- 第一屏只保留词标 `weapp.dev` 与真实项目徽标星座；项目入口和交互演示放在第一屏之后，不进入首屏文案。
+- 章节阅读顺序（证明弧先于商业化）：Hero → About → weapp 项目（含 weapp-vite 交互演示）→ Taro → Vue Mini / Rezor / uni-app → Toolchain map → BuildRail → Commercial → Vision → Releases → Collaboration。
+- 第一屏只保留词标 `weapp.dev` 与同等权重的项目徽标星座；项目入口和交互演示放在第一屏之后，不进入首屏文案。星座不按轨道远近分等级，weapp-sqlite 与 Rezor 不进星座。
+- 首页项目按 `ecosystem` 分区：weapp 原生四件套、Taro（VPT）、Vue Mini、Rezor、uni-app（Uni Helper / Wot UI）。不用精选三图或编号排名。
 - `HomeVision` 用「负责 / 不负责」边界卡替代抽象原则文案，避免证明区之后情绪低谷。
 - `content/home-projects.ts` 显式指定项目顺序、演示类型、反向布局和双语阶段标签。新增目录项目不会自动进入首页。
 - `lib/home-projects.ts` 是纯组装器，只关联目录与首页选品，校验未知项目和重复选品。首页不再要求 showcase 图片。
 - `components/home/demos/` 的 Style、Build、Registry 分别拥有视图、局部状态及预设；`HomeDemo` 只按受限类型选择组件。
-- `HeroDemos` 只拥有标签选择和键盘导航；**交互演示只出现在 Hero**。项目行使用 `HomeProjectProof` 展示更尖的静态产物（默认写法 / 构建命令 / 接入命令），避免重复演同一套 labs。
+- `HomeDemos` 只拥有标签选择和键盘导航；**交互演示出现在 weapp-vite 项目行**。其余项目行使用 `HomeProjectProof` 展示更尖的静态产物（默认写法 / 构建命令 / 接入命令），避免重复演同一套 labs。
 - 项目行 CTA 只保留主入口「阅读文档」与次入口「项目详情」；标题不再外链，避免同一意图多扇门。
 - `CodePanel` 共享代码显示、复制与错误反馈；代码通过结构化文本片段生成，客户端使用 DOM textContent，避免 HTML 注入。
 - `demo.css` 只负责演示内部布局、容器断点与操作后的颜色过渡；`copy.ts` 维护演示双语文案。不要把演示状态或样式放进全局脚本。
@@ -22,8 +23,8 @@ flowchart LR
   P[项目目录] --> D[详情页 / Header / Footer]
   P --> H[首页数据组合]
   E[首页选品配置] --> H
-  H --> R[Hero 交互演示]
-  H --> P2[项目行静态证明]
+  H --> R[weapp-vite 交互演示]
+  H --> P2[其他项目行静态证明]
   S[演示预设与双语文案] --> C[独立演示组件]
   S --> P2
   C --> R

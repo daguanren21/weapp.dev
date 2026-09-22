@@ -1,24 +1,25 @@
 import type { ProjectEntry } from './projects'
 import { describe, expect, it } from 'vitest'
+import rezor from '../content/projects/rezor.json'
 import uniHelper from '../content/projects/uni-helper.json'
 import varo from '../content/projects/varo.json'
 import taro from '../content/projects/vite-plugin-taro.json'
+import vueMini from '../content/projects/vue-mini.json'
 import sqlite from '../content/projects/weapp-sqlite.json'
 import tailwind from '../content/projects/weapp-tailwindcss.json'
 import vite from '../content/projects/weapp-vite.json'
 import wotUi from '../content/projects/wot-ui.json'
 import { projectDefinitionSchema } from '../content/schemas'
-import { getEcosystemProjects, getToolchainProjects, validateToolchainCatalog } from './toolchain'
+import { getCatalogEcosystemGroups, getConstellationProjects, getEcosystemProjects, getToolchainProjects, validateToolchainCatalog } from './toolchain'
 
 describe('toolchain project ordering', () => {
-  it('keeps the five product roles in build-flow order', () => {
-    const projects = ['vite-plugin-taro', 'varo', 'weapp-sqlite', 'weapp-vite', 'weapp-tailwindcss'].map(id => ({ id, data: {} })) as never
+  it('keeps the weapp stack in build-flow order', () => {
+    const projects = ['varo', 'weapp-sqlite', 'weapp-vite', 'weapp-tailwindcss'].map(id => ({ id, data: {} })) as never
     expect(getToolchainProjects(projects).map(item => item.project.id)).toEqual([
       'weapp-vite',
       'weapp-tailwindcss',
       'varo',
       'weapp-sqlite',
-      'vite-plugin-taro',
     ])
   })
 
@@ -34,17 +35,13 @@ describe('toolchain project ordering', () => {
     const duplicateOrder = structuredClone(projects) as ProjectEntry[]
     duplicateOrder[1].data.order = duplicateOrder[0].data.order
     expect(() => validateToolchainCatalog(duplicateOrder)).toThrow('Duplicate toolchain project order')
-    expect(() => validateToolchainCatalog(projects.slice(0, 4))).toThrow('Missing toolchain project')
+    expect(() => validateToolchainCatalog(projects.slice(0, 3))).toThrow('Missing toolchain project')
     const invalid = structuredClone(projects) as ProjectEntry[]
     invalid[0].data.relatedProjects = ['missing-project']
     expect(() => validateToolchainCatalog(invalid)).toThrow('Unknown related project')
     const selfRelated = structuredClone(projects) as ProjectEntry[]
     selfRelated[0].data.relatedProjects = ['weapp-vite']
     expect(() => validateToolchainCatalog(selfRelated)).toThrow('Project cannot relate to itself')
-    const outsideToolchain = structuredClone(projects) as ProjectEntry[]
-    outsideToolchain.push({ id: 'other-project', collection: 'projects', data: { ...outsideToolchain[0].data, relatedProjects: [] } })
-    outsideToolchain[0].data.relatedProjects = ['other-project']
-    expect(() => validateToolchainCatalog(outsideToolchain)).toThrow('Related project is outside the toolchain')
   })
 
   it('keeps two related paths for every core project', () => {
@@ -126,9 +123,9 @@ describe('toolchain project ordering', () => {
     expect(() => projectDefinitionSchema.parse({ ...vite, role: 'Documentation' })).toThrow()
   })
 
-  it('keeps ecosystem partners out of the five-layer map', () => {
-    const projects = [vite, tailwind, varo, sqlite, taro, uniHelper, wotUi].map((data, index) => ({
-      id: ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro', 'uni-helper', 'wot-ui'][index],
+  it('groups the catalog by ecosystem and keeps weapp-only in the toolchain map', () => {
+    const projects = [vite, tailwind, varo, sqlite, taro, vueMini, rezor, uniHelper, wotUi].map((data, index) => ({
+      id: ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro', 'vue-mini', 'rezor', 'uni-helper', 'wot-ui'][index],
       data: projectDefinitionSchema.parse(data),
     })) as unknown as ProjectEntry[]
     expect(() => validateToolchainCatalog(projects)).not.toThrow()
@@ -137,8 +134,23 @@ describe('toolchain project ordering', () => {
       'weapp-tailwindcss',
       'varo',
       'weapp-sqlite',
-      'vite-plugin-taro',
+    ])
+    expect(getCatalogEcosystemGroups(projects).map(group => [group.id, group.projects.map(project => project.id)])).toEqual([
+      ['weapp', ['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite']],
+      ['taro', ['vite-plugin-taro']],
+      ['vue-mini', ['vue-mini']],
+      ['rezor', ['rezor']],
+      ['uni-app', ['uni-helper', 'wot-ui']],
     ])
     expect(getEcosystemProjects(projects).map(project => project.id)).toEqual(['uni-helper', 'wot-ui'])
+    expect(getConstellationProjects(projects).map(project => project.id)).toEqual([
+      'weapp-vite',
+      'weapp-tailwindcss',
+      'varo',
+      'vite-plugin-taro',
+      'vue-mini',
+      'uni-helper',
+      'wot-ui',
+    ])
   })
 })

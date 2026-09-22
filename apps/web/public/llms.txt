@@ -8,6 +8,8 @@
 - [weapp-vite](https://weapp.dev/projects/weapp-vite/): Vite-powered development, builds, runtime tooling, and multi-platform output for mini-app projects.
 - [Varo](https://weapp.dev/projects/varo/): Registry-first editable component source, primitives, business Blocks, and Agent UI for H5 and Wevu mini-programs.
 - [VPT](https://weapp.dev/projects/vite-plugin-taro/): Vite 8, React 19, and Taro 4 for WeChat, Alipay, and Web apps, with state-preserving hot reload, automatic WeChat subpackages, and Tailwind CSS v4.
+- [Vue Mini](https://weapp.dev/projects/vue-mini/): Vue 3 reactivity and Composition API for WeChat mini programs; docs at vuemini.org.
+- [Rezor](https://weapp.dev/projects/rezor/): React Hooks mini-program framework; docs currently point at the GitHub repository.
 - [Uni Helper](https://weapp.dev/projects/uni-helper/): uni-app org tooling portal; installable entry is create-uni.
 - [Wot UI](https://weapp.dev/projects/wot-ui/): uni-app Vue 3 component library published as wot-design-uni.
 - [English project index](https://weapp.dev/en/): English overview of the stack.

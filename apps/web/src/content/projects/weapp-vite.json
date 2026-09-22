@@ -20,6 +20,7 @@
   "logo": "/brands/weapp-vite.svg",
   "accent": "#2ba245",
   "role": "Engineering",
+  "ecosystem": "weapp",
   "maturity": "stable",
   "runtime": [
     "Vite",

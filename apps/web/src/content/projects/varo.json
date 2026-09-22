@@ -21,6 +21,7 @@
   "logo": "/brands/varo.svg",
   "accent": "#07c160",
   "role": "Components",
+  "ecosystem": "weapp",
   "maturity": "stable",
   "runtime": [
     "Vue 3",

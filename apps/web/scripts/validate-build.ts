@@ -16,6 +16,8 @@ const expectedFiles = [
   'projects/varo/index.html',
   'projects/weapp-sqlite/index.html',
   'projects/vite-plugin-taro/index.html',
+  'projects/vue-mini/index.html',
+  'projects/rezor/index.html',
   'en/projects/weapp-tailwindcss/index.html',
   'en/projects/weapp-vite/index.html',
   'en/projects/weapp-sqlite/index.html',
@@ -29,12 +31,16 @@ const expectedFiles = [
   'en/sponsors/index.html',
   'en/projects/varo/index.html',
   'en/projects/vite-plugin-taro/index.html',
+  'en/projects/vue-mini/index.html',
+  'en/projects/rezor/index.html',
   'releases.xml',
   'sitemap-index.xml',
   'robots.txt',
   'llms.txt',
   'llms-full.txt',
   'og.png',
+  'CNAME',
+  '.nojekyll',
 ]
 const retiredDocsHosts = ['tw.icebreaker.top', 'vite.icebreaker.top']
 
@@ -71,6 +77,11 @@ for (const file of expectedFiles) {
   catch {
     errors.push(`Missing expected build output: ${file}`)
   }
+}
+
+const pagesCname = (await readFile(resolve(dist, 'CNAME'), 'utf8')).trim()
+if (pagesCname !== 'weapp.js.org') {
+  errors.push(`CNAME: expected weapp.js.org, received ${pagesCname || '(empty)'}`)
 }
 
 for (const homeFile of ['index.html', 'en/index.html']) {

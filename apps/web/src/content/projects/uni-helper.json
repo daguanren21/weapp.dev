@@ -1,5 +1,5 @@
 {
-  "order": 6,
+  "order": 8,
   "status": "stable",
   "packageName": "create-uni",
   "github": "uni-helper/create-uni",
@@ -19,6 +19,7 @@
   "logo": "/brands/uni-helper.svg",
   "accent": "#00c16a",
   "role": "Ecosystem",
+  "ecosystem": "uni-app",
   "maturity": "stable",
   "runtime": [
     "Vue",

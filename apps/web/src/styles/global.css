@@ -170,6 +170,7 @@
 }
 
 .home-hero {
+  overflow-x: clip;
   color: var(--text);
   background: var(--background);
 }
@@ -203,6 +204,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
   pointer-events: none;
 }
 
@@ -221,60 +223,41 @@
   display: none;
 }
 
+@property --orbit-turn {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 0;
+}
+
 .home-hero-orbit {
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 86vw;
+  height: 62vh;
   border: 1px solid rgb(180 210 255 / 14%);
   border-radius: 50%;
   pointer-events: none;
   translate: -50% -50%;
 }
-.home-hero-orbit-inner {
-  width: 76vw;
-  height: 42vh;
-}
-.home-hero-orbit-mid {
-  width: 82vw;
-  height: 54vh;
-  border-style: dashed;
-  opacity: 0.7;
-}
-.home-hero-orbit-outer {
-  width: 88vw;
-  height: 66vh;
-  opacity: 0.4;
-}
-
-.home-hero-planet-ring--inner {
-  --orbit-rx: 38vw;
-  --orbit-ry: 21vh;
-}
-.home-hero-planet-ring--mid {
-  --orbit-rx: 41vw;
-  --orbit-ry: 27vh;
-}
-.home-hero-planet-ring--outer {
-  --orbit-rx: 44vw;
-  --orbit-ry: 33vh;
-}
 
 .home-hero-tile,
 .home-hero-planet {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: calc(50% + sin(calc(var(--orbit-start) + var(--orbit-turn) * 360deg)) * var(--orbit-ry));
+  left: calc(50% + cos(calc(var(--orbit-start) + var(--orbit-turn) * 360deg)) * var(--orbit-rx));
   z-index: 2;
   display: grid;
   place-items: center;
   width: clamp(2.9rem, 6.4vw, 3.85rem);
   height: clamp(2.9rem, 6.4vw, 3.85rem);
-  offset-path: ellipse(var(--orbit-rx) var(--orbit-ry) at 50% 50%);
-  offset-distance: calc(var(--orbit-p) * 100%);
-  offset-rotate: 0deg;
-  offset-anchor: center;
   pointer-events: auto;
   border-radius: 50%;
+  translate: -50% -50%;
+
+  --orbit-rx: 43vw;
+  --orbit-ry: 31vh;
+  --orbit-start: calc(var(--orbit-p) * 360deg);
 }
 .home-hero-tile:focus-visible {
   outline: 2px solid var(--accent);
@@ -305,93 +288,99 @@
   filter: blur(1.5px);
   pointer-events: none;
 }
+.home-hero-planet-body::after {
+  position: absolute;
+  inset: 17%;
+  z-index: 1;
+  border-radius: 50%;
+  background: rgb(247 250 248 / 82%);
+  box-shadow:
+    inset 0 0 10px rgb(0 0 0 / 12%),
+    0 0 0 1px rgb(255 255 255 / 22%);
+  content: '';
+  pointer-events: none;
+}
 
-.home-hero-planet--rock .home-hero-planet-body {
+.home-hero-planet--weapp-vite .home-hero-planet-body {
   background:
     linear-gradient(128deg, rgb(255 255 255 / 22%) 0 26%, transparent 48%, rgb(0 0 0 / 46%) 100%),
     radial-gradient(circle at 24% 38%, rgb(90 70 50 / 55%) 0 7%, transparent 8%),
     radial-gradient(circle at 62% 28%, rgb(40 48 36 / 50%) 0 6%, transparent 7%),
-    radial-gradient(circle at 72% 64%, rgb(30 36 28 / 45%) 0 9%, transparent 10%),
-    radial-gradient(circle at 38% 74%, rgb(110 90 60 / 35%) 0 8%, transparent 9%),
-    radial-gradient(circle at 50% 50%, #8a9a7c, #1c241c);
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #1c241c);
   box-shadow:
     inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 55%),
-    0 0 1.5rem rgb(90 120 80 / 22%);
+    0 0 1.5rem color-mix(in srgb, var(--planet-accent) 35%, transparent);
 }
-.home-hero-planet--ice .home-hero-planet-body {
+.home-hero-planet--weapp-tailwindcss .home-hero-planet-body {
   background:
     linear-gradient(128deg, rgb(255 255 255 / 28%) 0 24%, transparent 46%, rgb(0 18 32 / 52%) 100%),
     repeating-linear-gradient(112deg, rgb(160 210 235 / 22%) 0 5px, transparent 5px 11px),
     radial-gradient(circle at 58% 62%, rgb(20 60 90 / 40%), transparent 42%),
-    radial-gradient(circle at 50% 50%, #9fd0e8, #123044);
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #123044);
   box-shadow:
     inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 5%),
-    0 0 1.8rem rgb(90 180 220 / 28%);
+    0 0 1.8rem color-mix(in srgb, var(--planet-accent) 40%, transparent);
 }
-.home-hero-planet--gas .home-hero-planet-body {
+.home-hero-planet--varo .home-hero-planet-body {
   background:
     linear-gradient(128deg, rgb(255 248 230 / 26%) 0 22%, transparent 46%, rgb(20 10 0 / 55%) 100%),
     repeating-linear-gradient(
       8deg,
-      rgb(230 190 120 / 34%) 0 5px,
-      rgb(120 78 36 / 22%) 5px 9px,
-      rgb(90 50 20 / 18%) 9px 14px
+      color-mix(in srgb, var(--planet-accent) 55%, white) 0 5px,
+      color-mix(in srgb, var(--planet-accent) 40%, #2a1a0c) 5px 9px,
+      rgb(20 80 40 / 18%) 9px 14px
     ),
-    radial-gradient(circle at 50% 50%, #d4a45c, #2a1a0c);
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #0d2818);
   box-shadow:
     inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 5%),
-    0 0 1.7rem rgb(210 150 70 / 24%);
+    0 0 1.7rem color-mix(in srgb, var(--planet-accent) 36%, transparent);
 }
-.home-hero-planet--moon .home-hero-planet-body {
+.home-hero-planet--vite-plugin-taro .home-hero-planet-body {
   background:
-    linear-gradient(128deg, rgb(255 255 255 / 3%) 0 24%, transparent 48%, rgb(0 0 0 / 5%) 100%),
-    radial-gradient(circle at 63% 42%, rgb(28 28 32 / 55%) 0 9%, transparent 10%),
+    linear-gradient(128deg, rgb(255 255 255 / 16%) 0 24%, transparent 48%, rgb(0 0 0 / 55%) 100%),
+    radial-gradient(circle at 63% 42%, rgb(8 28 18 / 55%) 0 9%, transparent 10%),
     radial-gradient(circle at 34% 68%, rgb(18 18 20 / 5%) 0 7%, transparent 8%),
-    radial-gradient(circle at 48% 30%, rgb(60 60 64 / 4%) 0 5%, transparent 6%),
-    radial-gradient(circle at 76% 70%, rgb(10 10 12 / 45%) 0 6%, transparent 7%),
-    radial-gradient(circle at 50% 50%, #c8cdd3, #3e4248);
-}
-.home-hero-planet--ring .home-hero-planet-body {
-  overflow: visible;
-  background:
-    linear-gradient(128deg, rgb(255 255 255 / 26%) 0 24%, transparent 48%, rgb(0 10 24 / 5%) 100%),
-    radial-gradient(circle at 50% 50%, #9eb6d2, #1b2a3e);
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #06140c);
   box-shadow:
     inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 5%),
-    0 0 1.6rem rgb(120 160 210 / 22%);
+    0 0 1.6rem color-mix(in srgb, var(--planet-accent) 32%, transparent);
 }
-.home-hero-planet--ring .home-hero-planet-body::after {
-  position: absolute;
-  inset: 42% -38%;
-  z-index: -1;
-  border: 3px solid transparent;
-  border-top-color: rgb(220 232 248 / 7%);
-  border-bottom-color: rgb(160 180 210 / 38%);
-  border-radius: 50%;
-  content: '';
-  transform: rotateX(72deg);
-  box-shadow: 0 0 0 1px rgb(255 255 255 / 12%);
-  transition: inset 280ms cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.home-hero-planet--warm .home-hero-planet-body {
+.home-hero-planet--vue-mini .home-hero-planet-body {
   background:
-    linear-gradient(128deg, rgb(255 236 210 / 32%) 0 24%, transparent 46%, rgb(0 20 16 / 55%) 100%),
-    radial-gradient(circle at 68% 70%, rgb(16 90 72 / 45%), transparent 46%),
-    radial-gradient(circle at 28% 60%, rgb(180 70 30 / 28%), transparent 36%),
-    radial-gradient(circle at 50% 50%, #e08a4c, #16362e);
+    linear-gradient(128deg, rgb(255 255 255 / 30%) 0 22%, transparent 46%, rgb(0 20 16 / 50%) 100%),
+    radial-gradient(circle at 70% 30%, rgb(180 255 220 / 28%), transparent 36%),
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #16362e);
   box-shadow:
     inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 5%),
-    0 0 1.8rem rgb(220 110 50 / 26%);
+    0 0 1.8rem color-mix(in srgb, var(--planet-accent) 38%, transparent);
+}
+.home-hero-planet--uni-helper .home-hero-planet-body {
+  background:
+    linear-gradient(128deg, rgb(255 255 255 / 24%) 0 24%, transparent 48%, rgb(0 0 0 / 42%) 100%),
+    radial-gradient(circle at 38% 74%, rgb(110 90 60 / 28%) 0 8%, transparent 9%),
+    radial-gradient(circle at 72% 64%, rgb(20 80 50 / 40%) 0 9%, transparent 10%),
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #10301c);
+  box-shadow:
+    inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 5%),
+    0 0 1.6rem color-mix(in srgb, var(--planet-accent) 34%, transparent);
+}
+.home-hero-planet--wot-ui .home-hero-planet-body {
+  background:
+    linear-gradient(128deg, rgb(255 236 210 / 26%) 0 24%, transparent 46%, rgb(0 20 16 / 55%) 100%),
+    radial-gradient(circle at 28% 60%, rgb(180 70 30 / 22%), transparent 36%),
+    radial-gradient(circle at 50% 50%, var(--planet-accent), #0c2420);
+  box-shadow:
+    inset -0.7rem -0.45rem 1.1rem rgb(0 0 0 / 5%),
+    0 0 1.8rem color-mix(in srgb, var(--planet-accent) 36%, transparent);
 }
 
 .home-hero-tile img {
   position: relative;
-  z-index: 1;
-  width: 42%;
-  height: 42%;
+  z-index: 2;
+  width: 58%;
+  height: 58%;
   object-fit: contain;
-  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 45%));
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 35%));
   transition: scale 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -428,39 +417,56 @@
 }
 
 .home-hero .home-project-rail {
+  padding-block: 1.5rem 2rem;
   margin-top: 0;
 }
 
 .home-project-rail {
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  overflow: visible;
+  background: transparent;
+  box-shadow: none;
+}
+.home-project-rail-group {
+  min-width: 0;
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface);
-  box-shadow: none;
+}
+.home-project-rail-group:has(.home-project-link:nth-child(3)) {
+  grid-column: 1 / -1;
+}
+.home-project-rail-title {
+  margin: 0;
+  padding: 0.55rem 1rem 0.4rem;
+  color: var(--accent);
+  font: 650 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.home-project-rail-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 .home-project-link {
   display: grid;
-  grid-column: span 3;
-  grid-template-columns: 1.25rem 2rem minmax(0, 1fr) auto;
+  grid-template-columns: 2rem minmax(0, 1fr) auto;
   gap: 0.75rem;
   align-items: center;
   min-width: 0;
-  min-height: 78px;
-  padding: 1rem 1.1rem;
+  min-height: 56px;
+  padding: 0.7rem 1rem;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
   transition: background-color 180ms ease;
 }
-.home-project-link:nth-child(n + 5) {
-  grid-column: span 4;
-  border-bottom: 0;
-}
-.home-project-link:nth-child(4),
-.home-project-link:nth-child(7) {
+.home-project-link:last-child {
   border-right: 0;
 }
 .home-project-link:hover,
@@ -486,8 +492,7 @@
   font: 500 0.6875rem/1.45 var(--font-mono);
 }
 .home-project-index {
-  color: var(--accent);
-  font: 600 0.6875rem/1 var(--font-mono);
+  display: none;
 }
 .home-project-arrow {
   color: var(--muted);
@@ -518,7 +523,6 @@
   text-decoration: underline;
 }
 [data-project-row] {
-  padding-top: 3.5rem;
   border-color: var(--border);
 }
 [data-project-visual] {
@@ -526,35 +530,14 @@
   box-shadow: none;
 }
 
-/* The screenshot is the proof; perspective connects it to the project row as it enters view. */
-.home-project-visual-frame {
+/* Proof evidence enters each project row with a restrained perspective reveal. */
+.home-project-proof[data-scroll-proof] {
   transform-origin: center bottom;
 }
 @media (prefers-reduced-motion: no-preference) {
   html[data-project-proof-motion] [data-scroll-proof] {
     opacity: var(--proof-opacity, 0.62);
     transform: perspective(1400px) rotateX(var(--proof-rotate, 18deg)) translateY(var(--proof-lift, 3.5rem)) scale(var(--proof-scale, 0.84));
-  }
-}
-
-.toolchain-proof-heading {
-  margin-top: clamp(3rem, 7vw, 5.5rem);
-  margin-bottom: 1rem;
-}
-.toolchain-proof-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  align-items: stretch;
-}
-@media (max-width: 980px) {
-  .toolchain-proof-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-@media (max-width: 560px) {
-  .toolchain-proof-grid {
-    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -583,8 +566,64 @@
 }
 
 .home-project-row {
-  gap: 3rem;
-  padding-top: 3.5rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 2.25rem;
+  align-items: start;
+  min-width: 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+.home-project-row:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.home-project-row-reversed .home-project-proof-slot {
+  order: 2;
+}
+.home-project-row.home-project-row-with-lab {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+.home-project-row-with-lab .home-project-lab-slot {
+  order: 2;
+}
+.home-project-proof-slot,
+.home-project-lab-slot,
+.home-project-proof,
+.home-project-proof .demo-code {
+  min-width: 0;
+  max-width: 100%;
+}
+.home-project-proof {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+.home-project-proof-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font: 650 0.75rem/1.4 var(--font-mono);
+  color: var(--accent);
+}
+.home-project-proof-command {
+  padding: 0.75rem 0.9rem;
+  margin: 0;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+.home-project-proof-command code {
+  font: 650 0.875rem/1.4 var(--font-mono);
+  overflow-wrap: anywhere;
+}
+.home-project-proof .demo-code pre {
+  max-width: 100%;
+  overflow-x: auto;
 }
 .glow-card {
   position: relative;
@@ -800,57 +839,28 @@
   .home-hero-title {
     font-size: clamp(3.75rem, 11vw, 8rem);
   }
-  .home-project-link,
-  .home-project-link:nth-child(n + 5) {
-    grid-column: span 6;
-    border-bottom: 1px solid var(--border);
-  }
-  .home-project-link:nth-child(even) {
-    border-right: 0;
-  }
-  .home-project-link:nth-child(odd) {
-    border-right: 1px solid var(--border);
-  }
-  .home-project-link:nth-child(7) {
-    grid-column: 1 / -1;
-    border-right: 0;
-    border-bottom: 0;
-  }
 }
 @media (max-width: 900px) {
   .home-hero-screen {
     min-height: calc(100svh - 58px);
   }
   .home-hero-planet {
-    width: clamp(2.6rem, 7vw, 3.2rem);
-    height: clamp(2.6rem, 7vw, 3.2rem);
+    width: clamp(2.4rem, 7vw, 3.2rem);
+    height: clamp(2.4rem, 7vw, 3.2rem);
+
+    --orbit-rx: 38vw;
+    --orbit-ry: 28vh;
   }
-  .home-hero-planet-ring--inner {
-    --orbit-rx: 40vw;
-    --orbit-ry: 23vh;
-  }
-  .home-hero-planet-ring--mid {
-    --orbit-rx: 43vw;
-    --orbit-ry: 29vh;
-  }
-  .home-hero-planet-ring--outer {
-    --orbit-rx: 46vw;
-    --orbit-ry: 35vh;
-  }
-  .home-hero-orbit-inner {
-    width: 80vw;
-    height: 46vh;
-  }
-  .home-hero-orbit-mid {
-    width: 86vw;
-    height: 58vh;
-  }
-  .home-hero-orbit-outer {
-    width: 92vw;
-    height: 70vh;
+  .home-hero-orbit {
+    width: 76vw;
+    height: 56vh;
   }
   .home-project-row {
-    gap: 2rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+  .home-project-row-reversed .home-project-proof-slot {
+    order: 0;
   }
   .build-rail-grid {
     grid-template-columns: 1fr;
@@ -858,26 +868,44 @@
 }
 @media (max-width: 720px) {
   .home-hero-title {
-    font-size: clamp(2.6rem, 11vw, 4.75rem);
+    font-size: clamp(2.25rem, 10vw, 4.5rem);
+  }
+  .home-hero-planet {
+    width: 2.25rem;
+    height: 2.25rem;
+
+    --orbit-rx: 34vw;
+    --orbit-ry: 26vh;
+  }
+  .home-hero-orbit {
+    width: 68vw;
+    height: 52vh;
+  }
+  .home-hero .home-project-rail {
+    padding-block: 1.25rem 1.5rem;
   }
   .home-project-rail {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+  .home-project-rail-group {
     border-radius: 9px;
   }
-  .home-project-link,
-  .home-project-link:nth-child(n + 5),
-  .home-project-link:nth-child(7) {
-    grid-column: 1 / -1;
-    grid-template-columns: 1.25rem 2rem minmax(0, 1fr) auto;
-    min-height: 68px;
-    padding: 0.8rem 0.9rem;
+  .home-project-rail-items {
+    grid-template-columns: 1fr;
+  }
+  .home-project-link {
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    min-height: 52px;
+    padding: 0.65rem 0.9rem;
     border-right: 0;
     border-bottom: 1px solid var(--border);
   }
   .home-project-link:last-child {
     border-bottom: 0;
   }
-  [data-project-row] {
-    padding-top: 2.75rem;
+  .home-project-row {
+    padding-top: 1.5rem;
   }
   .build-rail {
     width: calc(100% - 2rem);
@@ -925,7 +953,6 @@
   }
   .home-hero-planet {
     animation: home-hero-revolve var(--orbit-t) linear infinite;
-    animation-delay: calc(var(--orbit-t) * var(--orbit-p) * -1);
   }
   .home-hero-planet:hover,
   .home-hero-planet:focus-visible {
@@ -945,11 +972,6 @@
   .home-hero-planet:focus-visible img {
     scale: 1.12;
   }
-  .home-hero-planet--ring:hover .home-hero-planet-body::after,
-  .home-hero-planet--ring:focus-visible .home-hero-planet-body::after {
-    inset: 40% -48%;
-    border-bottom-color: rgb(210 230 255 / 7%);
-  }
   @media (hover: hover) {
     [data-project-row]:hover [data-project-visual] img {
       transform: scale(1.012);
@@ -957,11 +979,12 @@
   }
 }
 @keyframes home-hero-revolve {
-  from {
-    offset-distance: 0%;
+  0% {
+    --orbit-turn: 0;
   }
-  to {
-    offset-distance: 100%;
+
+  100% {
+    --orbit-turn: 1;
   }
 }
 @keyframes home-hero-spin {

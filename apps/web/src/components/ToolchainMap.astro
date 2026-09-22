@@ -5,7 +5,7 @@ import { getToolchainProjects } from '../lib/toolchain'
 import { projectPath } from '../i18n/ui'
 interface Props { locale: Locale; projects: ProjectEntry[] }
 const { locale, projects } = Astro.props
-const labels = locale === 'zh-CN' ? { engineering: '工程', styling: '样式', components: '组件', data: '数据', migration: '迁移', title: '从工程到交付，每一层各司其职', kicker: '工具链地图', view: '查看项目', status: { stable: '稳定', beta: '测试版', planned: '规划中' } } : { engineering: 'Engineering', styling: 'Styling', components: 'Components', data: 'Data', migration: 'Migration', title: 'From engineering to delivery, each layer has a job', kicker: 'TOOLCHAIN MAP', view: 'View project', status: { stable: 'Stable', beta: 'Beta', planned: 'Planned' } }
+const labels = locale === 'zh-CN' ? { engineering: '工程', styling: '样式', components: '组件', data: '数据', title: 'weapp 生态四件套，各管一层', kicker: 'weapp 工具链', view: '查看项目', status: { stable: '稳定', beta: '测试版', planned: '规划中' } } : { engineering: 'Engineering', styling: 'Styling', components: 'Components', data: 'Data', title: 'Four weapp tools, each with one job', kicker: 'WEAPP TOOLCHAIN', view: 'View project', status: { stable: 'Stable', beta: 'Beta', planned: 'Planned' } }
 const items = getToolchainProjects(projects)
 ---
 <section class="toolchain-map" aria-labelledby="toolchain-title">
@@ -15,7 +15,7 @@ const items = getToolchainProjects(projects)
 <style>
   .toolchain-map { padding: 2rem; border: 1px solid var(--border); background: var(--surface); }
   .toolchain-map h2 { max-width: 620px; margin: 0; font: 680 clamp(1.6rem, 3vw, 2.6rem)/1.1 var(--font-display); text-wrap: balance; }
-  .toolchain-map-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; margin: 2rem 0 0; padding: 0; list-style: none; }
+  .toolchain-map-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 2rem 0 0; padding: 0; list-style: none; }
   .toolchain-map-list li { position: relative; min-width: 0; padding: 1.25rem 1rem 1.2rem; border-top: 1px solid var(--border); transition: background-color 200ms ease, border-color 200ms ease; }
   .toolchain-map-list li:hover, .toolchain-map-list li:focus-within { background: var(--surface-soft); border-color: var(--accent); }
   .toolchain-step { color: var(--accent); font: 650 .72rem/1 var(--font-mono); }

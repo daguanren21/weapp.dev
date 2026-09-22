@@ -50,6 +50,19 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      - name: Prepare the GitHub Pages site
+        run: |
+          cp -R apps/web/dist apps/web/dist-pages
+          pnpm --filter @weapp.dev/web pages:rewrite dist-pages
+
+      - name: Upload the GitHub Pages site
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: web-pages-dist
+          path: apps/web/dist-pages
+          if-no-files-found: error
+          retention-days: 1
+
   e2e:
     needs: verify
     runs-on: ubuntu-24.04
@@ -126,6 +139,38 @@ jobs:
         run: |
           set -o pipefail
           pnpm exec wrangler deploy --message "${GITHUB_SHA}" 2>&1 | tee "$GITHUB_STEP_SUMMARY"
+
+  deploy-pages:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    concurrency:
+      group: deploy-pages
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Download the GitHub Pages site
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: web-pages-dist
+          path: dist
+
+      - name: Upload the GitHub Pages artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
+        with:
+          path: dist
+
+      - name: Deploy to GitHub Pages
+        id: pages
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
 
   deploy-preview:
     needs: verify

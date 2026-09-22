@@ -18,7 +18,7 @@
 
 .home-lab-heading {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.5rem 1rem;
   align-items: center;
   justify-content: space-between;
@@ -29,7 +29,10 @@
 
 .home-lab-tabs {
   display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
   gap: 0.25rem;
+  min-width: 0;
 }
 
 .home-lab-tabs button {
@@ -46,8 +49,14 @@
 }
 
 .home-lab-project {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font: 500 0.6875rem/1.5 var(--font-mono);
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .demo-controls-space {
@@ -177,6 +186,7 @@
 }
 
 .demo-code pre {
+  max-width: 100%;
   height: calc(100% - 5.75rem);
   padding: 0.5rem 1.25rem;
   margin: 0;
@@ -370,7 +380,7 @@
     display: none;
   }
 
-  /* Keep a fixed control band so Style/Build/Registry tabs do not resize the hero. */
+  /* Keep a fixed control band so Style/Build/Registry tabs do not resize the lab. */
   .demo-controls-space,
   .demo-controls {
     height: 5.5rem;
@@ -386,12 +396,17 @@
 
 @media (max-width: 620px) {
   .home-lab-heading {
+    flex-wrap: wrap;
     min-height: 2.75rem;
     padding: 0.4rem 0.75rem;
   }
 
   .home-lab-project {
     display: none;
+  }
+
+  .home-lab-tabs {
+    flex-wrap: wrap;
   }
 
   .home-lab-tabs button {
@@ -464,8 +479,4 @@
 .demo-hmr-frame figcaption {
   font-size: 0.75rem;
   color: var(--muted);
-}
-
-.home-lab-tabs {
-  flex-wrap: wrap;
 }

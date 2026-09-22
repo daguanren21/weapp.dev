@@ -8,7 +8,7 @@ for (const locale of ['zh-CN', 'en'] as const) {
   test(`${locale}: style controls change real CSS and keep instances independent`, async ({ page }) => {
     await page.goto(route)
     await page.getByRole('tab', { name: copy.tabs.style, exact: true }).click()
-    const hero = page.locator('hero-demos style-demo')
+    const hero = page.locator('home-demos style-demo')
     const button = hero.locator('[data-style-button]')
     const before = await button.evaluate((element) => {
       const style = getComputedStyle(element)
@@ -26,7 +26,9 @@ for (const locale of ['zh-CN', 'en'] as const) {
     expect(after.color).not.toBe(before.color)
     expect(after.radius).not.toBe(before.radius)
     expect(after.padding).not.toBe(before.padding)
-    await expect(page.locator('#projects .home-project-proof')).toHaveCount(5)
+    await expect(page.locator('#projects .home-project-proof')).toHaveCount(3)
+    await expect(page.locator('#projects [data-project-id="weapp-vite"] home-demos')).toHaveCount(1)
+    await expect(page.locator('.home-hero home-demos')).toHaveCount(0)
     await button.click()
     await expect(button).toHaveText(copy.saved)
     await expect(hero.locator('code')).toContainText(copy.saved)
@@ -34,17 +36,16 @@ for (const locale of ['zh-CN', 'en'] as const) {
 
   test(`${locale}: tabs support keyboard navigation and build targets stay aligned`, async ({ page }) => {
     await page.goto(route)
-    const tabs = page.locator('hero-demos [role="tab"]')
+    const tabs = page.locator('home-demos [role="tab"]')
     const buildTab = page.getByRole('tab', { name: copy.tabs.build, exact: true })
     await buildTab.click()
-    const build = page.locator('hero-demos build-demo')
+    const build = page.locator('home-demos build-demo')
     await expect(build).toBeVisible()
     await build.getByRole('radio', { name: copy.targets[1] }).check()
     await expect(build.locator('pre code')).toContainText('targets: [\'alipay\']')
     await expect(build.locator('[data-directory]')).toHaveText('dist/alipay/dist/')
     await expect(build.locator('[data-output-file="0"]')).toHaveText('index.axml')
     await expect(build.locator('[data-build-command]')).toHaveText('pnpm exec wv build -p alipay')
-    await expect(page.locator('#projects .home-project-proof-command')).toContainText('pnpm exec wv build -p weapp')
     await buildTab.focus()
     await page.keyboard.press('End')
     await expect(tabs.last()).toBeFocused()
@@ -60,10 +61,10 @@ for (const locale of ['zh-CN', 'en'] as const) {
 
   test(`${locale}: migration proof exposes Vite HMR boundary`, async ({ page }) => {
     await page.goto(route)
-    const tabs = page.locator('hero-demos [role="tab"]')
+    const tabs = page.locator('home-demos [role="tab"]')
     await tabs.last().click()
-    await expect(page.locator('hero-demos [data-demo="migration"]')).toBeVisible()
-    const proof = page.locator('hero-demos [data-demo="migration"]')
+    await expect(page.locator('home-demos [data-demo="migration"]')).toBeVisible()
+    const proof = page.locator('home-demos [data-demo="migration"]')
     await expect(proof.locator('pre code')).toContainText('npm create vite-taro@latest my-app')
     await proof.getByRole('radio').last().check()
     await expect(proof.locator('figure:visible img')).toHaveAttribute('src', '/media/projects/vpt-hmr-after.webp')
@@ -73,9 +74,9 @@ for (const locale of ['zh-CN', 'en'] as const) {
 
   test(`${locale}: registry selection updates command and composition, preserving one choice`, async ({ page }) => {
     await page.goto(route)
-    const tabs = page.locator('hero-demos [role="tab"]')
+    const tabs = page.locator('home-demos [role="tab"]')
     await tabs.nth(2).click()
-    const registry = page.locator('hero-demos registry-demo')
+    const registry = page.locator('home-demos registry-demo')
     await expect(registry).toBeVisible()
     await registry.getByRole('checkbox', { name: 'button', exact: true }).uncheck()
     await expect(registry.locator('[data-registry-button]')).toBeHidden()
@@ -102,7 +103,7 @@ test('copy reports success and clipboard failures accessibly', async ({ page }) 
   })
   await page.goto('/')
   await page.getByRole('tab', { name: '样式', exact: true }).click()
-  const code = page.locator('hero-demos style-demo demo-code')
+  const code = page.locator('home-demos style-demo demo-code')
   await code.getByRole('button', { name: '复制代码' }).click()
   await expect(code.getByRole('status')).toHaveText('已复制')
   expect(await page.evaluate(() => sessionStorage.getItem('copied-demo'))).toBe(await code.locator('code').textContent())
@@ -122,14 +123,15 @@ test('default examples remain readable without JavaScript', async ({ browser, vi
   const page = await context.newPage()
   for (const route of ['/', '/en/']) {
     await page.goto(route)
-    await expect(page.locator('hero-demos build-demo .demo-code pre code')).toContainText('defineConfig')
-    await expect(page.locator('hero-demos [data-demo="sqlite"]')).toContainText('CREATE TABLE notes')
-    await expect(page.locator('hero-demos [data-demo="sqlite"]')).toContainText(route === '/' ? '未运行数据库' : 'no database is running')
-    await expect(page.locator('hero-demos [data-demo="sqlite"]')).toContainText(route === '/' ? '不提供生产 API' : 'no production API')
-    await expect(page.locator('hero-demos [role="tablist"]')).toBeHidden()
+    await expect(page.locator('home-demos build-demo .demo-code pre code')).toContainText('defineConfig')
+    await expect(page.locator('home-demos [data-demo="sqlite"]')).toContainText('CREATE TABLE notes')
+    await expect(page.locator('home-demos [data-demo="sqlite"]')).toContainText(route === '/' ? '未运行数据库' : 'no database is running')
+    await expect(page.locator('home-demos [data-demo="sqlite"]')).toContainText(route === '/' ? '不提供生产 API' : 'no production API')
+    await expect(page.locator('home-demos [role="tablist"]')).toBeHidden()
     await expect(page.locator('.demo-controls:visible, [data-copy]:visible')).toHaveCount(0)
-    await expect(page.locator('#projects .home-project-proof')).toHaveCount(5)
-    await expect(page.locator('#projects .home-lab')).toHaveCount(0)
+    await expect(page.locator('#projects .home-project-proof')).toHaveCount(3)
+    await expect(page.locator('#projects .home-lab')).toHaveCount(1)
+    await expect(page.locator('.home-hero home-demos')).toHaveCount(0)
   }
   await context.close()
 })
@@ -137,7 +139,7 @@ test('default examples remain readable without JavaScript', async ({ browser, vi
 test('reduced motion updates results without motion or layout shifts', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.goto('/')
-  const hero = page.locator('hero-demos')
+  const hero = page.locator('home-demos')
   const box = await hero.boundingBox()
   for (const tab of await hero.getByRole('tab').all()) {
     await tab.click()
@@ -160,13 +162,13 @@ test('reduced motion updates results without motion or layout shifts', async ({ 
   expect(await page.evaluate(() => document.getAnimations().length)).toBe(0)
 })
 
-test('all demo states fit at 320 through 1440px without resizing the hero', async ({ page }) => {
+test('all demo states fit at 320 through 1440px without resizing the lab', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   for (const route of ['/', '/en/']) {
     await page.goto(route)
     for (const width of [320, 390, 620, 720, 900, 1100, 1440]) {
       await page.setViewportSize({ width, height: 1000 })
-      const hero = page.locator('hero-demos')
+      const hero = page.locator('home-demos')
       const box = await hero.boundingBox()
       for (const tab of await hero.getByRole('tab').all()) {
         await tab.click()

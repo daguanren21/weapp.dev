@@ -22,6 +22,7 @@ describe('home project composition', () => {
     const extended = [...projects].reverse().concat({ id: 'new-project', data: projects[0].data })
     const result = assembleHomeProjects(extended, homeProjectPlacements)
     expect(result.map(project => project.id)).toEqual(['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite', 'vite-plugin-taro'])
+    expect(result.filter(project => project.data.ecosystem === 'weapp').map(project => project.id)).toEqual(['weapp-vite', 'weapp-tailwindcss', 'varo', 'weapp-sqlite'])
     expect(result.map(project => project.demo)).toEqual(['build', 'style', 'registry', 'sqlite', 'migration'])
   })
 

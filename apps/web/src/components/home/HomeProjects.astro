@@ -1,34 +1,41 @@
 ---
 import type { Locale, ProjectMetricsMap } from '../../types/project'
 import type { HomeProject } from '../../lib/home-projects'
-import type { ProjectEntry } from '../../lib/projects'
-import { homeSection, sectionTitle, shell } from '../../styles/classes'
+import { homeSection, homeSectionPack, sectionTitle, shell } from '../../styles/classes'
 import HomeProjectRow from './HomeProjectRow.astro'
 import { siteCopy } from '../../i18n/ui'
-import HomeAdjacentProjects from './HomeAdjacentProjects.astro'
 
 interface Props {
   locale: Locale
   projects: HomeProject[]
-  catalogProjects: ProjectEntry[]
   metrics: ProjectMetricsMap
+  id?: string
+  eyebrow?: string
+  title?: string
+  description?: string
+  pack?: keyof typeof homeSectionPack
+  labProjects?: HomeProject[]
 }
 
-const { locale, projects, catalogProjects, metrics } = Astro.props
+const { locale, projects, metrics, labProjects, pack } = Astro.props
 const copy = siteCopy[locale]
+const sectionId = Astro.props.id ?? 'projects'
+const eyebrow = Astro.props.eyebrow ?? copy.projects.eyebrow
+const title = Astro.props.title ?? copy.projects.title
+const description = Astro.props.description ?? copy.projects.description
+const sectionClass = pack ? homeSectionPack[pack] : homeSection
 ---
 
-<section class:list={[homeSection, shell]} id="projects" aria-labelledby="projects-title">
-  <header data-reveal class="mb-10 max-w-[720px]">
-    <p class="mb-3 font-mono text-xs font-[650] text-brand">{copy.projects.eyebrow}</p>
-    <h2 id="projects-title" class={sectionTitle}>{copy.projects.title}</h2>
-    <p class="mb-0 text-lg text-copy-muted max-[720px]:text-base">{copy.projects.description}</p>
+<section class:list={[sectionClass, shell, 'scroll-mt-20']} id={sectionId} aria-labelledby={`${sectionId}-title`}>
+  <header data-reveal class="mb-8 max-w-[720px]">
+    <p class="mb-3 font-mono text-xs font-[650] text-brand">{eyebrow}</p>
+    <h2 id={`${sectionId}-title`} class={sectionTitle}>{title}</h2>
+    <p class="mb-0 text-lg text-copy-muted max-[720px]:text-base">{description}</p>
   </header>
 
-  <div class="grid gap-12 max-[720px]:gap-10">
+  <div class="grid">
     {projects.map((project, index) => (
-      <HomeProjectRow locale={locale} project={project} index={index} metrics={metrics[project.id]} />
+      <HomeProjectRow locale={locale} project={project} index={index} metrics={metrics[project.id]} labProjects={project.id === 'weapp-vite' ? labProjects : undefined} />
     ))}
   </div>
-  <HomeAdjacentProjects locale={locale} projects={catalogProjects} featuredIds={projects.slice(0, 3).map(project => project.id)} />
 </section>

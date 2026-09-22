@@ -50,6 +50,29 @@ weapp.dev hosts tools for real mini-app repos. weapp-tailwindcss handles styles,
 - Relationship to Taro: VPT uses Taro components, APIs, and runtime with Vite-powered development and builds instead of the older webpack pipeline.
 - Getting started: Use the project generator for a new app or follow https://vpt.js.org/guides/migrate-from-taro/ for an existing Taro app.
 
+## Vue Mini
+
+- Canonical Chinese page: https://weapp.dev/projects/vue-mini/
+- Canonical English page: https://weapp.dev/en/projects/vue-mini/
+- Documentation: https://vuemini.org/
+- Source: https://github.com/vue-mini/vue-mini
+- npm: https://www.npmjs.com/package/@vue-mini/core
+- Install: `pnpm add @vue-mini/core`
+- Scaffold: `npm create vue-mini@latest`
+- Purpose: Vue 3 reactivity and Composition API for WeChat mini programs, compatible with native syntax for gradual adoption.
+- Relationship to weapp-vite: Vue Mini is a page-writing runtime. weapp-vite still owns the build.
+
+## Rezor
+
+- Canonical Chinese page: https://weapp.dev/projects/rezor/
+- Canonical English page: https://weapp.dev/en/projects/rezor/
+- Documentation: https://github.com/rezorjs/rezor
+- Source: https://github.com/rezorjs/rezor
+- npm: https://www.npmjs.com/package/rezor
+- Scaffold: `npm create rezor@latest`
+- Purpose: React Hooks mini-program framework aiming for near-native performance. A dedicated docs site is not online yet.
+- Relationship to VPT: VPT migrates Taro / React builds to Vite. Rezor is a React mini-program runtime.
+
 ## Uni Helper
 
 - Canonical Chinese page: https://weapp.dev/projects/uni-helper/

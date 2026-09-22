@@ -1,5 +1,5 @@
 {
-  "order": 7,
+  "order": 9,
   "status": "stable",
   "packageName": "wot-design-uni",
   "github": "wot-ui/wot-ui",
@@ -19,6 +19,7 @@
   "logo": "/brands/wot-ui.svg",
   "accent": "#12b886",
   "role": "Ecosystem",
+  "ecosystem": "uni-app",
   "maturity": "stable",
   "runtime": [
     "Vue 3"

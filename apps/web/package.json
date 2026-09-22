@@ -6,6 +6,7 @@
   "scripts": {
     "build": "pnpm og:generate && pnpm metrics && astro build && tsx scripts/validate-build.ts",
     "build:cloudflare": "pnpm build",
+    "pages:rewrite": "tsx scripts/rewrite-github-pages-paths.ts",
     "check": "astro check && tsc --noEmit",
     "deploy": "pnpm build && wrangler deploy",
     "deploy:dry-run": "pnpm build && wrangler deploy --dry-run",
